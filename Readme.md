@@ -5,12 +5,18 @@ Current supported platforms
   - Android
 
 > Preview Version.
-> The following features are in 'Alpha' version: 
+> The following features are present but consider it as 'Alpha' version: 
 > Caching, Crash
 
 
 ### Version
 0.0.1
+
+
+### Todo's
+ - Add usage details
+ - Add tests to this repo
+ - Add more to this repo
 
 ### Tech
 
@@ -18,15 +24,6 @@ The SDK uses a number of open source projects to work properly:
 
 * JSON.net http://james.newtonking.com/json
 * SQLite - http://www.sqlite.org/
-
-### Installation
-
-### Usage
-
-### Todo's
-
- - Add tests to this repo
- - Add samples to this repo
 
 License
 ----
