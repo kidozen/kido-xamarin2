@@ -15,9 +15,8 @@ Current supported platforms
 
 ### Todo's
  - Add usage details
- - Add tests to this repo
- - Add more to this repo
-
+ - Add more tests to this repo
+ 
 ### Tech
 
 The SDK uses a number of open source projects to work properly:
