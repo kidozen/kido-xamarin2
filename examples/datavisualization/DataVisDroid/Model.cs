@@ -6,21 +6,13 @@ using Android;
 using Android.Content;
 using Android.Util;
 
+using Kidozen.Examples.Shared;
+
 using Kidozen;
 using Kidozen.Android;
 
 namespace DataVisDroid
 {
-	public class Settings {
-		public static String Marketplace = string.Empty;
-		public static String SDKSecretKey = string.Empty;
-		public static String Application = string.Empty;
-
-		public static String Provider = string.Empty;
-		public static String User = string.Empty;
-		public static String Password = string.Empty;
-	}
-
 	public class Model
 	{
 		KidoApplication kido;

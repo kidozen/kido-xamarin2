@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "datavisualization", "datavi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataVisDroid", "examples\datavisualization\DataVisDroid\DataVisDroid.csproj", "{972DA68A-FFC5-4C3D-B4D3-95B02970E27D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataVisTouch", "examples\datavisualization\DataVisTouch\DataVisTouch.csproj", "{028CEE5E-10D8-4F98-AB51-679DB85311A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
@@ -38,6 +40,40 @@ Global
 		Default|Any CPU = Default|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Ad-Hoc|Any CPU.ActiveCfg = Ad-Hoc|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Ad-Hoc|Any CPU.Build.0 = Ad-Hoc|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Ad-Hoc|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Ad-Hoc|Mixed Platforms.ActiveCfg = Ad-Hoc|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Ad-Hoc|Mixed Platforms.Build.0 = Ad-Hoc|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.AppStore|Any CPU.ActiveCfg = AppStore|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.AppStore|Any CPU.Build.0 = AppStore|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.AppStore|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.AppStore|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.AppStore|Mixed Platforms.ActiveCfg = AppStore|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.AppStore|Mixed Platforms.Build.0 = AppStore|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Debug|iPhone.Build.0 = Debug|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Debug|Mixed Platforms.ActiveCfg = Debug|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Debug|Mixed Platforms.Build.0 = Debug|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Default|Any CPU.ActiveCfg = Debug|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Default|Any CPU.Build.0 = Debug|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Release|Any CPU.ActiveCfg = Release|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Release|Any CPU.Build.0 = Release|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Release|iPhone.ActiveCfg = Release|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Release|iPhone.Build.0 = Release|iPhone
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Release|Mixed Platforms.ActiveCfg = Release|iPhoneSimulator
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7}.Release|Mixed Platforms.Build.0 = Release|iPhoneSimulator
 		{7A8B0A96-BD82-48A8-A154-0DF0638D019A}.Ad-Hoc|Any CPU.ActiveCfg = Release|Any CPU
 		{7A8B0A96-BD82-48A8-A154-0DF0638D019A}.Ad-Hoc|Any CPU.Build.0 = Release|Any CPU
 		{7A8B0A96-BD82-48A8-A154-0DF0638D019A}.Ad-Hoc|iPhone.ActiveCfg = Release|Any CPU
@@ -170,9 +206,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{832CA5BA-F5A8-4F5A-AC66-2A20B778A864} = {B1859D32-533F-4B4F-A0BC-0DE18D87D51A}
 		{972DA68A-FFC5-4C3D-B4D3-95B02970E27D} = {832CA5BA-F5A8-4F5A-AC66-2A20B778A864}
+		{028CEE5E-10D8-4F98-AB51-679DB85311A7} = {832CA5BA-F5A8-4F5A-AC66-2A20B778A864}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = kido\kido.fsproj
+		StartupItem = examples\datavisualization\DataVisTouch\DataVisTouch.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

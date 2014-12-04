@@ -23,7 +23,7 @@ namespace DataVisDroid
 			var authButton = FindViewById<Button> (Resource.Id.AuthenticateButton);
 			var label = FindViewById<TextView> (Resource.Id.textView1);
 			var invokeButton = FindViewById<Button> (Resource.Id.buttonInvoke);
-			var editText = FindViewById<Button> (Resource.Id.editTextDVName);
+			var editText = FindViewById<EditText> (Resource.Id.editTextDVName);
 
 			authButton.Click += (sender, e) => {
 				kidoModel.Authenticate ().ContinueWith (t =>
@@ -36,7 +36,12 @@ namespace DataVisDroid
 			};
 
 			invokeButton.Click += (sender, e) => {
+				RunOnUiThread(()=> Toast.MakeText(this,"Launching visualization, please wait", ToastLength.Long).Show());
 
+				kidoModel.DisplayDataVisualization(this,editText.Text)
+					.ContinueWith (t=> {
+						RunOnUiThread(()=> Toast.MakeText(this,"Visualization finish, result: " + t.Result, ToastLength.Long).Show());
+					});
 			};
 		}
 	}

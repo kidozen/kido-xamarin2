@@ -8,6 +8,7 @@ Browse to release/support add a reference to ModernHttpClient.dll
 
 For iOS that requires Passive, Crash, DataVisualization or Offline:
 Browse to release/ios add a reference to kido.ios.dll
+SharpZip Lib from nugget
 
 For Android that requires Passive, Crash, DataVisualization or Offline:
 Browse to release/android add a reference to kido.android.dll
