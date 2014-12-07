@@ -1,0 +1,15 @@
+﻿<Page
+    x:Class="WinStoreDs.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinStoreDs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Button x:Name="btnAuthenticate" Content="Authenticate" HorizontalAlignment="Left" Margin="230,140,0,0" VerticalAlignment="Top" Height="70" Width="228" Click="btnAuthenticate_Click"/>
+        <Button x:Name="btnQuery" Content="Query DS" HorizontalAlignment="Left" Margin="230,310,0,0" VerticalAlignment="Top" Height="76" Width="228"/>
+
+    </Grid>
+</Page>
