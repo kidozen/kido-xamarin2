@@ -3,13 +3,13 @@
 namespace Kidozen.Examples.Shared
 {
 	public class Settings {
-		public static String Marketplace = string.Empty;
-		public static String SDKSecretKey = string.Empty;
-		public static String Application = string.Empty;
+        public static String Marketplace = "kidodemo.kidocloud.com";
+        public static String SDKSecretKey = "wb8KTX2/21A6ISM7PncaNozhxxCxcL8+TtB2aKbZyu8=";
+		public static String Application = "tasks";
 
-		public static String Provider = string.Empty;
-		public static String User = string.Empty;
-		public static String Password = string.Empty;
+		public static String Provider = "Kidozen";
+		public static String User = "demo@kidozen.com";
+		public static String Password = "pass";
 	}
 }
 
