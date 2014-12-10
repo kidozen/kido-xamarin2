@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 using Kidozen;
-
+using Kidozen.Examples.Shared;
 namespace Kidozen.Examples.Portable
 {
     public class DataSources
