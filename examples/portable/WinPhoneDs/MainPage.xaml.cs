@@ -51,10 +51,20 @@ namespace WinPhoneDs
             var ds = new DataSources();
             ds.Authenticate().ContinueWith(
                 t => {
-                    var status = t.Result;
+                    var isauth = t.Result;
+                    if (isauth)
+                    {
+                        var result = ds.QueryDataSoruce<DsParams>("getTellagoVacations", new DsParams { qty = 2 }).Result;
+                        System.Diagnostics.Debug.WriteLine(result.ToString());
+
+                    }
                 }
                 );
 
         }
+    }
+
+    class DsParams {
+        public int qty { get; set; }
     }
 }
