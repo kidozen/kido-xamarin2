@@ -36,7 +36,10 @@ namespace Kidozen.Examples.Portable
         public Task<bool> QueryDataSoruce<T>(string name, T paramters)
         {
             var qds = kido.DataSource(name);
-            return qds.Query(paramters).ContinueWith(t => { return !t.IsFaulted; });
+            return qds.Query(paramters).ContinueWith(t => {
+                System.Diagnostics.Debug.WriteLine(t.Result);
+                return !t.IsFaulted; 
+            });
         }
     }
 

@@ -6,10 +6,10 @@ using Android;
 using Android.Content;
 using Android.Util;
 
-using Kidozen.Examples.Shared;
-
 using Kidozen;
 using Kidozen.Android;
+
+using Kidozen.Examples.Shared;
 
 namespace DataVisDroid
 {

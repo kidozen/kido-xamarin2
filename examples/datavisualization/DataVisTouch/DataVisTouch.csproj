@@ -116,14 +116,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Shared\Settings.cs">
+      <Link>Settings.cs</Link>
+    </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="DataVisTouchViewController.cs" />
     <Compile Include="DataVisTouchViewController.designer.cs">
       <DependentUpon>DataVisTouchViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="..\Shared\Settings.cs">
-      <Link>Settings.cs</Link>
     </Compile>
     <Compile Include="Model.cs" />
   </ItemGroup>

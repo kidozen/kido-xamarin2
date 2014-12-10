@@ -1,8 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="DataVisDroid.DataVisDroid">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="DataVisDroid.DataVisDroid" android:versionCode="1" android:versionName="1.0">
 	<uses-sdk />
-	<application android:label="DataVisDroid">
-	</application>
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<application android:label="DataVisDroid" android:icon="@drawable/Icon"></application>
 </manifest>
