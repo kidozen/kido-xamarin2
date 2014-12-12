@@ -91,12 +91,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\Components\json.net-4.5.11.1\lib\ios\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SQLite">
-      <HintPath>..\..\..\Components\sqlite-net-1.0.8.1\lib\ios\SQLite.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib.Portable">
       <HintPath>..\..\..\packages\SharpZipLib.Portable.0.86.0.0001\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
     </Reference>
@@ -105,6 +99,9 @@
     </Reference>
     <Reference Include="kido.ios">
       <HintPath>..\..\..\release\ios\kido.ios.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\Components\json.net-4.5.11.1\lib\ios\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -134,10 +131,6 @@
   <ItemGroup>
     <XamarinComponentReference Include="json.net">
       <Version>4.5.11.1</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
-    <XamarinComponentReference Include="sqlite-net">
-      <Version>1.0.8.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>
