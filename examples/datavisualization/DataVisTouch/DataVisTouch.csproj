@@ -84,6 +84,12 @@
     <CodesignProvision>Automatic:AppStore</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="kido">
+      <HintPath>..\..\..\release\core\kido.dll</HintPath>
+    </Reference>
+    <Reference Include="kido.ios">
+      <HintPath>..\..\..\release\ios\kido.ios.dll</HintPath>
+    </Reference>
     <Reference Include="ModernHttpClient">
       <HintPath>..\..\..\packages\modernhttpclient.2.1.4\lib\MonoTouch\ModernHttpClient.dll</HintPath>
     </Reference>
@@ -96,9 +102,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\packages\Newtonsoft.Json.6.0.6\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="kido">
-      <HintPath>..\..\..\kido\bin\Debug\kido.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -138,10 +141,4 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\kido.ios\kido.ios.csproj">
-      <Project>{AA9BA43A-CAD5-4C71-8C94-F0E4AECDC06A}</Project>
-      <Name>kido.ios</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

@@ -64,7 +64,7 @@ namespace Kidozen.iOS
 					TokenInfo = rawToken
 				});
 
-				this.InvokeOnMainThread (() => (this.DismissViewController (true, null)));
+				this.InvokeOnMainThread (() => this.DismissViewController (true, null));
 			}
 			else
 				if (payload.Contains ("Error message=")) {

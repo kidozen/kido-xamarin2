@@ -44,8 +44,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="kido.android">
-      <HintPath>..\..\..\release\android\kido.android.dll</HintPath>
+    <Reference Include="kido">
+      <HintPath>..\..\..\release\core\kido.dll</HintPath>
     </Reference>
     <Reference Include="ModernHttpClient">
       <HintPath>..\..\..\release\support\ModernHttpClient.dll</HintPath>
@@ -53,18 +53,15 @@
     <Reference Include="Mono.Android" />
     <Reference Include="Mono.Android.Export" />
     <Reference Include="mscorlib" />
+    <Reference Include="SQLite">
+      <HintPath>..\..\..\release\android\SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\packages\Newtonsoft.Json.6.0.6\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="kido">
-      <HintPath>..\..\..\kido\bin\Debug\kido.dll</HintPath>
-    </Reference>
-    <Reference Include="SQLite">
-      <HintPath>..\..\..\Components\sqlite-net-1.0.8.2\lib\android\SQLite.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +111,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\kido.android\kido.android.csproj">
       <Project>{7A8B0A96-BD82-48A8-A154-0DF0638D019A}</Project>
+      <Name>kido.android</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\kido.android\kido.android.csproj">
+      <Project>{7a8b0a96-bd82-48a8-a154-0df0638d019a}</Project>
       <Name>kido.android</Name>
     </ProjectReference>
   </ItemGroup>
