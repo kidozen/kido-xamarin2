@@ -63,6 +63,9 @@
     <Reference Include="kido">
       <HintPath>..\..\..\kido\bin\Debug\kido.dll</HintPath>
     </Reference>
+    <Reference Include="SQLite">
+      <HintPath>..\..\..\Components\sqlite-net-1.0.8.2\lib\android\SQLite.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Shared\Settings.cs">

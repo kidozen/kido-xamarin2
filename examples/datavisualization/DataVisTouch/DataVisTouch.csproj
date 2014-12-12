@@ -94,14 +94,11 @@
     <Reference Include="ICSharpCode.SharpZipLib.Portable">
       <HintPath>..\..\..\packages\SharpZipLib.Portable.0.86.0.0001\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
     </Reference>
-    <Reference Include="kido">
-      <HintPath>..\..\..\release\core\kido.dll</HintPath>
-    </Reference>
-    <Reference Include="kido.ios">
-      <HintPath>..\..\..\release\ios\kido.ios.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\Components\json.net-4.5.11.1\lib\ios\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.6.0.6\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="kido">
+      <HintPath>..\..\..\kido\bin\Debug\kido.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -141,4 +138,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\kido.ios\kido.ios.csproj">
+      <Project>{AA9BA43A-CAD5-4C71-8C94-F0E4AECDC06A}</Project>
+      <Name>kido.ios</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
