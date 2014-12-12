@@ -8,6 +8,8 @@ using System.Diagnostics;
 
 using Kidozen;
 using Kidozen.Examples.Shared;
+using Newtonsoft.Json.Linq;
+
 namespace Kidozen.Examples.Portable
 {
     public class DataSources
@@ -36,7 +38,7 @@ namespace Kidozen.Examples.Portable
         public Task<bool> QueryDataSoruce<T>(string name, T paramters)
         {
             var qds = kido.DataSource(name);
-            return qds.Query(paramters).ContinueWith(t => {
+            return qds.Query<JObject>(paramters).ContinueWith(t => {
                 System.Diagnostics.Debug.WriteLine(t.Result);
                 return !t.IsFaulted; 
             });
