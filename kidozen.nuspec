@@ -14,53 +14,30 @@
 			<dependency id="Newtonsoft.Json" version="6.0.6"/>
 			<dependency id="FSharp.Core.Mono.Signed" version="3.1.1.27"/>
 		  </group>
-		  <group targetFramework="MonoTouch">
-		  	<dependency id="SharpZipLib.Portable" version="0.86.0.001" />
+		  <group targetFramework="MonoTouch10">
+		  	<dependency id="SharpZipLib.Portable" />
 		  </group>
 		</dependencies>
 	</metadata>
 	<files>		
 		<!-- PCL -->
 		<file src="\release\core\kido.dll" target="lib\portable-win+net45+wp8+win8+wpa81+MonoTouch+MonoAndroid\kido.dll" />
-		<file src="\release\support\ModernHttpClient.dll" target="lib\portable-win+net45+wp8+win8+wpa81+MonoTouch+MonoAndroid\Cirrious.MvvmCross.pdb" />
+		<file src="\release\support\ModernHttpClient.dll" target="lib\portable-win+net45+wp8+win8+wpa81+MonoTouch+MonoAndroid\ModernHttpClient.dll" />
 
-		<!-- store -->
-		<file src="\release\core\kido.dll" target="lib\netcore45\kido.dll" />
-		<file src="\release\support\ModernHttpClient.dll" target="lib\netcore45\ModernHttpClient.dll" />
-
-		<!-- store - PCL -->
-		<file src="\release\core\kido.dll" target="lib\netcore45\Cirrious.MvvmCross.dll" />
-		<file src="\release\support\ModernHttpClient.dll" target="lib\netcore45\Cirrious.MvvmCross.pdb" />
-        
-		<!-- phone -->
-		<file src="\release\core\kido.dll" target="lib\wp8\kido.dll" />
-		<file src="\release\support\ModernHttpClient.dll" target="lib\wp8\ModernHttpClient.dll" />
-
-		
 		<!-- windows phone 8.1 -->
 		<file src="\release\core\kido.dll" target="lib\wpa81\kido.dll" />
 		<file src="\release\support\ModernHttpClient.dll" target="lib\wpa81\ModernHttpClient.dll" />
 
-		<!-- windows common - PCL -->
-		<file src="\release\core\kido.dll" target="lib\win81\kido.dll" />
-		<file src="\release\support\ModernHttpClient.dll" target="lib\win81\ModernHttpClient.dll" />
-
 		<!-- droid -->
-		<file src="\release\core\kido.dll" target="lib\MonoAndroid\kido.dll" />
-
-		<!-- droid - PCL -->
 		<file src="\release\core\kido.dll" target="lib\MonoAndroid\kido.dll" />
 		<file src="\release\android\kido.android.dll" target="lib\MonoAndroid\kido.android.dll" />		
 		<file src="\release\android\SQLite.dll" target="lib\MonoAndroid\SQLite.dll" />
 		<file src="\release\support\ModernHttpClient.dll" target="lib\MonoAndroid\ModernHttpClient.dll" />
 		
 		<!-- touch -->
-		<file src="\release\core\kido.dll" target="lib\MonoTouch\kido.dll" />
-
-		<!-- touch - PCL -->
-		<file src="\release\core\kido.dll" target="lib\MonoTouch\kido.dll" />
-		<file src="\release\ios\kido.ios.dll" target="lib\MonoTouch\kido.ios.dll" />
-		<file src="\release\ios\SQLite.dll" target="lib\MonoTouch\SQLite.dll" />		
-		<file src="\release\support\ModernHttpClient.dll" target="lib\MonoTouch\ModernHttpClient.dll" />
+		<file src="\release\core\kido.dll" target="lib\MonoTouch10\kido.dll" />
+		<file src="\release\support\ModernHttpClient.dll" target="lib\MonoTouch10\ModernHttpClient.dll" />
+		<file src="\release\ios\kido.ios.dll" target="lib\MonoTouch10\kido.ios.dll" />
+		<file src="\release\ios\SQLite.dll" target="lib\MonoTouch10\SQLite.dll" />		
 	</files>
 </package>
