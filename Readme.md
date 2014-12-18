@@ -29,6 +29,10 @@ Supported platforms
  >The package is marked as pre-reolease, to get it please refer to the following documentation https://nuget.codeplex.com/wikipage?title=Pre-Release%20Packages
  - ... ot clone the sources and add the project references to your application
 
+## TODO
+  - Documentation
+  - Samples
+
 ## Getting started with the code
 ### Creating a new Application Object
 ```
