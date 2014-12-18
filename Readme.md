@@ -30,6 +30,7 @@ Supported platforms
  - ... ot clone the sources and add the project references to your application
 
 ## TODO
+  - Add support to Passive Auth, Crash and DataVisualization to Windows
   - Documentation
   - Samples
 
@@ -78,6 +79,11 @@ The SDK uses a number of open source projects to work properly:
 > Prerelease Version.
 > The following features are present but consider it as 'Beta' version in iOS and Android: 
 > Analitics, Crash
+
+
+## Known issues
+  - Deployment on iOS physical devices may fail. (Walkaround: add libraries source to your solution )
+  - Passive authentication and Data visualization: does not display a progress message )
 
 License
 ----
