@@ -20,6 +20,10 @@ Components
 */*/*/obj/*
 *_ReSharper.*/
 
+bin
+obj
+packages
+
 */*/Resource.designer.cs
 */*/*/Resource.designer.cs
 */*/*/*/Resource.designer.cs
