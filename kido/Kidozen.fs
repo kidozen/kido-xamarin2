@@ -5,7 +5,6 @@ open System.Net
 open System.Threading.Tasks
 open System.Runtime.InteropServices
 
-open Kido
 open Application
 open DataSource
 open Storage
@@ -17,6 +16,10 @@ open Sms
 open Files
 open MailSender
 
+type User(name,rawtoken) =
+    member this.Name = name
+    member this.RawToken = rawtoken
+
 type PassiveAuthenticationEventArgs(token:string) =
     inherit System.EventArgs()
     member this.Token = token
@@ -24,7 +27,9 @@ type PassiveAuthenticationEventArgs(token:string) =
 type KidoApplication(marketplace, application, key )  =
     let zeroIdentity = { token= None; rawToken = ""; id = ""; config = ""; expiration = System.DateTime.Now; authenticationRequest  = { Key = ""; ProviderRequest = None; Marketplace = marketplace; Application = application  } }
     let mutable identity = zeroIdentity
+    let mutable currentUser = User("","")
     let onPassiveAuth = new DelegateEvent<System.EventHandler<PassiveAuthenticationEventArgs>>()
+    member this.setUser user = currentUser <- user
     member this.marketplace = marketplace
     member this.application = application
     member this.key = key
@@ -40,7 +45,8 @@ type KidoApplication(marketplace, application, key )  =
         match result with
         | Token t -> 
             identity <- t
-            return t.id
+            currentUser <- User(user,t.rawToken)
+            return currentUser
         | InvalidApplication e -> return raise e
         | InvalidCredentials e -> return raise e
         | InvalidIpCredentials e -> return raise e

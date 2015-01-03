@@ -63,7 +63,6 @@ namespace Kidozen.iOS
 
 				var expiration = A.getExpiration (rawToken);
 				var identity = new Application.Identity("3",rawToken, new FSharpOption<U.Token>(token) , curentConfiguration,expiration,authenticationRequest);
-
 				currentApplication.setIdentity (identity);
 				dummyPassiveAuthenticationTask.Start ();
 			}

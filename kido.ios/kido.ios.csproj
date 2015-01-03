@@ -31,9 +31,6 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="kido">
-      <HintPath>..\release\core\kido.dll</HintPath>
-    </Reference>
     <Reference Include="ModernHttpClient">
       <HintPath>..\packages\modernhttpclient.2.1.4\lib\MonoTouch\ModernHttpClient.dll</HintPath>
     </Reference>
@@ -47,6 +44,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Components\json.net-4.5.11.1\lib\ios\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="kido">
+      <HintPath>..\kido\bin\Debug\kido.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
