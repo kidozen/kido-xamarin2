@@ -21,7 +21,7 @@ namespace Todo
 	{
 		static object locker = new object ();
 		KidoApplication kidozenApplication;
-		ObjectSet.Storage database;
+		ObjectSet database;
 
 		public TodoItemDatabase()
 		{
@@ -37,7 +37,7 @@ namespace Todo
 
 			return authTask.ContinueWith (
 				t => {
-					database = kidozenApplication.Storage ("todo");
+					database = kidozenApplication.ObjectSet("todo");
 					return !t.IsFaulted;
 				}
 			);

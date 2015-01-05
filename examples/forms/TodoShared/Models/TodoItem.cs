@@ -9,7 +9,7 @@ namespace Todo
 		{
 		}
 
-		public ObjectSet.Metadata _metadata { get; set; }
+		public Metadata _metadata { get; set; }
 		public string _id { get; set; }
 		public string Name { get; set; }
 		public string Notes { get; set; }
