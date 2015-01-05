@@ -61,7 +61,7 @@ namespace Kidozen.iOS
 		public bool UnzipFiles (string path, string zipname)
 		{
 			try {
-				using (ZipInputStream s = new ZipInputStream(File.OpenRead(Path.Combine(path,zipname + ".zip")))) {
+				using (ZipInputStream s = new ZipInputStream(System.IO.File.OpenRead(Path.Combine(path,zipname + ".zip")))) {
 					ZipEntry theEntry;
 					while ((theEntry = s.GetNextEntry()) != null) {
 
@@ -76,7 +76,7 @@ namespace Kidozen.iOS
 						}
 
 						if (fileName != String.Empty) {
-							using (FileStream streamWriter = File.Create(Path.Combine(basepath,theEntry.Name))) {
+							using (FileStream streamWriter = System.IO.File.Create(Path.Combine(basepath,theEntry.Name))) {
 
 								int size = 2048;
 								byte[] data = new byte[2048];

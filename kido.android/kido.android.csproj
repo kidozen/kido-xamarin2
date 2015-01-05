@@ -55,11 +55,11 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="kido">
-      <HintPath>..\release\core\kido.dll</HintPath>
-    </Reference>
     <Reference Include="SQLite">
       <HintPath>..\release\android\SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="kido">
+      <HintPath>..\output\kido.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +96,12 @@
     <Compile Include="Offline\AndroidOfflineCache.cs" />
     <Compile Include="Offline\SQLiteExtensions.cs" />
     <Compile Include="Offline\SQLiteCache.cs" />
+    <Compile Include="..\sources\kido\common\DataSourcesExtensions.cs">
+      <Link>DataSourcesExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\ServiceExtensions.cs">
+      <Link>ServiceExtensions.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

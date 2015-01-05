@@ -10,7 +10,7 @@ namespace kido.tests
 	public class Authentication
 	{
 		KidoApplication kidozenApplication;
-		Storage.Storage database;
+		ObjectSet database;
 
 		[TestFixtureSetUp()]
 		public void TestInit()

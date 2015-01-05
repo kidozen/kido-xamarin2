@@ -1,5 +1,4 @@
-﻿
-module Application
+﻿module KzApplication
 
 open HttpClient
 open Utilities

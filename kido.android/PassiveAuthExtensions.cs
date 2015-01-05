@@ -7,7 +7,7 @@ using Microsoft.FSharp.Core;
 
 using K = Kidozen;
 using U = Utilities;
-using A = Application;
+using A = KzApplication;
 
 using Android.Content;
 
@@ -57,7 +57,7 @@ namespace Kidozen.Android
 				var token = new U.Token(new FSharpOption<string>(rawToken), new FSharpOption<string>(refreshToken),null);
 
 				var expiration = A.getExpiration (rawToken);
-				var identity = new Application.Identity("3",rawToken, new FSharpOption<U.Token>(token) , curentConfiguration,expiration,authenticationRequest);
+				var identity = new KzApplication.Identity("3",rawToken, new FSharpOption<U.Token>(token) , curentConfiguration,expiration,authenticationRequest);
 
 				currentApplication.setIdentity (identity);
 				dummyPassiveAuthenticationTask.Start ();

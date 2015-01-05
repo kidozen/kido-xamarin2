@@ -72,7 +72,7 @@ namespace Todo
 		}
 
 		protected TodoItem updateMetadata(TodoItem item) {
-			var md = new Storage.Metadata (item._metadata.sync + 1, item._metadata.isPrivate, item._metadata.updatedOn, item._metadata.updatedBy, item._metadata.createdOn, item._metadata.createdBy);
+			var md = new ObjectSet.Metadata (item._metadata.sync + 1, item._metadata.isPrivate, item._metadata.updatedOn, item._metadata.updatedBy, item._metadata.createdOn, item._metadata.createdBy);
 			return new TodoItem { _id = item._id, Done = item.Done, Name = item.Name, Notes = item.Notes, _metadata = md };
 		}
 	}

@@ -21,7 +21,7 @@ namespace Todo
 	{
 		static object locker = new object ();
 		KidoApplication kidozenApplication;
-		Storage.Storage database;
+		ObjectSet.Storage database;
 
 		public TodoItemDatabase()
 		{

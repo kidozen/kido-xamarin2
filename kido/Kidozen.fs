@@ -4,17 +4,7 @@ open System
 open System.Net
 open System.Threading.Tasks
 open System.Runtime.InteropServices
-
-open Application
-open DataSource
-open Storage
-open Logging
-open Queue
-open Service
-open Configuration
-open Sms
-open Files
-open MailSender
+open KzApplication
 
 type User(name,rawtoken) =
     member this.Name = name
@@ -67,8 +57,8 @@ type KidoApplication(marketplace, application, key )  =
     member this.DataSource name = 
         new DataSource(name, identity)
     
-    member this.Storage name = 
-        new Storage(name, identity)
+    member this.ObjectSet name = 
+        new ObjectSet(name, identity)
 
     member this.Queue name = 
         new Queue(name,identity)

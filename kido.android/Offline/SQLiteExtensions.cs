@@ -11,9 +11,8 @@ using System.Collections.Generic;
 
 using K = Kidozen;
 using U = Utilities;
-using A = Application;
+using A = KzApplication;
 using C = Crash;
-using F = Files;
 
 using Newtonsoft;
 using Newtonsoft.Json;
@@ -49,7 +48,7 @@ namespace Kidozen.iOS.Offline.SQLite
 		#else
 		static string targetdirectory = new iOSOfflineCache().GetTargetDirectory();
 		#endif
-		public static Task<TableQuery<T>> SQLSync<T,U>(this DataSource.DataSource datasource, U parameters, string jpath, TimeSpan? optionalTimeSpan = null, EventHandler<SyncEventArgs> dbSyncComplete = null )  where T : new() 
+		public static Task<TableQuery<T>> SQLSync<T,U>(this DataSource datasource, U parameters, string jpath, TimeSpan? optionalTimeSpan = null, EventHandler<SyncEventArgs> dbSyncComplete = null )  where T : new() 
 		{
 			var manager = new SQLiteCache<T> (targetdirectory, datasource.dsname, "", JsonConvert.SerializeObject(parameters));
 			if (optionalTimeSpan!=null) {
@@ -89,7 +88,7 @@ namespace Kidozen.iOS.Offline.SQLite
 
 
 
-		public static TableQuery<T> GetTable<T>(this DataSource.DataSource datasource) where T : new()
+		public static TableQuery<T> GetTable<T>(this DataSource datasource) where T : new()
 		{
 			#pragma warning disable 0219
 			var manager = new SQLiteCache<T> (targetdirectory, datasource.dsname, "");

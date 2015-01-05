@@ -20,7 +20,7 @@ namespace Kidozen.Android
 namespace Kidozen.iOS
 #endif
 {
-	public static partial class FileExtensions
+	public static partial class NativeUtilities
 	{
 		public static Task<MemoryStream> Download(this Files files, string path) {
 			var task = files.DownloadAsBytes(path).Result;
@@ -31,18 +31,3 @@ namespace Kidozen.iOS
 		}
 	}
 }
-
-/*
-Sample usage:
-
-app.Authenticate("loadtests@kidozen.com","pass","Kidozen")
-	.ContinueWith(t=> {
-		app.Files.Download("/abc/testsxamarinfile2.txt,testsxamarinfile2.txt")
-			.ContinueWith(fd=>
-				{
-					var f = new System.IO.StreamReader(fd.Result).ReadToEndAsync().Result;
-					System.Diagnostics.Debug.WriteLine(f);
-				});
-	});
-
-*/
