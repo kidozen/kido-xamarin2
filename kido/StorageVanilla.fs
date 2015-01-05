@@ -16,18 +16,18 @@ open System.Runtime.InteropServices
 
 [<NoEquality;NoComparison>]
 type Metadata = {
-    sync: int;
-    isPrivate: bool;
-    updatedOn: DateTime;
-    updatedBy: string;
-    createdOn: DateTime;
-    createdBy: string;
+    mutable sync: int;
+    mutable isPrivate: bool;
+    mutable updatedOn: DateTime;
+    mutable updatedBy: string;
+    mutable createdOn: DateTime;
+    mutable createdBy: string;
     }
 
 [<NoEquality;NoComparison>]
 type EntityMetadata = {
-    _id: string;
-    _metadata: Metadata
+    mutable _id: string;
+    mutable _metadata: Metadata
 }
 
 type ObjectSet (name, identity:Identity) = 
@@ -62,16 +62,18 @@ type ObjectSet (name, identity:Identity) =
     //
     member this.Save (parameters) =
         let paramsAsString = JSONSerializer.toString parameters
-        let id = getJsonStringValue "_id" paramsAsString
+        let id = getJsonStringValue paramsAsString "_id" 
         let entity = StorageEntityParam paramsAsString
 
-        let path = match id with 
-                   | Some _id -> sprintf "%s/%s" this.name _id
-                   | None -> this.name
+        let path = 
+            match id with 
+                | Some _id -> sprintf "%s/%s" this.name id.Value
+                | None -> this.name
 
-        let storageOperation = match id with
-                                | Some _id -> UpdateStorageEntity
-                                | None -> CreateStorageEntity
+        let storageOperation = 
+            match id with
+                | Some _id -> UpdateStorageEntity
+                | None -> CreateStorageEntity
 
         let create = async {
                 let! result = createStorageRequest path this.identity |> withStorageOperation storageOperation |> withParameters entity |> getResult

@@ -59,7 +59,7 @@ type DataSource (name, identity:Identity) =
             return this.ProcessResponse<'a>(result)
         }
         query |> Async.StartAsTask
-        //| 200 -> result.EntityBody.Value
+
     member this.Invoke () = 
         this.Invoke<string>()
         
@@ -74,17 +74,23 @@ type DataSource (name, identity:Identity) =
 
     //File support
     //if(jqXHR.getResponseHeader('Content-Disposition') === 'attachment') {
+    member private this.processFileResponse result = 
+        if (Map.containsKey ResponseHeader.ContentDisposition result.Headers) then
+            this.ProcessResponse<byte[]>(result) 
+        else
+            raise ( new Exception ("Unexpected response header"))
+
     member this.InvokeFile() = 
             let invoke = async {
                 let! result = createDs this.dsname this.identity |> withDSType DSInvoke|> getResult
-                return this.ProcessResponse<byte[]>(result)
+                return this.processFileResponse result
             }
             invoke |> Async.StartAsTask
 
     member this.QueryFile() = 
         let query = async {
             let! result = createDs this.dsname this.identity |> getResult
-            return this.ProcessResponse<byte[]>(result)
+            return this.processFileResponse result
         }
         query |> Async.StartAsTask
 
@@ -93,7 +99,7 @@ type DataSource (name, identity:Identity) =
         let dsParams = DSInvokeParams paramsAsString 
         let invoke = async {
             let! result = createDs this.dsname this.identity |> withDSType DSInvoke |> withParameters dsParams |> getResult
-            return this.ProcessResponse<byte[]>(result)
+            return this.processFileResponse result
         }
         invoke |> Async.StartAsTask
 
@@ -102,7 +108,7 @@ type DataSource (name, identity:Identity) =
         let dsParams = DSGetParams paramsAsValueList 
         let query = async {
             let! result = createDs this.dsname this.identity |> withParameters dsParams |> getResult
-            return this.ProcessResponse<byte[]>(result)
+            return this.processFileResponse result
         }
         query |> Async.StartAsTask
 

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>KidoZen</id>
-		<version>2.0.0-beta1</version>
+		<version>2.0.0-beta3</version>
 		<title>KidoZen - SDK Libraries</title>
 		<authors>KidoZen</authors>
 		<owners>KidoZen</owners>
@@ -11,7 +11,7 @@
 		<description>This package contains the KidoZen SDK assemblies. This and other packages are currently under development...</description>
 		<dependencies>
 		  <group>
-			<dependency id="Newtonsoft.Json" version="6.0.6"/>
+			<dependency id="Newtonsoft.Json" version="6.0.7"/>
 			<dependency id="FSharp.Core.Mono.Signed" version="3.1.1.27"/>
 		  </group>
 		  <group targetFramework="MonoTouch10">
