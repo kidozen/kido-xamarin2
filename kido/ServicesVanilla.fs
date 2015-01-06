@@ -30,16 +30,29 @@ type Service (name, identity:Identity) =
 
             }
         service |> Async.StartAsTask
+
+    //File support
+    member private this.processFileResponse result = 
+        if (Map.containsKey ResponseHeader.ContentDisposition result.Headers) then
+            result.BytesBody
+        else
+            raise ( new Exception ("Content-Disposition header was not found"))
    
     member this.InvokeFile (methodName:string, parameters) =
         let paramsAsString = JSONSerializer.toString parameters
-        let dsParams = SvcInvokeParams paramsAsString 
         let service =  async {
-            let! result = createService this.dsname methodName this.identity |> withSvcType SvcInvoke |> withParameters dsParams |> getResult 
-            return 
-                match result.StatusCode with
-                    | 200 -> result.BytesBody
-                    | _ -> raise (new Exception (result.EntityBody.Value))
+                let url = (getJsonStringValue (identity.config) "service" ).Value + "/" + this.dsname + "/invoke/" + methodName
+                let! result = createRequest HttpMethod.Post url  
+                                |> withHeader (Authorization this.identity.rawToken) 
+                                |> withHeader (ContentType "application/json")  
+                                |> withHeader (Accept "application/json") 
+                                |> withBody paramsAsString
+                                |> getResponseBytesAsync 
+
+                return 
+                    match result.StatusCode with
+                        | 200 -> this.processFileResponse result
+                        | _ -> raise (new Exception (result.EntityBody.Value))
 
             }
         service |> Async.StartAsTask
