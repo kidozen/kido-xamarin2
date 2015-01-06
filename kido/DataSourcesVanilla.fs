@@ -83,7 +83,7 @@ type DataSource (name, identity:Identity) =
     //File support
     member private this.processFileResponse result = 
         if (Map.containsKey ResponseHeader.ContentDisposition result.Headers) then
-            result.BytesBody
+            result.BytesBody.Value
         else
             raise ( new Exception ("Content-Disposition header was not found"))
 

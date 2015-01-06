@@ -25,7 +25,7 @@ namespace Kidozen.iOS
 		public static Task<Stream> Invoke<T>(this Service service, string method, T parameters) {
 			var task = service.InvokeFile (method, parameters);
 			return Task.Factory.StartNew<Stream>(()=>{
-				return new MemoryStream(task.Result.Value);
+				return new MemoryStream(task.Result);
 			});		
 		}
 	}
