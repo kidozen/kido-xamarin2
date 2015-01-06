@@ -15,9 +15,8 @@ using System.Text;
 
 using K = Kidozen;
 using U = Utilities;
-using A = Application;
+using A = KzApplication;
 using C = Crash;
-using F = Files;
 
 using Newtonsoft;
 using Newtonsoft.Json;
@@ -53,7 +52,7 @@ namespace Kidozen.iOS.Offline.SQLite
 		public string AttributeName { get; set;}
 		public string jPath { get; set;}
 
-		DataSource.DataSource baseDataSource ;
+		DataSource baseDataSource ;
 		string baseParameters;
 
 		JsonSerializerSettings noneDatePaser = new Newtonsoft.Json.JsonSerializerSettings() { 
@@ -73,7 +72,7 @@ namespace Kidozen.iOS.Offline.SQLite
 			}
 		}
 
-		public void SetupDataSource (DataSource.DataSource ds, string parameters) {
+		public void SetupDataSource (DataSource ds, string parameters) {
 			this.baseDataSource = ds;
 			this.baseParameters = parameters;
 		}
@@ -90,7 +89,7 @@ namespace Kidozen.iOS.Offline.SQLite
 							updatedParameters.Add(AttributeName, ts);
 						}
 						//
-						var ds = new DataSource.DataSource(baseDataSource.dsname,
+						var ds = new DataSource(baseDataSource.dsname,
 							baseDataSource.identity);
 						//
 						var query = ds.Query(updatedParameters);

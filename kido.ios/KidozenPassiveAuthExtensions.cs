@@ -9,7 +9,7 @@ using MonoTouch.Foundation;
 
 using K = Kidozen;
 using U = Utilities;
-using A = Application;
+using A = KzApplication;
 
 namespace Kidozen.iOS
 {
@@ -27,16 +27,12 @@ namespace Kidozen.iOS
 			currentApplication = app;
 			authenticationRequest = new A.AuthenticationRequest (app.marketplace, app.application, app.key, null);
 			var appConfig = A.getAppConfig (A.createConfigUrl (app.marketplace, app.application));
-
 			if (appConfig.IsConfiguration) {
 				curentConfiguration = (appConfig as A.GetConfigurationResult.Configuration).Item;
-
 				var signinurl = U.getJsonObjectValue (curentConfiguration , "signInUrl");
-
 				if (signinurl.Value != null) {
 					var authController = new PassiveAuthViewController (signinurl.Value.Replace("\"",string.Empty));
 					authController.AuthenticationResponseArrived += HandleAuthenticationResponseArrived;
-
 					var navController = new UINavigationController (authController);
 					UIApplication.SharedApplication.Delegate.Window.RootViewController.PresentViewController (navController, 
 						true, 
@@ -54,18 +50,16 @@ namespace Kidozen.iOS
 		{
 			Debug.WriteLine ("response from passive view arrived");
 			if (e.Success) {
-				if(dummyPassiveAuthenticationTask.Status==TaskStatus.RanToCompletion) 
-					dummyPassiveAuthenticationTask = new Task(()=> Console.WriteLine("success passive auth"));
+				if(dummyPassiveAuthenticationTask.Status==TaskStatus.RanToCompletion) dummyPassiveAuthenticationTask = new Task(()=> Console.WriteLine("success passive auth"));
 
 				var rawToken = e.TokenInfo ["access_token"];
 				var refreshToken = e.TokenInfo ["refresh_token"];
 				var token = new U.Token(new FSharpOption<string>(rawToken), new FSharpOption<string>(refreshToken),null);
 
 				var expiration = A.getExpiration (rawToken);
-				var identity = new Application.Identity("3",rawToken, new FSharpOption<U.Token>(token) , curentConfiguration,expiration,authenticationRequest);
-
+				var identity = new KzApplication.Identity("3",rawToken, new FSharpOption<U.Token>(token) , curentConfiguration,expiration,authenticationRequest);
 				currentApplication.setIdentity (identity);
-				dummyPassiveAuthenticationTask.Start ();
+				dummyPassiveAuthenticationTask.Start();
 			}
 			else {
 				Debug.WriteLine (e.ErrorMessage);

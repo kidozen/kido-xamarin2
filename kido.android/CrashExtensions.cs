@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 using K = Kidozen;
 using U = Utilities;
-using A = Application;
+using A = KzApplication;
 using C = Crash;
 
 using Android.Content;
@@ -69,7 +69,7 @@ namespace Kidozen.Android
 		private static void storeCrash (string crash) {
 			var filename = String.Format ("{0}.crash", System.Guid.NewGuid ().ToString ());
 			var documents = AOS.Environment.ExternalStorageDirectory.ToString ();
-			File.WriteAllText (Path.Combine (documents, filename), crash);
+			System.IO.File.WriteAllText (Path.Combine (documents, filename), crash);
 		}
 
 		private static IEnumerable<string> getCrashPending() {
@@ -78,10 +78,10 @@ namespace Kidozen.Android
 		}
 
 		private static void send (string crashpath, string marketplace, string application, string key) {
-			var crash = File.ReadAllText (crashpath);
+			var crash = System.IO.File.ReadAllText (crashpath);
 			C.Crash.Create (crash, marketplace, application, key).ContinueWith(
 					t=> {
-						if (t.Result) File.Delete (crashpath);						
+						if (t.Result) System.IO.File.Delete (crashpath);						
 					}
 			);
 

@@ -376,7 +376,7 @@ let private getResponseHeader headerName =
     | "Content-Length" -> None
     | "Content-Location" -> Some(ContentLocation)
     | "Content-MD5" -> Some(ResponseHeader.ContentMD5Response)
-    | "Content-Disposition" -> Some(ContentDisposition)
+    | "Content-Disposition"| "ContentDisposition"| "content-disposition"| "contentdisposition" -> Some(ContentDisposition)
     | "Content-Range" -> Some(ContentRange)
     | "ContentType" | "Content-Type" | "content-type"-> Some(ResponseHeader.ContentTypeResponse)
     | "Date" -> Some(ResponseHeader.DateResponse)

@@ -4,18 +4,11 @@ open System
 open System.Net
 open System.Threading.Tasks
 open System.Runtime.InteropServices
+open KzApplication
 
-open Kido
-open Application
-open DataSource
-open Storage
-open Logging
-open Queue
-open Service
-open Configuration
-open Sms
-open Files
-open MailSender
+type User(name,rawtoken) =
+    member this.Name = name
+    member this.RawToken = rawtoken
 
 type PassiveAuthenticationEventArgs(token:string) =
     inherit System.EventArgs()
@@ -24,7 +17,9 @@ type PassiveAuthenticationEventArgs(token:string) =
 type KidoApplication(marketplace, application, key )  =
     let zeroIdentity = { token= None; rawToken = ""; id = ""; config = ""; expiration = System.DateTime.Now; authenticationRequest  = { Key = ""; ProviderRequest = None; Marketplace = marketplace; Application = application  } }
     let mutable identity = zeroIdentity
+    let mutable currentUser = User("","")
     let onPassiveAuth = new DelegateEvent<System.EventHandler<PassiveAuthenticationEventArgs>>()
+    member this.setUser user = currentUser <- user
     member this.marketplace = marketplace
     member this.application = application
     member this.key = key
@@ -40,7 +35,8 @@ type KidoApplication(marketplace, application, key )  =
         match result with
         | Token t -> 
             identity <- t
-            return t.id
+            currentUser <- User(user,t.rawToken)
+            return currentUser
         | InvalidApplication e -> return raise e
         | InvalidCredentials e -> return raise e
         | InvalidIpCredentials e -> return raise e
@@ -61,8 +57,8 @@ type KidoApplication(marketplace, application, key )  =
     member this.DataSource name = 
         new DataSource(name, identity)
     
-    member this.Storage name = 
-        new Storage(name, identity)
+    member this.ObjectSet name = 
+        new ObjectSet(name, identity)
 
     member this.Queue name = 
         new Queue(name,identity)

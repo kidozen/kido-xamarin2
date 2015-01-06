@@ -11,13 +11,11 @@ using System.Collections.Generic;
 
 using K = Kidozen;
 using U = Utilities;
-using A = Application;
+using A = KzApplication;
 using C = Crash;
-using F = Files;
 
 using Newtonsoft.Json;
 using Newtonsoft;
-
 
 public interface IDataVisualization {
 	void LaunchView (string visualization, string targetdirectory); 

@@ -6,19 +6,6 @@ open System.Collections.Generic
 open HttpClient
 open Utilities
 
-// cache: url is the key, tuple of date(expiration) and the token
-let tokensCache = Dictionary<string, DateTime * string>()
-
-let getToken f =
-    fun x ->
-        match tokensCache.TryGetValue(x) with
-        | true, res -> snd res
-        | false, _ -> 
-            let res = f x
-            tokensCache.Add(x, res)
-            snd res
-
-
 // IP's tokens
 // TODO: change Some / None for detail error
 let getWrapv9Token ipEndpoint scope name secret =

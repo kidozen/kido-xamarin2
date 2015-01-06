@@ -23,9 +23,8 @@ using Java.Util.Zip;
 using System.Threading.Tasks;
 using System.Threading;
 
-using A = Application;
+using A = KzApplication;
 using C = Crash;
-using F = Files;
 
 using Android.Graphics;
 using Android.Net.Http;

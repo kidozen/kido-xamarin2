@@ -31,6 +31,7 @@ Supported platforms
 
 ## TODO
   - Add support to Passive Auth, Crash and DataVisualization to Windows
+  - Add PubSub service support
   - Documentation
   - Samples
 

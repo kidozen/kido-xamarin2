@@ -11,9 +11,8 @@ using System.Collections.Generic;
 
 using K = Kidozen;
 using U = Utilities;
-using A = Application;
+using A = KzApplication;
 using C = Crash;
-using F = Files;
 
 #if __ANDROID__
 using Android.Content;
@@ -55,7 +54,7 @@ namespace Kidozen.iOS
 				var baseurl = U.getJsonObjectValue (curentConfiguration , "url");
 				if (baseurl.Value != null) {
 					String url = String.Format("{0}api/v2/visualizations/{1}/app/download?type=mobile",baseurl.Value.Trim( "\"".ToCharArray()), visualization);
-					var files = new F.Files (app.GetIdentity);
+					var files = new Files (app.GetIdentity);
 					Task.Factory.StartNew(()=> {
 						var bytes = files.DownloadFromUrl(url).Result.Value;
 						var targetDir = datavisualization.GetTargetDirectory();
@@ -126,7 +125,7 @@ namespace Kidozen.iOS
 			[JsonProperty("password")]
 			public String Password { get; set;}
 
-			public DsProviderJsSDKBridge(Application.Identity id) {
+			public DsProviderJsSDKBridge(KzApplication.Identity id) {
 				var authrequest = id.authenticationRequest.ProviderRequest.Value;
 				this.Token = new DvTokenJsSDKBridge( id.token.Value );
 				this.Username = authrequest.User;

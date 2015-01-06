@@ -11,9 +11,8 @@ using System.Collections.Generic;
 
 using K = Kidozen;
 using U = Utilities;
-using A = Application;
+using A = KzApplication;
 using C = Crash;
-using F = Files;
 
 #if __ANDROID__
 namespace Kidozen.Android
@@ -23,7 +22,7 @@ namespace Kidozen.iOS
 {
 	public static partial class FileExtensions
 	{
-		public static Task<MemoryStream> Download(this Files.Files files, string path) {
+		public static Task<MemoryStream> Download(this Files files, string path) {
 			var task = files.DownloadAsBytes(path).Result;
 			return Task.Factory.StartNew<MemoryStream>(()=>{
 				return new MemoryStream(task.Value);

@@ -15,9 +15,8 @@ using System.Text;
 
 using K = Kidozen;
 using U = Utilities;
-using A = Application;
+using A = KzApplication;
 using C = Crash;
-using F = Files;
 
 using Newtonsoft.Json;
 

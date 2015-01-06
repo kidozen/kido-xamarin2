@@ -1,11 +1,11 @@
-﻿namespace Files
+﻿namespace Kidozen
 
 open System
 open HttpClient
 open Utilities
 open identityproviders
 open Serialization
-open Application
+open KzApplication
 open System.Runtime.InteropServices
 
 open Newtonsoft.Json

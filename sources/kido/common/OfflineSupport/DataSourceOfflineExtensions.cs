@@ -11,9 +11,8 @@ using System.Collections.Generic;
 
 using K = Kidozen;
 using U = Utilities;
-using A = Application;
+using A = KzApplication;
 using C = Crash;
-using F = Files;
 
 using Newtonsoft;
 using Newtonsoft.Json;
@@ -35,7 +34,7 @@ namespace Kidozen.iOS.Offline
 
 		static string DataSourceServiceName = "Datasource";
 
-		public static Task<T> CachedQuery<T>(this DataSource.DataSource datasource, OfflineCacheEnumeration type, TimeSpan? optionalTimeSpan = null ) {
+		public static Task<T> CachedQuery<T>(this DataSource datasource, OfflineCacheEnumeration type, TimeSpan? optionalTimeSpan = null ) {
 			var query = datasource.Query();
 			var manager = new OfflineCache (targetdirectory, datasource.dsname, DataSourceServiceName);
 			if (optionalTimeSpan!=null) {
@@ -49,7 +48,7 @@ namespace Kidozen.iOS.Offline
 			});		
 		}
 
-		public static Task<T> CachedQuery<T,U>(this DataSource.DataSource datasource, U parameters, OfflineCacheEnumeration type, TimeSpan? optionalTimeSpan = null ) {
+		public static Task<T> CachedQuery<T,U>(this DataSource datasource, U parameters, OfflineCacheEnumeration type, TimeSpan? optionalTimeSpan = null ) {
 			var query = datasource.Query(parameters);
 			var manager = new OfflineCache (targetdirectory, datasource.dsname, DataSourceServiceName, JsonConvert.SerializeObject(parameters));
 			if (optionalTimeSpan!=null) {
@@ -64,7 +63,7 @@ namespace Kidozen.iOS.Offline
 			});		
 		}
 
-		public static Task<string> CachedInvoke<U>(this DataSource.DataSource datasource, U parameters,TimeSpan? optionalTimeSpan = null ) {
+		public static Task<string> CachedInvoke<U>(this DataSource datasource, U parameters,TimeSpan? optionalTimeSpan = null ) {
 			var manager = new OfflineCache (targetdirectory, datasource.dsname,DataSourceServiceName);
 			var invoke = datasource.Invoke (parameters);
 			var task = manager.RequestQueueManager (invoke,parameters,OfflineCacheEnumeration.NetworkElseLocal);
