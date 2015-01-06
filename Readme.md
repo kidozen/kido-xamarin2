@@ -1,12 +1,13 @@
 # KidoZen .NET SDK 2.0
 This is a new version of the SDK for .NET platform Kidozen 
 ## Version
-2.0.0-beta1
+2.0.0-beta4
 ## Whats new?
 The main difference with previous versions is that it provides better integration with the services provided by KidoZen, such as:
 - Crash Reports
 - DataVisualization
-- Passive Authentication and others 
+- Passive Authentication
+- DataSources and Services allows to download files
 
 From the technical point of view provides a library core 'kido.dll' for creating applications that make use of the following basic services without being recompiled for each platform: 
 - Active Authentication 
