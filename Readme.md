@@ -84,7 +84,6 @@ The SDK uses a number of open source projects to work properly:
 
 
 ## Known issues
-  - Deployment on iOS physical devices may fail. (Walkaround: add libraries source to your solution )
   - Passive authentication and Data visualization: does not display a progress message )
 
 License
