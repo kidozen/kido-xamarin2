@@ -108,6 +108,9 @@
     <Reference Include="ICSharpCode.SharpZipLib.Portable">
       <HintPath>..\..\..\packages\SharpZipLib.Portable.0.86.0.0001\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
     </Reference>
+    <Reference Include="ModernHttpClient">
+      <HintPath>..\..\..\packages\modernhttpclient.2.1.5\lib\Xamarin.iOS10\ModernHttpClient.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Default-568h%402x.png" />

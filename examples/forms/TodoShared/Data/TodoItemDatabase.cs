@@ -29,12 +29,15 @@ namespace Todo
 		}
 
 		public Task<Boolean> Login() {
+			var authTask = this.kidozenApplication.Authenticate ("demo@kidozen.com","pass","Kidozen");
+		
+			/*
 			#if __ANDROID__
 			var authTask = this.kidozenApplication.Authenticate (App.AndroidContext);
 			#else
 			var authTask = this.kidozenApplication.Authenticate ();
 			#endif
-
+			*/
 			return authTask.ContinueWith (
 				t => {
 					database = kidozenApplication.ObjectSet("todo");

@@ -15,7 +15,7 @@ using Kidozen.iOS;
 namespace Passive
 {
 	[Register("AppDelegate")]
-	public partial class AppDelegate : UIApplicationDelegate
+	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
 	{
 		public override UIWindow Window
 		{
@@ -25,9 +25,11 @@ namespace Passive
 
 		public override bool FinishedLaunching (UIApplication application, NSDictionary launchOptions)
 		{
-			Forms.Init ();		
+			global::Xamarin.Forms.Forms.Init ();
+			LoadApplication (new App ()); 
 			Window.RootViewController = App.GetLoginPage ().CreateViewController ();
-			return true;
+			return base.FinishedLaunching (application, launchOptions);
+
 		}
 
 
