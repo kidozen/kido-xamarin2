@@ -1,12 +1,13 @@
 ﻿using System;
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
+using MonoTouch;
+using UIKit;
 using System.Collections.Generic;
 using System.Text;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using Foundation;
 
 namespace Kidozen.iOS
 {

@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.FSharp.Core;
 
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
+using MonoTouch;
+using Foundation;
+using UIKit;
 
 using System.IO;
 using System.Linq;

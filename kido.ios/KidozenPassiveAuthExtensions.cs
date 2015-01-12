@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.FSharp.Core;
 
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
+using MonoTouch;
+using UIKit;
+using Foundation;
 
 using K = Kidozen;
 using U = Utilities;
@@ -36,7 +37,7 @@ namespace Kidozen.iOS
 					var navController = new UINavigationController (authController);
 					UIApplication.SharedApplication.Delegate.Window.RootViewController.PresentViewController (navController, 
 						true, 
-						new NSAction ( () => Debug.WriteLine("passive view loaded") )
+						new Action ( () => Debug.WriteLine("passive view loaded") )
 					);
 				} 
 				else {

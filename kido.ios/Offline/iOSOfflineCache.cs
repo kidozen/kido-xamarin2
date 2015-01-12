@@ -2,8 +2,9 @@
 using System.IO;
 using System.Diagnostics;
 
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
+using MonoTouch;
+using Foundation;
+using UIKit;
 
 namespace Kidozen.iOS.Offline
 {

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
+using MonoTouch;
 
+using UIKit;
+using Foundation;
 
 namespace Kidozen.iOS
 {

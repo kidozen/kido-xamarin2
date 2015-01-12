@@ -2,8 +2,9 @@
 using System.IO;
 using System.Diagnostics;
 
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
+using MonoTouch;
+using Foundation;
+using UIKit;
 
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
@@ -32,7 +33,7 @@ namespace Kidozen.iOS
 					var navController = new UINavigationController (datavizController);
 					UIApplication.SharedApplication.Delegate.Window.RootViewController.PresentViewController (navController, 
 						true, 
-						new NSAction ( () => Debug.WriteLine("passive view loaded") )
+						new Action ( () => Debug.WriteLine("passive view loaded") )
 					);
 				} catch (Exception ex) {
 					Debug.WriteLine (ex.Message);	
