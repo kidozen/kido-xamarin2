@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using MonoTouch;
+using Foundation;
+using UIKit;
 
 namespace Todo.iOS
 {

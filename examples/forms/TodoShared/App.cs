@@ -5,7 +5,7 @@ using Android.Content;
 #endif
 namespace Todo
 {
-	public class App
+	public class App: Application
 	{		
 		#if __ANDROID__
 		public static Context AndroidContext { get; set;}
