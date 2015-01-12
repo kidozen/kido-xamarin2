@@ -10,6 +10,11 @@ namespace Todo
 		#if __ANDROID__
 		public static Context AndroidContext { get; set;}
 		#endif
+
+		public App() {
+			MainPage = new ContentPage ();
+		}
+
 		public static Page GetLoginPage ()
 		{
 			database = new TodoItemDatabase();

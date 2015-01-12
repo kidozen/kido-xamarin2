@@ -13,9 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{3E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "forms", "forms", "{739227F9-D852-4C85-8C8B-F55B8A445B13}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Todo", "examples\forms\TodoShared\Todo.shproj", "{EAC7244C-09D6-4922-A662-58743AE6D868}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Android", "examples\forms\TodoAdroid\Todo.Android.csproj", "{0286BCC0-AAC9-492B-A940-A1260837ECDE}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Todo", "examples\forms\TodoShared\Todo.shproj", "{EAC7244C-09D6-4922-A662-58743AE6D868}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.iOS", "examples\forms\TodoIOS\Todo.iOS.csproj", "{27ACF4F4-862F-46C6-99B5-A0567B884F43}"
 EndProject
@@ -272,12 +272,9 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{739227F9-D852-4C85-8C8B-F55B8A445B13} = {3E64EA2B-CDA6-44C8-8DA2-F089F3711BC1}
-		{EAC7244C-09D6-4922-A662-58743AE6D868} = {739227F9-D852-4C85-8C8B-F55B8A445B13}
 		{0286BCC0-AAC9-492B-A940-A1260837ECDE} = {739227F9-D852-4C85-8C8B-F55B8A445B13}
+		{EAC7244C-09D6-4922-A662-58743AE6D868} = {739227F9-D852-4C85-8C8B-F55B8A445B13}
 		{27ACF4F4-862F-46C6-99B5-A0567B884F43} = {739227F9-D852-4C85-8C8B-F55B8A445B13}
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = examples\forms\TodoIOS\Todo.iOS.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
