@@ -2,9 +2,15 @@
 using System.IO;
 using System.Diagnostics;
 
+#if __UNIFIED__
 using MonoTouch;
-using Foundation;
 using UIKit;
+using Foundation;
+#else
+using MonoTouch;
+using MonoTouch.UIKit;
+using MonoTouch.Foundation;
+#endif
 
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
@@ -31,10 +37,17 @@ namespace Kidozen.iOS
 					filepath = Path.Combine(filepath,"index.html");
 					var datavizController = new DataVisualizationViewController (filepath);
 					var navController = new UINavigationController (datavizController);
-					UIApplication.SharedApplication.Delegate.Window.RootViewController.PresentViewController (navController, 
+					#if __UNIFIED__
+					UIApplication.SharedApplication.Delegate.GetWindow().RootViewController.PresentViewController (navController, 
 						true, 
 						new Action ( () => Debug.WriteLine("passive view loaded") )
 					);
+					#else
+					UIApplication.SharedApplication.Delegate.Window.RootViewController.PresentViewController (navController, 
+						true, 
+						new NSAction ( () => Debug.WriteLine("passive view loaded") )
+					);
+					#endif
 				} catch (Exception ex) {
 					Debug.WriteLine (ex.Message);	
 				}

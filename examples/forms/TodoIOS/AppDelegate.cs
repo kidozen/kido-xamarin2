@@ -29,9 +29,6 @@ namespace Passive
 			LoadApplication (new App ()); 
 			Window.RootViewController = App.GetLoginPage ().CreateViewController ();
 			return base.FinishedLaunching (application, launchOptions);
-
 		}
-
-
 	}
 }

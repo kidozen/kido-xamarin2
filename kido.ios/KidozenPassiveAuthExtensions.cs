@@ -4,9 +4,15 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.FSharp.Core;
 
+#if __UNIFIED__
 using MonoTouch;
 using UIKit;
 using Foundation;
+#else
+using MonoTouch;
+using MonoTouch.UIKit;
+using MonoTouch.Foundation;
+#endif
 
 using K = Kidozen;
 using U = Utilities;
@@ -35,10 +41,17 @@ namespace Kidozen.iOS
 					var authController = new PassiveAuthViewController (signinurl.Value.Replace("\"",string.Empty));
 					authController.AuthenticationResponseArrived += HandleAuthenticationResponseArrived;
 					var navController = new UINavigationController (authController);
-					UIApplication.SharedApplication.Delegate.Window.RootViewController.PresentViewController (navController, 
+					#if __UNIFIED__
+					UIApplication.SharedApplication.Delegate.GetWindow().RootViewController.PresentViewController (navController, 
 						true, 
 						new Action ( () => Debug.WriteLine("passive view loaded") )
 					);
+					#else
+						UIApplication.SharedApplication.Delegate.Window.RootViewController.PresentViewController (navController, 
+							true, 
+							new NSAction ( () => Debug.WriteLine("passive view loaded") )
+						);
+					#endif
 				} 
 				else {
 					throw new Exception ("Invalid configuration settings. Please check username and password");

@@ -4,9 +4,15 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.FSharp.Core;
 
+#if __UNIFIED__
 using MonoTouch;
-using Foundation;
 using UIKit;
+using Foundation;
+#else
+using MonoTouch;
+using MonoTouch.UIKit;
+using MonoTouch.Foundation;
+#endif
 
 using System.IO;
 using System.Linq;

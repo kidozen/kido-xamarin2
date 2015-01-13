@@ -2,9 +2,15 @@
 using System.IO;
 using System.Diagnostics;
 
+#if __UNIFIED__
 using MonoTouch;
-using Foundation;
 using UIKit;
+using Foundation;
+#else
+using MonoTouch;
+using MonoTouch.UIKit;
+using MonoTouch.Foundation;
+#endif
 
 namespace Kidozen.iOS.Offline
 {

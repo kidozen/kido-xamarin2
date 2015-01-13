@@ -29,15 +29,11 @@ namespace Todo
 		}
 
 		public Task<Boolean> Login() {
-			var authTask = this.kidozenApplication.Authenticate ("demo@kidozen.com","pass","Kidozen");
-		
-			/*
-			#if __ANDROID__
-			var authTask = this.kidozenApplication.Authenticate (App.AndroidContext);
+			#if __IOS__
+			var authTask = this.kidozenApplication.Authenticate ();
 			#else
 			var authTask = this.kidozenApplication.Authenticate ();
 			#endif
-			*/
 			return authTask.ContinueWith (
 				t => {
 					database = kidozenApplication.ObjectSet("todo");
@@ -73,45 +69,6 @@ namespace Todo
 				database.Save<TodoItem>(item).Wait(); //upsert
 			}
 		}
-
-		// DataSource.DataSource queryDataSource, saveDataSource;
-
-
-		// queryDataSource = kidozenApplication.DataSource["QueryTodo"];
-		// saveDataSource = kidozenApplication.DataSource["AddTodo"];
-
-
-		// ******************************
-		// *** DataSource sample code ***
-		// ******************************
-		/*
-		public IEnumerable<TodoItem> GetItems ()
-		{
-			lock (locker) {
-				var results = queryDataSource.Query().Result.Data;
-				return createTodoItemList (results);
-			}
-		}
-
-		//Ensure that your DataSource can execute an UPSERT
-		public void SaveItem (TodoItem item) 
-		{
-			lock (locker) {
-				var result = saveDataSource.Invoke(item).Result;
-			}
-		}
-
-		IEnumerable<TodoItem> createTodoItemList (JObject results)
-		{
-			var result = JArray.Parse (results.SelectToken("data").ToString());
-			return result.Select ( todo => new TodoItem {
-				Name = todo.Value<string>("Name"),
-				Notes = todo.Value<string>("Notes") ,
-				_id = todo.Value<string>("_id") ,
-			}
-			).ToList();
-		}
-		*/
 	}
 }
 
