@@ -32,9 +32,9 @@ namespace Todo
 			#if __IOS__
 			var authTask = this.kidozenApplication.Authenticate ();
 			#else
-			var authTask = this.kidozenApplication.Authenticate ();
-			#endif
-			return authTask.ContinueWith (
+			var authTask = this.kidozenApplication.Authenticate (App.AndroidContext);
+#endif
+            return authTask.ContinueWith (
 				t => {
 					database = kidozenApplication.ObjectSet("todo");
 					return !t.IsFaulted;

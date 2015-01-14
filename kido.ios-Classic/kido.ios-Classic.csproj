@@ -1,14 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7173E401-CD08-416F-BA0B-54F756F5640D}</ProjectGuid>
     <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{D6EF382A-6DF5-4B2C-83A8-E42F015398A1}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Kidozen.iOS</RootNamespace>
+    <RootNamespace>kido.ios_classic</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>kido.ios</AssemblyName>
+    <AssemblyName>kidoiosclassic</AssemblyName>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -16,75 +18,35 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\classic\Debug</OutputPath>
-    <IntermediateOutputPath>obj\classic\Debug</IntermediateOutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <MtouchDebug>true</MtouchDebug>
+    <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\classic\Release</OutputPath>
-    <IntermediateOutputPath>obj\classic\Release</IntermediateOutputPath>
+    <OutputPath>bin\iPhone\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="FSharp.Core" />
-    <Reference Include="ICSharpCode.SharpZipLib.Portable">
-      <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0001\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
-    </Reference>
-    <Reference Include="kido">
-      <HintPath>..\output\kido.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="ModernHttpClient">
-      <HintPath>..\packages\modernhttpclient.2.1.5\lib\Xamarin.iOS10\ModernHttpClient.dll</HintPath>
-    </Reference>
-    <Reference Include="monotouch" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\sources\kido\common\FileExtensions.cs">
-      <Link>FileExtensions.cs</Link>
+    <Compile Include="..\kido.ios\DataVisualization\DataVisualizationViewController.cs">
+      <Link>DataVisualization\DataVisualizationViewController.cs</Link>
     </Compile>
-    <Compile Include="..\sources\kido\common\DataVisualization\DataVisualizationExtensions.cs">
-      <Link>DataVisualization\DataVisualizationExtensions.cs</Link>
+    <Compile Include="..\kido.ios\DataVisualization\iOSDataVisualization.cs">
+      <Link>DataVisualization\iOSDataVisualization.cs</Link>
     </Compile>
-    <Compile Include="..\sources\kido\common\DataVisualization\IDataVisualization.cs">
-      <Link>DataVisualization\IDataVisualization.cs</Link>
+    <Compile Include="..\kido.ios\FileUtilities.cs">
+      <Link>FileUtilities.cs</Link>
     </Compile>
-    <Compile Include="..\sources\kido\common\OfflineSupport\OfflineCacheEnumeration.cs">
-      <Link>Offline\OfflineCacheEnumeration.cs</Link>
-    </Compile>
-    <Compile Include="..\sources\kido\common\OfflineSupport\OfflineCache.cs">
-      <Link>Offline\OfflineCache.cs</Link>
-    </Compile>
-    <Compile Include="..\sources\kido\common\OfflineSupport\DataSourceOfflineExtensions.cs">
-      <Link>Offline\DataSourceOfflineExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\sources\kido\common\OfflineSupport\IOfflineCache.cs">
-      <Link>Offline\IOfflineCache.cs</Link>
-    </Compile>
-    <Compile Include="..\sources\kido\common\NativeUtilities.cs">
-      <Link>NativeUtilities.cs</Link>
-    </Compile>
-    <Compile Include="..\sources\kido\common\DataSourcesExtensions.cs">
-      <Link>DataSourcesExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\sources\kido\common\ServiceExtensions.cs">
-      <Link>ServiceExtensions.cs</Link>
+    <Compile Include="..\kido.ios\KidozenCrashExtensions.cs">
+      <Link>KidozenCrashExtensions.cs</Link>
     </Compile>
     <Compile Include="..\kido.ios\KidozenPassiveAuthExtensions.cs">
       <Link>KidozenPassiveAuthExtensions.cs</Link>
@@ -92,27 +54,62 @@
     <Compile Include="..\kido.ios\PassiveAuthViewController.cs">
       <Link>PassiveAuthViewController.cs</Link>
     </Compile>
-    <Compile Include="..\kido.ios\KidozenCrashExtensions.cs">
-      <Link>KidozenCrashExtensions.cs</Link>
+    <Compile Include="..\sources\kido\common\DataSourcesExtensions.cs">
+      <Link>DataSourcesExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\kido.ios\DataVisualization\DataVisualizationViewController.cs">
-      <Link>DataVisualization\DataVisualizationViewController.cs</Link>
+    <Compile Include="..\sources\kido\common\DataVisualization\DataVisualizationExtensions.cs">
+      <Link>DataVisualization\DataVisualizationExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\kido.ios\DataVisualization\iOSDataVisualization.cs">
-      <Link>DataVisualization\iOSDataVisualization.cs</Link>
+    <Compile Include="..\sources\kido\common\DataVisualization\IDataVisualization.cs">
+      <Link>DataVisualization\IDataVisualization.cs</Link>
     </Compile>
-    <Compile Include="..\kido.ios\Offline\iOSOfflineCache.cs">
-      <Link>Offline\iOSOfflineCache.cs</Link>
+    <Compile Include="..\sources\kido\common\FileExtensions.cs">
+      <Link>FileExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\kido.ios\FileUtilities.cs">
-      <Link>FileUtilities.cs</Link>
+    <Compile Include="..\sources\kido\common\NativeUtilities.cs">
+      <Link>NativeUtilities.cs</Link>
     </Compile>
+    <Compile Include="..\sources\kido\common\OfflineSupport\IOfflineCache.cs">
+      <Link>Offline\IOfflineCache.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\OfflineSupport\OfflineCache.cs">
+      <Link>Offline\OfflineCache.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\OfflineSupport\OfflineCacheEnumeration.cs">
+      <Link>Offline\OfflineCacheEnumeration.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\ServiceExtensions.cs">
+      <Link>ServiceExtensions.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="FSharp.Core" />
+    <Reference Include="ICSharpCode.SharpZipLib.Portable">
+      <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0001\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="ModernHttpClient">
+      <HintPath>..\packages\modernhttpclient.2.1.5\lib\MonoTouch\ModernHttpClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="monotouch" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\kido\kido.fsproj">
+      <Project>{92a04503-19d0-43e1-aeeb-f100a7635d15}</Project>
+      <Name>kido</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
