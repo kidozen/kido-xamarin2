@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>KidoZen</id>
-		<version>2.0.0-Release</version>
+		<version>2.0.0-release</version>
 		<title>KidoZen - SDK Libraries</title>
 		<authors>KidoZen</authors>
 		<owners>KidoZen</owners>
@@ -16,11 +16,18 @@
 			<dependency id="FSharp.Core.Mono.Signed" version="3.1.1.27"/>
 		  </group>
 		  <group targetFramework="MonoTouch10">
+			<dependency id="modernhttpclient" version="2.1.5"/>
+			<dependency id="Newtonsoft.Json" version="6.0.8"/>
+			<dependency id="FSharp.Core.Mono.Signed" version="3.1.1.27"/>
 		  	<dependency id="SharpZipLib.Portable" />
 		  </group>
 		  <group targetFramework="Xamarin.iOS10">
+			<dependency id="modernhttpclient" version="2.1.5"/>
+			<dependency id="Newtonsoft.Json" version="6.0.8"/>
+			<dependency id="FSharp.Core.Mono.Signed" version="3.1.1.27"/>
 		  	<dependency id="SharpZipLib.Portable" />
-		  </group>		</dependencies>
+		  </group>		
+		</dependencies>
 	</metadata>
 	<files>		
 		<!-- PCL -->
