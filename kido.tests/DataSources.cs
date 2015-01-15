@@ -21,7 +21,7 @@ namespace kido.tests
 		}
 
 		[Test ()]
-		public async void TestCase ()
+		public async void ShouldQueryFile ()
 		{
 			await this.kidozenApplication.Authenticate (Settings.User, Settings.Pass, Settings.Provider);
 			var ds = kidozenApplication.DataSource ("fileGetDs");
@@ -30,7 +30,7 @@ namespace kido.tests
 		}
 
 		[Test ()]
-		public async void TestCaseBis ()
+		public async void ShouldQuery ()
 		{
 			await this.kidozenApplication.Authenticate (Settings.User, Settings.Pass, Settings.Provider);
 			var ds = kidozenApplication.DataSource ("sampleTable");

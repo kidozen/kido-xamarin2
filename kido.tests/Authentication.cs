@@ -19,7 +19,7 @@ namespace kido.tests
 		}
 
 		[Test ()]
-		public async void TestCase ()
+		public async void ShouldAuthenticateActive ()
 		{
 			var user = await this.kidozenApplication.Authenticate (Settings.User, Settings.Pass, Settings.Provider);
 			Assert.IsNotNull (user);

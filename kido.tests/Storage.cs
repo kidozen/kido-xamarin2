@@ -23,7 +23,7 @@ namespace kido.tests
 		}
 
 		[Test ()]
-		public async void TestCase ()
+		public async void ShouldUpdate ()
 		{
 			await this.kidozenApplication.Authenticate (Settings.User, Settings.Pass, Settings.Provider);
 			var os = kidozenApplication.ObjectSet ("tests");
