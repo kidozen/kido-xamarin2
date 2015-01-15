@@ -1,9 +1,10 @@
 # KidoZen .NET SDK 2.0
 This is a new version of the SDK for .NET platform Kidozen 
 ## Version
-2.0.0-beta4
+2.0.1.0
 ## Whats new?
-The main difference with previous versions is that it provides better integration with the services provided by KidoZen, such as:
+
+- iOS 64b support
 - Crash Reports
 - DataVisualization
 - Passive Authentication
@@ -34,7 +35,7 @@ Supported platforms
   - Add support to Passive Auth, Crash and DataVisualization to Windows
   - Add PubSub service support
   - Documentation
-  - Samples
+  - More Samples
 
 ## Getting started with the code
 ### Creating a new Application Object
