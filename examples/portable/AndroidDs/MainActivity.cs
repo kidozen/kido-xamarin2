@@ -28,7 +28,7 @@ namespace AndroidDs
                         var isauth = t.Result;
                         if (isauth)
                         {
-                            var result = ds.QueryDataSoruce<DsParams>("getTellagoVacations", new DsParams { qty = 2 }).Result;
+                            var result = ds.QueryDataSoruce<DsParams>("your dataset", new DsParams { qty = 2 }).Result;
                             System.Diagnostics.Debug.WriteLine(result.ToString());
 
                         }

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 using Kidozen;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 
 namespace Kidozen.Examples.Portable
@@ -37,7 +39,7 @@ namespace Kidozen.Examples.Portable
         public Task<bool> QueryDataSoruce<T>(string name, T paramters)
         {
             var qds = kido.DataSource(name);
-            return qds.Query<Object>(paramters).ContinueWith(t => {
+            return qds.Query<JObject>(paramters).ContinueWith(t => {
                 System.Diagnostics.Debug.WriteLine(t.Result);
                 return !t.IsFaulted; 
             });
