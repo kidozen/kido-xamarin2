@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Microsoft.FSharp.Core;
 
 #if __UNIFIED__
 using MonoTouch;

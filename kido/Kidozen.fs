@@ -29,6 +29,7 @@ type KidoApplication(marketplace, application, key )  =
     member this.key = key
     member this.setIdentity id = identity <- id
     member this.GetIdentity = identity
+    member this.GetCurrentConfiguragion = identity.config;
     member this.GetPassiveDelegate = onPassiveAuth
     //passive authentication support
     member this.setPassiveIdentity tokenRaw tokenRefresh currentConfig =

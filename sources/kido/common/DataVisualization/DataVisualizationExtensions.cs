@@ -2,14 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Microsoft.FSharp.Core;
-
 using System.IO;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-using K = Kidozen;
 using U = Utilities;
 using A = KzApplication;
 using C = Crash;

@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Microsoft.FSharp.Core;
 
 using System.IO;
 using System.Linq;
@@ -25,7 +24,7 @@ namespace Kidozen.iOS
 		public static Task<MemoryStream> Download(this Files files, string path) {
 			var task = files.DownloadAsBytes(path).Result;
 			return Task.Factory.StartNew<MemoryStream>(()=>{
-				return new MemoryStream(task.Value);
+				return new MemoryStream(task);
 			});		
 
 		}

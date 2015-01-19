@@ -18,8 +18,7 @@ namespace Kidozen.Android
 		private static Task dummyPassiveFailTask = new Task(()=> {throw new Exception(authErrorMessage);});
 
 		private static Kidozen.KidoApplication currentApplication;
-		private static string curentConfiguration;
-
+		
 		public static Task Authenticate(this Kidozen.KidoApplication app, Context context) {
 			currentApplication = app;
             var url = A.fetchConfigValue("signInUrl", app.marketplace, app.application, app.key);
@@ -37,7 +36,7 @@ namespace Kidozen.Android
 			if (e.Success) {
 				var rawToken = e.TokenInfo ["access_token"];
 				var refreshToken = e.TokenInfo ["refresh_token"];
-                currentApplication.setPassiveIdentity(rawToken, refreshToken, curentConfiguration);
+                currentApplication.setPassiveIdentity(rawToken, refreshToken, currentApplication.GetCurrentConfiguragion);
             	dummyPassiveAuthenticationTask.Start ();
 			}
 			else {

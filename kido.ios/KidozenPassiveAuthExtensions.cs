@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Microsoft.FSharp.Core;
 
 #if __UNIFIED__
 using MonoTouch;
@@ -27,36 +26,26 @@ namespace Kidozen.iOS
 		private static Task dummyPassiveFailTask = new Task(()=> {throw new Exception(authErrorMessage);});
 
 		private static Kidozen.KidoApplication currentApplication;
-		private static string curentConfiguration;
-		private static A.AuthenticationRequest authenticationRequest;
-
+		
 		public static Task Authenticate(this Kidozen.KidoApplication app) {
 			currentApplication = app;
-			authenticationRequest = new A.AuthenticationRequest (app.marketplace, app.application, app.key, null);
-			var appConfig = A.getAppConfig (A.createConfigUrl (app.marketplace, app.application));
-			if (appConfig.IsConfiguration) {
-				curentConfiguration = (appConfig as A.GetConfigurationResult.Configuration).Item;
-				var signinurl = U.getJsonObjectValue (curentConfiguration , "signInUrl");
-				if (signinurl.Value != null) {
-					var authController = new PassiveAuthViewController (signinurl.Value.Replace("\"",string.Empty));
-					authController.AuthenticationResponseArrived += HandleAuthenticationResponseArrived;
-					var navController = new UINavigationController (authController);
-					#if __UNIFIED__
-					UIApplication.SharedApplication.Delegate.GetWindow().RootViewController.PresentViewController (navController, 
-						true, 
-						new Action ( () => Debug.WriteLine("passive view loaded") )
-					);
-					#else
-						UIApplication.SharedApplication.Delegate.Window.RootViewController.PresentViewController (navController, 
-							true, 
-							new NSAction ( () => Debug.WriteLine("passive view loaded") )
-						);
-					#endif
-				} 
-				else {
-					throw new Exception ("Invalid configuration settings. Please check username and password");
-				}
-			}
+            var url = A.fetchConfigValue("signInUrl", app.marketplace, app.application, app.key);
+            var authController = new PassiveAuthViewController(url.Result.Replace("\"", string.Empty));
+            authController.AuthenticationResponseArrived += HandleAuthenticationResponseArrived;
+            var navController = new UINavigationController(authController);
+#if __UNIFIED__
+			UIApplication.SharedApplication.Delegate.GetWindow().RootViewController.PresentViewController (navController, 
+				true, 
+				new Action ( () => Debug.WriteLine("passive view loaded") )
+			);
+#else
+        UIApplication.SharedApplication.Delegate.Window.RootViewController.PresentViewController(navController,
+            true,
+            new NSAction(() => Debug.WriteLine("passive view loaded"))
+        );
+#endif
+
+
 			return Task.WhenAny( new Task[] {dummyPassiveAuthenticationTask, dummyPassiveFailTask} );
 		}
 
@@ -68,11 +57,9 @@ namespace Kidozen.iOS
 
 				var rawToken = e.TokenInfo ["access_token"];
 				var refreshToken = e.TokenInfo ["refresh_token"];
-				var token = new U.Token(new FSharpOption<string>(rawToken), new FSharpOption<string>(refreshToken),null);
 
-				var expiration = A.getExpiration (rawToken);
-				var identity = new KzApplication.Identity("3",rawToken, new FSharpOption<U.Token>(token) , curentConfiguration,expiration,authenticationRequest);
-				currentApplication.setIdentity (identity);
+                currentApplication.setPassiveIdentity(rawToken, refreshToken, currentApplication.GetCurrentConfiguragion);
+
 				dummyPassiveAuthenticationTask.Start();
 			}
 			else {
