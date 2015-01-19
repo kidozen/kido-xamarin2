@@ -2,9 +2,13 @@
 
 open System
 open System.Net
+open System.Collections
+open System.Collections.Generic
 open System.Threading.Tasks
 open System.Runtime.InteropServices
+
 open KzApplication
+open Utilities
 
 type User(name,rawtoken) =
     member this.Name = name
@@ -26,6 +30,19 @@ type KidoApplication(marketplace, application, key )  =
     member this.setIdentity id = identity <- id
     member this.GetIdentity = identity
     member this.GetPassiveDelegate = onPassiveAuth
+    //passive authentication support
+    member this.setPassiveIdentity tokenRaw tokenRefresh currentConfig =
+        let tokenExpiresOn = getExpiration tokenRaw
+        let tk =  { raw = Some( tokenRaw ) ; refresh = Some (tokenRefresh) ; expiration = Some( tokenExpiresOn.ToString()) };
+        let passiveIdentity = {
+            id = "3";
+            rawToken = tokenRaw;
+            token =  Some (tk);
+            config = currentConfig;
+            expiration = tokenExpiresOn;
+            authenticationRequest  = { Key = key; ProviderRequest = None; Marketplace = marketplace; Application = application  }
+        }
+        identity<-passiveIdentity
 
     [<CLIEvent>]
     member this.OnPassiveAuthenticationComplete = onPassiveAuth.Publish
@@ -86,3 +103,20 @@ type KidoApplication(marketplace, application, key )  =
 
     member this.ClearLog =
         this.Log.Clear()
+
+    //helpers to JS injection
+    member this.getPassiveAuthInformation =
+        let d = new Dictionary<_, _>()
+        d.["refresh_token"] <- identity.token.Value.refresh.Value
+        d.["rawToken"] <- identity.token.Value.raw.Value
+        d :> IDictionary<String, String>
+
+    member this.getActiveAuthInformation =
+        let d = new Dictionary<_, _>()
+        d.["username"] <- identity.authenticationRequest.ProviderRequest.Value.User
+        d.["password"] <- identity.authenticationRequest.ProviderRequest.Value.Password
+        d.["provider"] <- identity.authenticationRequest.ProviderRequest.Value.Key
+        d :> IDictionary<String, String>
+
+    member this.isPassiveAuthenticated =
+        identity.authenticationRequest.ProviderRequest.IsSome

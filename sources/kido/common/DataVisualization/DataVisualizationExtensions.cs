@@ -48,28 +48,22 @@ namespace Kidozen.iOS
 
 
 		private static void ShowVisualization(this Kidozen.KidoApplication app, IDataVisualization datavisualization, String visualization) {
-			var appConfig = A.getAppConfig (A.createConfigUrl (app.marketplace, app.application));
-			if (appConfig.IsConfiguration) {
-				var curentConfiguration = (appConfig as A.GetConfigurationResult.Configuration).Item;
-				var baseurl = U.getJsonObjectValue (curentConfiguration , "url");
-				if (baseurl.Value != null) {
-					String url = String.Format("{0}api/v2/visualizations/{1}/app/download?type=mobile",baseurl.Value.Trim( "\"".ToCharArray()), visualization);
-					var files = new Files (app.GetIdentity);
-					Task.Factory.StartNew(()=> {
-						var bytes = files.DownloadFromUrl(url).Result.Value;
-						var targetDir = datavisualization.GetTargetDirectory();
-						var filename = string.Format("{0}{1}", visualization, ".zip");
-						System.IO.File.WriteAllBytes(Path.Combine (targetDir, filename),bytes);
-						if (datavisualization.UnzipFiles(targetDir,visualization)) {
-							replacePlaceholders(app,visualization);
-							datavisualization.LaunchView(visualization, targetDir);
-						}
-					});	
-				} 
-				else {
-					throw new Exception ("Invalid configuration settings. Please check username and password");
-				}
-			}
+            var baseurl = A.fetchConfigValue("url", app.marketplace, app.application, app.key);
+            String url = String.Format("{0}api/v2/visualizations/{1}/app/download?type=mobile", baseurl.Result.Trim("\"".ToCharArray()), visualization);
+            var files = new Files(app.GetIdentity);
+            Task.Factory.StartNew(() =>
+            {
+                var bytes = files.DownloadFromUrl(url).Result;
+                var targetDir = datavisualization.GetTargetDirectory();
+                var filename = string.Format("{0}{1}", visualization, ".zip");
+                System.IO.File.WriteAllBytes(Path.Combine(targetDir, filename), bytes);
+                if (datavisualization.UnzipFiles(targetDir, visualization))
+                {
+                    replacePlaceholders(app, visualization);
+                    datavisualization.LaunchView(visualization, targetDir);
+                }
+            });
+            
 		}
 
 		private static void replacePlaceholders( Kidozen.KidoApplication app, String dataVizName ) {
@@ -82,12 +76,12 @@ namespace Kidozen.iOS
 		}
 
 		private static String optionsString(Kidozen.KidoApplication app) {
-			if (app.GetIdentity.authenticationRequest.ProviderRequest!=null) {
-				var token = new DsProviderJsSDKBridge (app.GetIdentity);
-				return JsonConvert.SerializeObject(token);
+			if (app.isPassiveAuthenticated ) {
+                var token = new DsPassiveJsSDKBridge(app);
+                return JsonConvert.SerializeObject(token);
 			} else {
-				var token = new DsPassiveJsSDKBridge (app.GetIdentity.token.Value);
-				return JsonConvert.SerializeObject(token);
+                var token = new DsProviderJsSDKBridge(app);
+                return JsonConvert.SerializeObject(token);
 			}
 		}
 		private static String indexFilePath(String dataVizName) {
@@ -101,17 +95,17 @@ namespace Kidozen.iOS
 			[JsonProperty("rawToken")]
 			public String RawToken { get; set;}
 
-			public DvTokenJsSDKBridge(Utilities.Token t) {
-				this.RefreshToken = t.refresh.Value;
-				this.RawToken = t.raw.Value;
+			public DvTokenJsSDKBridge(KidoApplication app) {
+                this.RefreshToken = app.getPassiveAuthInformation["refresh_token"];
+                this.RawToken = app.getPassiveAuthInformation["rawToken"];
 			}
 		}
 
 		public class DsPassiveJsSDKBridge {
 			[JsonProperty("token")]
 			public DvTokenJsSDKBridge Token { get; set;}
-			public DsPassiveJsSDKBridge(Utilities.Token t) {
-				this.Token = new DvTokenJsSDKBridge(t);
+			public DsPassiveJsSDKBridge(KidoApplication app) {
+				this.Token = new DvTokenJsSDKBridge(app);
 			}
 		}
 
@@ -125,12 +119,11 @@ namespace Kidozen.iOS
 			[JsonProperty("password")]
 			public String Password { get; set;}
 
-			public DsProviderJsSDKBridge(KzApplication.Identity id) {
-				var authrequest = id.authenticationRequest.ProviderRequest.Value;
-				this.Token = new DvTokenJsSDKBridge( id.token.Value );
-				this.Username = authrequest.User;
-				this.Provider = authrequest.Key;
-				this.Username = authrequest.Password;
+			public DsProviderJsSDKBridge(KidoApplication app) {
+				this.Token = new DvTokenJsSDKBridge( app );
+				this.Username = app.getActiveAuthInformation["username"];
+                this.Provider = app.getActiveAuthInformation["key"];
+                this.Password = app.getActiveAuthInformation["password"];
 			}
 		}
 	}

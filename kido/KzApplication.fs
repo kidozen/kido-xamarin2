@@ -30,7 +30,6 @@ let getAppConfig cfgurl =
         | _  -> InvalidApplicationError (new System.ArgumentException( sprintf "invalid status code = %i" response.StatusCode ))
                
 
-//let memGetAppConfig = memoize getAppConfig //memoizes the configuration fetch to cache it
 
 let createConfigUrl marketplace application =
     match  marketplace with
@@ -164,3 +163,25 @@ let validateToken authRequest =
                     | InvalidIpCredentials e -> return raise e
             | _ -> return authRequest
     }
+
+//passive auth and other forms support to be called from c#
+
+let fetchConfigValue name marketplace application key = 
+    let valuetask = async {
+        let! result = asyncGetKeyToken marketplace application key
+        match result with
+            | Token t -> 
+                   let appConfig = getAppConfig (createConfigUrl marketplace application)
+                   match appConfig with
+                       | Configuration c -> 
+                           let signinurl = getJsonStringValue c name
+                           match signinurl with
+                               | Some v -> return v
+                               | None -> return raise (System.ArgumentException("value not found 'signInUrl'"))
+                       | InvalidApplicationError e -> return raise e
+            | InvalidApplication e -> return raise e
+            | InvalidCredentials e -> return raise e
+            | InvalidIpCredentials e -> return raise e
+    }
+    valuetask |> Async.StartAsTask
+

@@ -41,6 +41,10 @@
     <AndroidSupportedAbis>armeabi;armeabi-v7a;x86</AndroidSupportedAbis>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=2.3.98.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\FSharp.Core.3.1.2.1\lib\MonoAndroid\FSharp.Core.dll</HintPath>
+    </Reference>
     <Reference Include="ModernHttpClient">
       <HintPath>..\..\..\packages\modernhttpclient.2.1.5\lib\MonoAndroid\ModernHttpClient.dll</HintPath>
     </Reference>
@@ -57,9 +61,6 @@
     <Reference Include="Mono.Android.Export" />
     <Reference Include="Xamarin.Android.Support.v4">
       <HintPath>..\..\..\packages\Xamarin.Android.Support.v4.21.0.3.0\lib\MonoAndroid10\Xamarin.Android.Support.v4.dll</HintPath>
-    </Reference>
-    <Reference Include="FSharp.Core">
-      <HintPath>..\..\..\packages\FSharp.Core.Mono.Signed.3.1.1.27\lib\MonoAndroid\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="kido">
       <HintPath>..\..\..\release\core\kido.dll</HintPath>

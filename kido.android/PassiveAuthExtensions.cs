@@ -3,9 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
-using Microsoft.FSharp.Core;
-
-using K = Kidozen;
 using U = Utilities;
 using A = KzApplication;
 
@@ -22,29 +19,15 @@ namespace Kidozen.Android
 
 		private static Kidozen.KidoApplication currentApplication;
 		private static string curentConfiguration;
-		private static A.AuthenticationRequest authenticationRequest;
 
 		public static Task Authenticate(this Kidozen.KidoApplication app, Context context) {
 			currentApplication = app;
-			authenticationRequest = new A.AuthenticationRequest (app.marketplace, app.application, app.key, null);
-			var appConfig = A.getAppConfig (A.createConfigUrl (app.marketplace, app.application));
-			resetTaks ();
-			if (appConfig.IsConfiguration) {
-				curentConfiguration = (appConfig as A.GetConfigurationResult.Configuration).Item;
-
-				var signinurl = U.getJsonObjectValue (curentConfiguration , "signInUrl");
-
-				if (signinurl.Value != null) {
-					var startPassiveAuthIntent = new Intent (context, typeof(PassiveAuthActivity));
-					startPassiveAuthIntent.AddFlags (ActivityFlags.NewTask);
-					startPassiveAuthIntent.PutExtra ("signInUrl", signinurl.Value.Replace("\"",string.Empty));
-					context.StartActivity (startPassiveAuthIntent);
-				} 
-				else {
-					throw new Exception ("Invalid configuration settings. Please check username and password");
-				}
-			}
-			return Task.WhenAny( new Task[] {dummyPassiveAuthenticationTask, dummyPassiveFailTask} );
+            var url = A.fetchConfigValue("signInUrl", app.marketplace, app.application, app.key);
+            var startPassiveAuthIntent = new Intent(context, typeof(PassiveAuthActivity));
+            startPassiveAuthIntent.AddFlags(ActivityFlags.NewTask);
+            startPassiveAuthIntent.PutExtra("signInUrl", url.Result.Replace("\"", string.Empty));
+            context.StartActivity(startPassiveAuthIntent);
+            return Task.WhenAny( new Task[] {dummyPassiveAuthenticationTask, dummyPassiveFailTask} );
 		}
 
 		public static void HandleAuthenticationResponseArrived (AuthenticationResponseEventArgs e)
@@ -54,13 +37,8 @@ namespace Kidozen.Android
 			if (e.Success) {
 				var rawToken = e.TokenInfo ["access_token"];
 				var refreshToken = e.TokenInfo ["refresh_token"];
-				var token = new U.Token(new FSharpOption<string>(rawToken), new FSharpOption<string>(refreshToken),null);
-
-				var expiration = A.getExpiration (rawToken);
-				var identity = new KzApplication.Identity("3",rawToken, new FSharpOption<U.Token>(token) , curentConfiguration,expiration,authenticationRequest);
-
-				currentApplication.setIdentity (identity);
-				dummyPassiveAuthenticationTask.Start ();
+                currentApplication.setPassiveIdentity(rawToken, refreshToken, curentConfiguration);
+            	dummyPassiveAuthenticationTask.Start ();
 			}
 			else {
 				Debug.WriteLine (e.ErrorMessage);

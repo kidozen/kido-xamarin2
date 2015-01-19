@@ -94,7 +94,10 @@ type Files (identity:Identity) =
                             |> getResponseBytesAsync 
             return 
                 match result.StatusCode with
-                    | 200 -> result.BytesBody
+                    | 200 -> 
+                        match result.BytesBody with
+                            | Some bytes -> bytes
+                            | None -> raise ( new Exception("Service returns empty body. Please check your settings and try again") )      
                     | _ -> raise (new Exception (result.EntityBody.Value))
 
             }
@@ -108,7 +111,10 @@ type Files (identity:Identity) =
                             |> getResponseBytesAsync 
             return 
                 match result.StatusCode with
-                    | 200 -> result.BytesBody
+                    | 200 -> 
+                        match result.BytesBody with
+                            | Some bytes -> bytes
+                            | None -> raise ( new Exception("Service returns empty body. Please check your settings and try again") )      
                     | _ -> raise (new Exception (result.EntityBody.Value))
 
             }
