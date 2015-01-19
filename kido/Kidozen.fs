@@ -22,31 +22,31 @@ type KidoApplication(marketplace, application, key )  =
     let zeroIdentity = { token= None; rawToken = ""; id = ""; config = ""; expiration = System.DateTime.Now; authenticationRequest  = { Key = ""; ProviderRequest = None; Marketplace = marketplace; Application = application  } }
     let mutable identity = zeroIdentity
     let mutable currentUser = User("","")
-    let onPassiveAuth = new DelegateEvent<System.EventHandler<PassiveAuthenticationEventArgs>>()
     member this.setUser user = currentUser <- user
     member this.marketplace = marketplace
     member this.application = application
     member this.key = key
     member this.setIdentity id = identity <- id
     member this.GetIdentity = identity
-    member this.GetCurrentConfiguragion = identity.config;
-    member this.GetPassiveDelegate = onPassiveAuth
+
     //passive authentication support
-    member this.setPassiveIdentity tokenRaw tokenRefresh currentConfig =
+    member this.setPassiveIdentity tokenRaw tokenRefresh =
+        //TODO : Memoize this
+        let cfg =  match getAppConfig (createConfigUrl this.marketplace this.application) with
+                    | Configuration c -> c 
+                    | _ ->  raise (System.ArgumentException("fail getting app configuration once again"))
+
         let tokenExpiresOn = getExpiration tokenRaw
         let tk =  { raw = Some( tokenRaw ) ; refresh = Some (tokenRefresh) ; expiration = Some( tokenExpiresOn.ToString()) };
         let passiveIdentity = {
             id = "3";
             rawToken = tokenRaw;
             token =  Some (tk);
-            config = currentConfig;
+            config = cfg;
             expiration = tokenExpiresOn;
             authenticationRequest  = { Key = key; ProviderRequest = None; Marketplace = marketplace; Application = application  }
         }
         identity<-passiveIdentity
-
-    [<CLIEvent>]
-    member this.OnPassiveAuthenticationComplete = onPassiveAuth.Publish
 
     member private this.authWithUser user password provider = async {
         let! result = asyncGetFederatedToken marketplace application user password provider

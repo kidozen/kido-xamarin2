@@ -59,7 +59,15 @@ namespace Todo
 		public IEnumerable<TodoItem> GetItems ()
 		{
 			lock (locker) {
-				return  database.Query<TodoItem> (@"{}").Result;
+                try
+                {
+                    return database.Query<TodoItem>(@"{}").Result;
+                }
+                catch (Exception w)
+                {
+                    
+                    throw;
+                }
 			}
 		}
 
