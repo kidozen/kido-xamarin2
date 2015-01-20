@@ -36,7 +36,7 @@ namespace Kidozen.Android
 			if (e.Success) {
 				var rawToken = e.TokenInfo ["access_token"];
 				var refreshToken = e.TokenInfo ["refresh_token"];
-                currentApplication.setPassiveIdentity(rawToken, refreshToken, currentApplication.GetCurrentConfiguragion);
+                currentApplication.setPassiveIdentity(rawToken, refreshToken);
             	dummyPassiveAuthenticationTask.Start ();
 			}
 			else {
