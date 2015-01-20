@@ -33,15 +33,11 @@ namespace AndroidDs
 
                         }
                     }
-                    );
-
+               );
             };
         }
     }
 
-    class DsParams
-    {
-        public int qty { get; set; }
-    }
+
 }
 

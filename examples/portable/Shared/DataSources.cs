@@ -13,6 +13,11 @@ using Newtonsoft.Json.Linq;
 
 namespace Kidozen.Examples.Portable
 {
+    class DsParams
+    {
+        public int qty { get; set; }
+    }
+
     public class MyDataSource
     {
         KidoApplication kido;

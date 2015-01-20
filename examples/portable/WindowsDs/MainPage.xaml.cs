@@ -13,10 +13,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 using Kidozen.Examples.Portable;
-
-namespace WinPhoneDs
+namespace WindowsDs
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -26,32 +25,23 @@ namespace WinPhoneDs
         public MainPage()
         {
             this.InitializeComponent();
-
-            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-        }
-
-        private void btnAuthenticate_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             var ds = new MyDataSource();
             ds.Authenticate().ContinueWith(
-                t => {
+                t =>
+                {
                     var isauth = t.Result;
                     if (isauth)
                     {
-                        var result = ds.QueryDataSoruce<DsParams>("your dataset", new DsParams { qty = 2 }).Result;
+                        var result = ds.QueryDataSoruce<DsParams>("getTellagoVacationsfff", new DsParams { qty = 2 }).Result;
                         System.Diagnostics.Debug.WriteLine(result.ToString());
+
                     }
                 }
-                );
-
+           );
         }
-    }
-
-    class DsParams {
-        public int qty { get; set; }
     }
 }
