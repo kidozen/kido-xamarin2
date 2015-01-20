@@ -36,6 +36,9 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\kido.ios\DataVisualization\DataVisualizationViewController.cs">
       <Link>DataVisualization\DataVisualizationViewController.cs</Link>
@@ -114,4 +117,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)release\ios-classic\$(TargetFileName)</PostBuildEvent>
+  </PropertyGroup>
 </Project>
