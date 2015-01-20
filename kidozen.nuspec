@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>KidoZen</id>
-		<version>2.0.1.0</version>
+		<version>2.0.1.1</version>
 		<title>KidoZen - SDK Libraries</title>
 		<authors>KidoZen</authors>
 		<owners>KidoZen</owners>
@@ -13,40 +13,32 @@
 		  <group>
 			<dependency id="modernhttpclient" version="2.1.5"/>
 			<dependency id="Newtonsoft.Json" version="6.0.8"/>
-			<dependency id="FSharp.Core.Mono.Signed" version="3.1.1.27"/>
+			<dependency id="FSharp.Core" version="3.1.2"/>
 		  </group>
 		  <group targetFramework="MonoTouch10">
-			<dependency id="modernhttpclient" version="2.1.5"/>
-			<dependency id="Newtonsoft.Json" version="6.0.8"/>
-			<dependency id="FSharp.Core.Mono.Signed" version="3.1.1.27"/>
 		  	<dependency id="SharpZipLib.Portable" />
 		  </group>
 		  <group targetFramework="Xamarin.iOS10">
-			<dependency id="modernhttpclient" version="2.1.5"/>
-			<dependency id="Newtonsoft.Json" version="6.0.8"/>
-			<dependency id="FSharp.Core.Mono.Signed" version="3.1.1.27"/>
 		  	<dependency id="SharpZipLib.Portable" />
 		  </group>		
 		</dependencies>
 	</metadata>
 	<files>		
 		<!-- PCL -->
-		<file src="\release\core\kido.dll" target="lib\portable-win+net45+wp8+win8+wpa81+MonoTouch+MonoAndroid\kido.dll" />
-		<file src="\release\support\ModernHttpClient.dll" target="lib\portable-win+net45+wp8+win8+wpa81+MonoTouch+MonoAndroid\ModernHttpClient.dll" />
-
-		<!-- windows phone 8.1 -->
-		<file src="\release\core\kido.dll" target="lib\wpa81\kido.dll" />
+		<file src="\kido\bin\Release\kido.dll" target="lib\portable-win+net45+wp8+win8+wpa81+MonoTouch+MonoAndroid\kido.dll" />
+		<!-- windows phone 8.1 : now is the same that pcl-->
+		<file src="\kido\bin\Release\kido.dll" target="lib\wpa81\kido.dll" />
 
 		<!-- droid -->
-		<file src="\release\core\kido.dll" target="lib\MonoAndroid\kido.dll" />
+		<file src="\kido.android\bin\Release\kido.dll" target="lib\MonoAndroid\kido.dll" />
 		<file src="\release\android\kido.android.dll" target="lib\MonoAndroid\kido.android.dll" />		
 		
 		<!-- touch classic-->
-		<file src="\release\core\kido.dll" target="lib\MonoTouch10\kido.dll" />
+		<file src="\kido\bin\Release\kido.dll" target="lib\MonoTouch10\kido.dll" />
 		<file src="\release\ios-classic\kido.ios.dll" target="lib\MonoTouch10\kido.ios.dll" />
 		
 		<!-- touch -->
-		<file src="\release\core\kido.dll" target="lib\Xamarin.iOS10\kido.dll" />
-		<file src="\release\ios\kido.ios.dll" target="lib\Xamarin.iOS10\kido.ios.dll" />
+		<file src="\kido\bin\Release\kido.dll" target="lib\Xamarin.iOS10\kido.dll" />
+		<file src="\kido.ios-classic\bin\iPhone\Release\kido.ios.dll" target="lib\Xamarin.iOS10\kido.ios.dll" />
 	</files>
 </package>
