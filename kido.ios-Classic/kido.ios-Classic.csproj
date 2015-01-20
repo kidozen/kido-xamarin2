@@ -13,6 +13,7 @@
     <AssemblyName>kido.ios</AssemblyName>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>c55fe5f7</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -88,15 +89,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Core, Version=2.3.98.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\FSharp.Core.3.1.2.1\lib\MonoTouch\FSharp.Core.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib.Portable">
       <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0001\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
-    </Reference>
-    <Reference Include="ModernHttpClient">
-      <HintPath>..\packages\modernhttpclient.2.1.5\lib\MonoTouch\ModernHttpClient.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>

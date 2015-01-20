@@ -13,7 +13,7 @@
 		  <group>
 			<dependency id="modernhttpclient" version="2.1.5"/>
 			<dependency id="Newtonsoft.Json" version="6.0.8"/>
-			<dependency id="FSharp.Core" version="3.1.2"/>
+			<dependency id="FSharp.Core" version="3.1.2.1"/>
 		  </group>
 		  <group targetFramework="MonoTouch10">
 		  	<dependency id="SharpZipLib.Portable" />
