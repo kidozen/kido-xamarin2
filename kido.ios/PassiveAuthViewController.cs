@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Drawing;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -44,29 +45,51 @@ namespace Kidozen.iOS
 		}
 
         private void configureActivitySpinner() {
-            this.activitySpinner = new UIActivityIndicatorView(UIActivityIndicatorViewStyle.WhiteLarge);
-            this.activitySpinner.Color = UIColor.DarkGray;
-            this.View.AddSubview(this.activitySpinner);
-            this.activitySpinner.HidesWhenStopped = true;
-            this.activitySpinner.Center = this.webview.Center;
-            this.activitySpinner.StopAnimating();
-            this.View.UserInteractionEnabled = true;
+            InvokeOnMainThread(() =>
+            {
+                this.activitySpinner = new UIActivityIndicatorView()
+                {
+                    ActivityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray,
+                    AutoresizingMask = UIViewAutoresizing.FlexibleLeftMargin |
+                        UIViewAutoresizing.FlexibleRightMargin |
+                        UIViewAutoresizing.FlexibleTopMargin |
+                        UIViewAutoresizing.FlexibleBottomMargin,
+                    Tag = kViewTag
+                }; 
+                this.activitySpinner.Color = UIColor.DarkGray;
+                this.activitySpinner.HidesWhenStopped = true;
+                this.activitySpinner.Center = this.View.Center;
+                this.activitySpinner.StopAnimating();
+                this.View.UserInteractionEnabled = true;
+                this.View.AddSubview(this.activitySpinner);
+            });
         }
+
+        const int kViewTag = 1;
+
 
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
 			this.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Cancel, (x,y) => this.DismissViewController(true,null));
 			this.webview = new UIWebView (this.View.Frame);
-            this.configureActivitySpinner();
+            
+            
 			webview.ShouldStartLoad = (webView, request, navType) => {return true;};
 			webview.LoadFinished += HandleLoadFinished;
-            webview.LoadStarted += (s, e) => { 
-                this.activitySpinner.StartAnimating(); 
-                this.View.UserInteractionEnabled = false; 
-            };
+            webview.LoadStarted += HandleLoadStarted;
 			this.View.AddSubview (webview);
-		}
+            configureActivitySpinner();
+        }
+
+        private void HandleLoadStarted(object sender, EventArgs e)
+        {
+            InvokeOnMainThread(() =>
+            {
+                this.activitySpinner.StartAnimating();
+                this.View.UserInteractionEnabled = false;
+            });
+        }
 
 		public override void ViewDidAppear (bool animated)
 		{
@@ -76,9 +99,12 @@ namespace Kidozen.iOS
 
 		void HandleLoadFinished (object sender, EventArgs e)
 		{
-            this.activitySpinner.StopAnimating();
-            this.View.UserInteractionEnabled = true; 
-			var payload = webview.EvaluateJavascript ("document.title");
+            InvokeOnMainThread(() =>
+            {
+                this.activitySpinner.StopAnimating();
+                this.View.UserInteractionEnabled = true;
+            });
+            var payload = webview.EvaluateJavascript ("document.title");
 			Console.WriteLine (payload);
 			if (payload.Contains ("Success payload=")) {
 				payload = Encoding.UTF8.GetString (Convert.FromBase64String (payload.Replace ("Success payload=", String.Empty)));
