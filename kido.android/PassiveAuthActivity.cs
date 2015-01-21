@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -67,15 +66,22 @@ namespace Kidozen.Android
 	public class AuthenticationWebViewClient : WebViewClient {
 		private String getTitleJsFunction = "javascript:( function () { window.HTMLOUT.getTitleCallback(document.title); } ) ()";
 
+        private ProgressDialog progressDialog;
+        public AuthenticationWebViewClient() { }
+        public AuthenticationWebViewClient(ProgressDialog progress)
+        {
+            progressDialog = progress;
+        }
+
 		public override void OnReceivedError (WebView view, ClientError errorCode, string description, string failingUrl)
 		{
 			base.OnReceivedError (view, errorCode, description, failingUrl);
+            if (progressDialog != null) progressDialog.Dismiss();
 		}
 
 		public override void OnReceivedSslError (WebView view, SslErrorHandler handler, SslError error)
 		{
-
-			handler.Proceed ();
+            handler.Proceed ();
 		}
 
 		public override void OnPageFinished (WebView view, string url)
@@ -85,13 +91,30 @@ namespace Kidozen.Android
 			}  else if (view.Title.StartsWith("Error message=")) {
 				//TODO: Still not implemented on services side
 			}
+            if (progressDialog != null)  progressDialog.Dismiss();
 		}
 
 	}
 
+    class AuthenticationWebChromeClient : WebChromeClient
+    {
+        private ProgressDialog progressDialog;
+        public AuthenticationWebChromeClient() { }
+        public AuthenticationWebChromeClient(ProgressDialog progress) {
+            progressDialog = progress;
+        }
+        public override void OnProgressChanged(WebView view, int newProgress)
+        {
+            progressDialog.Progress = newProgress;
+            base.OnProgressChanged(view, newProgress);
+        }
+    }
+
 	[Activity (Label = "PassiveAuthActivity")]			
 	public class PassiveAuthActivity : Activity
 	{
+        private ProgressDialog progressDialog;
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -104,18 +127,27 @@ namespace Kidozen.Android
 			var jsInterface = new AuthenticationJavaScriptInterface (this);
 			jsInterface.AuthenticationResponseArrived+= HandleAuthenticationResponseArrived;
 
-			var webClient = new AuthenticationWebViewClient ();
+            progressDialog = new ProgressDialog(this);
+            progressDialog.SetMessage("Loading");
+            progressDialog.SetCancelable(false);
+            progressDialog.SetProgressStyle(ProgressDialogStyle.Spinner);
+            progressDialog.Progress = 0; // set percentage completed to 0%
+
+			var webClient = new AuthenticationWebViewClient (progressDialog);
+            var chromeClient = new AuthenticationWebChromeClient(progressDialog);
 			var webView = new WebView (this);
 			webView.VerticalScrollBarEnabled = false;
 			webView.HorizontalScrollBarEnabled = false;
 			webView.SetWebViewClient (webClient);
+            webView.SetWebChromeClient(chromeClient);
 			webView.Settings.JavaScriptEnabled = true;
 			webView.LayoutParameters = new FrameLayout.LayoutParams (ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
 			webView.Settings.SaveFormData = false;
 			webView.LoadUrl (endpoint);
 			webView.AddJavascriptInterface (jsInterface, "HTMLOUT");
 			mainLayout.AddView (webView);
-			this.SetContentView(mainLayout,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent,ViewGroup.LayoutParams.MatchParent));;
+			this.SetContentView(mainLayout,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent,ViewGroup.LayoutParams.MatchParent));
+            progressDialog.Show();
 		}
 
 		void HandleAuthenticationResponseArrived (object sender, AuthenticationResponseEventArgs e)

@@ -29,6 +29,7 @@ namespace Kidozen.iOS
 	{
 		UIWebView webview;
 		NSUrl signInEndpoint;
+        UIActivityIndicatorView activitySpinner;
 
 		public event AuthenticationResponse AuthenticationResponseArrived;
 
@@ -42,14 +43,28 @@ namespace Kidozen.iOS
 			signInEndpoint = new NSUrl(endpoint);
 		}
 
+        private void configureActivitySpinner() {
+            this.activitySpinner = new UIActivityIndicatorView(UIActivityIndicatorViewStyle.WhiteLarge);
+            this.activitySpinner.Color = UIColor.DarkGray;
+            this.View.AddSubview(this.activitySpinner);
+            this.activitySpinner.HidesWhenStopped = true;
+            this.activitySpinner.Center = this.webview.Center;
+            this.activitySpinner.StopAnimating();
+            this.View.UserInteractionEnabled = true;
+        }
 
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
 			this.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Cancel, (x,y) => this.DismissViewController(true,null));
 			this.webview = new UIWebView (this.View.Frame);
+            this.configureActivitySpinner();
 			webview.ShouldStartLoad = (webView, request, navType) => {return true;};
 			webview.LoadFinished += HandleLoadFinished;
+            webview.LoadStarted += (s, e) => { 
+                this.activitySpinner.StartAnimating(); 
+                this.View.UserInteractionEnabled = false; 
+            };
 			this.View.AddSubview (webview);
 		}
 
@@ -61,6 +76,8 @@ namespace Kidozen.iOS
 
 		void HandleLoadFinished (object sender, EventArgs e)
 		{
+            this.activitySpinner.StopAnimating();
+            this.View.UserInteractionEnabled = true; 
 			var payload = webview.EvaluateJavascript ("document.title");
 			Console.WriteLine (payload);
 			if (payload.Contains ("Success payload=")) {
