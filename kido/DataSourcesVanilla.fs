@@ -14,6 +14,7 @@ open KzApplication
 open System.Runtime.InteropServices
 
 open Newtonsoft.Json
+open Newtonsoft.Json.Linq
 open System.IO
 open System.Linq
 open System.Collections.Generic
@@ -26,12 +27,13 @@ type DataSource (name, identity:Identity) =
         let content = result.EntityBody.Value
         match result.StatusCode with
                 | 200 ->
-                    let error = getJsonObjectValue content "error" 
-                    let data = getJsonObjectValue content "data" 
-                    match data with
-                        | Some d -> JsonConvert.DeserializeObject<'a>(d)
-                        | _ -> match error with
-                                    | Some e -> raise ( new Exception (e))
+                    let jobj = JObject.Parse(content)
+                    let error = jobj.["error"]
+                    let data = jobj.["data"]
+                    match Some (data) with
+                        | Some d -> JsonConvert.DeserializeObject<'a>(d.ToString())
+                        | _ -> match Some ( error ) with
+                                    | Some e -> raise ( new Exception (e.ToString()))
                                     | _ -> raise ( new Exception ("Unknown error."))
                 | _ -> raise ( new Exception (result.EntityBody.Value))
 
