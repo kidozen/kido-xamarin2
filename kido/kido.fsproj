@@ -81,6 +81,7 @@
     <Compile Include="Sms.fs" />
     <Compile Include="Storage.fs" />
     <Compile Include="StorageVanilla.fs" />
+    <Compile Include="AnalyticsVanilla.fs" />
     <Compile Include="Kidozen.fs" />
     <None Include="app.config" />
     <Compile Include="Crash.fs" />
