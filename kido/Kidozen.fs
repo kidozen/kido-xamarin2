@@ -10,6 +10,9 @@ open System.Runtime.InteropServices
 open KzApplication
 open Utilities
 
+type IAnalytics =
+    abstract member Enable : Boolean -> Unit
+
 type User(name,rawtoken) =
     member this.Name = name
     member this.RawToken = rawtoken
@@ -17,6 +20,7 @@ type User(name,rawtoken) =
 type PassiveAuthenticationEventArgs(token:string) =
     inherit System.EventArgs()
     member this.Token = token
+
 
 type KidoApplication(marketplace, application, key )  =
     let zeroIdentity = { token= None; rawToken = ""; id = ""; config = ""; expiration = System.DateTime.Now; authenticationRequest  = { Key = ""; ProviderRequest = None; Marketplace = marketplace; Application = application  } }
@@ -31,7 +35,7 @@ type KidoApplication(marketplace, application, key )  =
 
     //passive authentication support
     member this.setPassiveIdentity tokenRaw tokenRefresh =
-        //TODO : Memoize this
+        //TODO : Meomoize
         let cfg =  match getAppConfig (createConfigUrl this.marketplace this.application) with
                     | Configuration c -> c 
                     | _ ->  raise (System.ArgumentException("fail getting app configuration once again"))
@@ -121,3 +125,7 @@ type KidoApplication(marketplace, application, key )  =
 
     member this.isPassiveAuthenticated =
         identity.authenticationRequest.ProviderRequest.IsSome
+    
+    //Analytics supports
+    member this.EnableAnalytics =
+        ""
