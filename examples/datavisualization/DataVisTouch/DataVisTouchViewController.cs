@@ -5,6 +5,8 @@ using System.Diagnostics;
 using Foundation;
 using UIKit;
 
+using Examples;
+
 namespace DataVisTouch
 {
 	public partial class DataVisTouchViewController : UIViewController
@@ -59,6 +61,10 @@ namespace DataVisTouch
 				InvokeOnMainThread (() => {
 					invokeButton.Enabled = t.Result;
 					editTextName.Enabled = t.Result;
+                    if (t.Result)
+                    {
+                        kidoModel.EnableAnalytics();
+                    }
 				} )
 			);
 		}

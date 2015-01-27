@@ -16,6 +16,7 @@ namespace Examples
 		public Model ()
 		{
 			kido = new KidoApplication (Settings.Marketplace, Settings.Application, Settings.Key);
+
 		}
 		/// <summary>
 		/// Authenticates against Kidozen. 
@@ -24,10 +25,16 @@ namespace Examples
 		public Task<bool> Authenticate() {
 			return kido.Authenticate (Settings.User, Settings.Pass, Settings.Provider)
 				.ContinueWith(t=> { 
-					return !t.IsFaulted;}
-				);
+					return !t.IsFaulted;
+                }
+			);
 		}
 
+
+        public void EnableAnalytics()
+        {
+            kido.EnableAnalytics();
+        }
 
 		/// <summary>
 		/// The current version of ShowDataVisualization is synchronous, so this method wraps the call in a task
@@ -45,7 +52,15 @@ namespace Examples
 				}
 			} );
 		}
-	}
+
+        public void TagButton() {
+            kido.TagClick("Abc").Start();
+        }
+
+        public void TagCustom() {
+        }
+
+    }
 }
 
 

@@ -27,37 +27,34 @@ namespace Kidozen.iOS
 {
 	public static partial class KidozenAnalyticsExtensions
 	{
-
+        
 		public static void EnableAnalytics(this Kidozen.KidoApplication app) {
-			AppDomain.CurrentDomain.UnhandledException+= delegate(object sender, UnhandledExceptionEventArgs e) {
-				var ex = e.ExceptionObject as Exception;
-				var stack = new System.Diagnostics.StackTrace(ex,true);
-				var frame = stack.GetFrame(0);
-				var filename = frame.GetFileName();
-				var linenumber = frame.GetFileLineNumber();
-				var methodname = frame.GetMethod().Name;
-				var classname = frame.GetMethod().DeclaringType.FullName;
-				var fullstack = ex.StackTrace.Replace("\n",String.Empty);
-				var reason = ex.GetType().Name;
-				var appVersionCode = NSBundle.MainBundle.InfoDictionary["CFBundleShortVersionString"].ToString();
-
-				var message = C.Crash.CreateCrashMessage("monotouch",
-					UIDevice.CurrentDevice.Name ,
-					UIDevice.CurrentDevice.SystemName ,
-					UIDevice.CurrentDevice.SystemVersion, 
-					filename ,
-					linenumber , 
-					methodname ,
-					classname ,
-					fullstack ,
-					reason,
-					appVersionCode,
-					appVersionCode);
-
-				storeAnalyticsData(message);
-			};
-            processPendingAnalytics(app.marketplace, app.application, app.key);
+            AnalyticsSession.GetInstance().New();
 		}
+
+        public static Task TagClick(this Kidozen.KidoApplication app, string message)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                return ;
+            });		
+        }
+
+        public static Task TagView(this Kidozen.KidoApplication app, string message)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                return;
+            });
+        }
+
+        public static Task TagCustom<T>(this Kidozen.KidoApplication app, T message)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                return;
+            });
+        }
 
 		private static void processPendingAnalytics(string marketplace, string application, string key) {
             getAnalyticsPendingData().ToList().ForEach(m => sendAnalyticsData(m, marketplace, application, key));

@@ -5,7 +5,7 @@ using System.Linq;
 using Foundation;
 using UIKit;
 
-namespace DataVisTouch
+namespace Examples
 {
 	public class Application
 	{

@@ -23,22 +23,45 @@ namespace Kidozen.iOS
     public class Event
     {
         public Event() { }
-        public string eventName { get; set; }
+        public virtual string eventName { get; set; }
     }
 
     public class ValueEvent : Event
     {
         public ValueEvent() {}
+        public override string eventName
+        {
+            get
+            {
+                return base.eventName;
+            }
+            set
+            {
+                base.eventName = value;
+            }
+        }
         public object eventValue { get; set; }
         public string sessionUUID { get; set; }
     }
 
     public class SessionEvent : Event
     {
+        const string EVENT_NAME = "usersession";
         public SessionEvent() {}
+        public override string eventName
+        {
+            get
+            {
+                return EVENT_NAME;
+            }
+            set
+            {
+                base.eventName = EVENT_NAME;
+            }
+        }
         public SessionAttributes eventAttr { get; set; }
         public string sessionUUID { get; set; }
-        public int length { get; set; }
+        public long length { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string eventValue { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
@@ -55,7 +78,6 @@ namespace Kidozen.iOS
         public SessionAttributes() { }
         public string isoCountryCode { get; set; }
         public string platform { get; set; }
-        public string sessionLength { get; set; }
         public string networkAccess { get; set; }
         public string carrierName { get; set; }
         public string systemVersion { get; set; }
