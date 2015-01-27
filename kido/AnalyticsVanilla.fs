@@ -16,7 +16,7 @@ type Analytics (identity:Identity) =
     member this.identity = identity
     member this.SaveSession (session) =
         let baseurl =(getJsonStringValue (identity.config) "url" ).Value 
-        let logep = sprintf "%sapi/v3/logging/events?level=1" baseurl
+        let logep = baseurl + "api/v3/logging/events?level=1"
         let body = JSONSerializer.toString (session)
         let service =  async {
             let! result = createRequest HttpMethod.Post logep  
