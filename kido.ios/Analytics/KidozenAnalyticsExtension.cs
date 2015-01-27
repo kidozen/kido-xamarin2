@@ -23,35 +23,76 @@ using U = Utilities;
 using A = KzApplication;
 using C = Crash;
 
+using Newtonsoft;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace Kidozen.iOS
 {
 	public static partial class KidozenAnalyticsExtensions
-	{
-        
+	{        
 		public static void EnableAnalytics(this Kidozen.KidoApplication app) {
-            AnalyticsSession.GetInstance().New();
+            AnalyticsSession.GetInstance(app.GetIdentity).New();
 		}
 
         public static Task TagClick(this Kidozen.KidoApplication app, string message)
         {
             return Task.Factory.StartNew(() =>
             {
+                AnalyticsSession.GetInstance(app.GetIdentity)
+                    .AddValueEvent(new ValueEvent { eventName = "Click", eventValue = message });
                 return ;
             });		
+        }
+
+        public static Task Stop(this Kidozen.KidoApplication app)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                AnalyticsSession.GetInstance(app.GetIdentity)
+                    .Stop();
+                return;
+            });
+        }
+
+        public static Task Pause(this Kidozen.KidoApplication app)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                AnalyticsSession.GetInstance(app.GetIdentity)
+                    .Pause();
+                return;
+            });
+        }
+
+        public static Task Resume(this Kidozen.KidoApplication app)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                AnalyticsSession.GetInstance(app.GetIdentity)
+                    .Resume();
+                return;
+            });
         }
 
         public static Task TagView(this Kidozen.KidoApplication app, string message)
         {
             return Task.Factory.StartNew(() =>
             {
+                AnalyticsSession.GetInstance(app.GetIdentity).AddValueEvent(new ValueEvent { eventName = "View", eventValue = message });
+                
                 return;
             });
         }
 
-        public static Task TagCustom<T>(this Kidozen.KidoApplication app, T message)
+        public static Task TagCustom<T>(this Kidozen.KidoApplication app,  T message)
         {
             return Task.Factory.StartNew(() =>
             {
+                var serialized = JsonConvert.SerializeObject(message);
+                AnalyticsSession.GetInstance(app.GetIdentity)
+                    .AddValueEvent(new ValueEvent { eventName = "CustomEvent", eventValue = serialized });
+                
                 return;
             });
         }

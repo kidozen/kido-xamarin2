@@ -19,27 +19,34 @@ namespace Kidozen.iOS
         Timer timerUploader = new Timer(DEFAULT_TIMER_INTERVAL);
         String currentSessionId = System.Guid.NewGuid().ToString();
         List<Event> sessionEvents = new List<Event>();
-        SessionEvent mainEvent;
+        SessionAttributes eventAttributes;
 
-        private static volatile AnalyticsSession instance;
-        private static object syncRoot = new Object();
-       
-        public static AnalyticsSession GetInstance()
+        long startDate = 0 ;
+
+        
+        static volatile AnalyticsSession instance;
+        static object syncRoot = new Object();
+
+        Analytics kidoAnalyticsEp;
+        KzApplication.Identity identity;
+
+        public static AnalyticsSession GetInstance(KzApplication.Identity identity)
         {
             lock (syncRoot)
             {
                 if (instance == null)
                 {
-                    instance = new AnalyticsSession();
+                    instance = new AnalyticsSession(identity);                    
                 }
             }
             return instance;
         }
 
-        public AnalyticsSession()
+        public AnalyticsSession(KzApplication.Identity identity)
         {
+            this.identity = identity;
+            this.kidoAnalyticsEp = new Analytics(this.identity);
             timerUploader.Elapsed += timerUploader_Elapsed;
-
         }
 
         void timerUploader_Elapsed(object sender, ElapsedEventArgs e)
@@ -55,13 +62,24 @@ namespace Kidozen.iOS
         {
             var jsonmessage = JsonConvert.SerializeObject(sessionEvents);
             Console.WriteLine(jsonmessage);
+            kidoAnalyticsEp.SaveSession(sessionEvents)
+                .ContinueWith(
+                    t => {
+                        if (!t.IsFaulted)
+                        {
+                            Console.WriteLine("Cleanup");
+                        }
+                    }
+                );
+
         }
 
         public void New() {
             timerUploader.Enabled = true;
             timerUploader.Start();
 
-            var eventAttributes = new SessionAttributes { 
+            eventAttributes = new SessionAttributes
+            { 
                 isoCountryCode = "AR",
                 platform = "iOS",
                 networkAccess = "Wifi",
@@ -69,14 +87,12 @@ namespace Kidozen.iOS
                 systemVersion = "1.0",
                 deviceModel = "X"
             };
-            mainEvent = new SessionEvent { 
-                sessionUUID = currentSessionId, 
-                eventAttr = eventAttributes, 
-                StartDate = DateTime.UtcNow.Ticks };
+            startDate = DateTime.UtcNow.Ticks;
         }
 
         public void AddValueEvent(ValueEvent evt)
         {
+            evt.sessionUUID = this.currentSessionId;
             sessionEvents.Add(evt);
         }
 
@@ -85,29 +101,39 @@ namespace Kidozen.iOS
             timerUploader.Stop();
 
             var end = DateTime.UtcNow;
-            var lenght = end.Subtract( new DateTime(mainEvent.EndDate));
+            var lenght = end.Subtract( new DateTime(startDate));
 
-            mainEvent.EndDate = end.Ticks;
-            mainEvent.length = lenght.Ticks;
+            var mainEvent = new SessionEvent
+            {
+                sessionUUID = currentSessionId,
+                eventAttr = eventAttributes,
+                StartDate = startDate,
+                EndDate = end.Ticks,
+                length = lenght.Ticks
+            }; 
+
             sessionEvents.Add(mainEvent);
-
             this.doUpload();
-
         }
 
         public void Resume(){
-
+            timerUploader.Enabled = true;
+            timerUploader.Start();
         }
 
         public void Pause(){
-
+            timerUploader.Enabled = false;
+            timerUploader.Stop();
         }
 
         private void Reset()
         {
             this.currentSessionId = System.Guid.NewGuid().ToString();
             sessionEvents = new List<Event>();
-            timerUploader.Enabled = false;
+            if (!timerUploader.Enabled)
+            {
+                timerUploader.Enabled = false;  
+            } 
         }
      }
 }

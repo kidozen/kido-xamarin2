@@ -54,7 +54,9 @@ namespace Examples
 		}
 
         public void TagButton() {
-            kido.TagClick("Abc").Start();
+            kido.TagClick("Abc");
+            kido.Stop();
+            
         }
 
         public void TagCustom() {
