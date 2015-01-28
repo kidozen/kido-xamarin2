@@ -63,24 +63,14 @@ namespace Kidozen.iOS
 			getCrashPending ().ToList().ForEach(m => send(m,marketplace,application,key));
 		}
 
-		private static string getDocumentsFolder() {
-			if (UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) {
-				var folders = NSFileManager.DefaultManager.GetUrls (NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User);
-				return folders[0].Path;
-			} else {
-				var documents = Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments);
-				return Path.GetFullPath(Path.Combine (documents, "..", "Library","Caches"));
-			}
-		}
-
 		private static void storeCrash (string crash) {
 			var filename = String.Format ("{0}.crash", System.Guid.NewGuid ().ToString ());
-			var documents = getDocumentsFolder ();
+			var documents = FileUtilities.GetDocumentsFolder ();
 			System.IO.File.WriteAllText (Path.Combine (documents, filename), crash);
 		}
 
 		private static IEnumerable<string> getCrashPending() {
-			return Directory.EnumerateFiles (getDocumentsFolder (), "*.crash");
+			return Directory.EnumerateFiles (FileUtilities.GetDocumentsFolder(), "*.crash");
 		}
 
 		private static void send (string crashpath, string marketplace, string application, string key) {

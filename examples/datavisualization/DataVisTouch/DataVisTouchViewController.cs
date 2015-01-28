@@ -60,11 +60,7 @@ namespace DataVisTouch
 			kidoModel.Authenticate ().ContinueWith (t =>
 				InvokeOnMainThread (() => {
 					invokeButton.Enabled = t.Result;
-					editTextName.Enabled = t.Result;
-                    if (t.Result)
-                    {
-                        kidoModel.EnableAnalytics();
-                    }
+					editTextName.Enabled = t.Result; 
 				} )
 			);
 		}

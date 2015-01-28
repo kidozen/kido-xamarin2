@@ -31,7 +31,7 @@ namespace Kidozen.iOS
 		{
 		}
 
-        public static string getDocumentsFolder()
+        public static string GetDocumentsFolder()
         {
             if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
             {
@@ -44,12 +44,7 @@ namespace Kidozen.iOS
                 return Path.GetFullPath(Path.Combine(documents, "..", "Library", "Caches"));
             }
         }
-		public static void TestFastZipUnpack(string zipFileName, string targetDir) {
-			FastZip fastZip = new FastZip();
-			string fileFilter = null;
-			// Will always overwrite if target filenames already exist
-			fastZip.ExtractZip(zipFileName, targetDir, fileFilter);
-		}
+		
 
 	}
 }

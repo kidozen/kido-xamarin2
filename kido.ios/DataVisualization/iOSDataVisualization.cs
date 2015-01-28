@@ -57,20 +57,10 @@ namespace Kidozen.iOS
 
 		public string GetDestinationDirectory (string visualization)
 		{
-			var basepath = GetTargetDirectory();
+			var basepath = FileUtilities.GetDocumentsFolder();
 			return Path.Combine (basepath, visualization);
 		}
 
-		public string GetTargetDirectory ()
-		{
-			if (UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) {
-				var folders = NSFileManager.DefaultManager.GetUrls (NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User);
-				return folders[0].Path;
-			} else {
-				var documents = Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments);
-				return Path.GetFullPath(Path.Combine (documents, "..", "Library","Caches"));
-			}
-		}
 
 		public bool UnzipFiles (string path, string zipname)
 		{
@@ -115,6 +105,12 @@ namespace Kidozen.iOS
 		}
 
 		#endregion
-	}
+
+
+        public string GetTargetDirectory()
+        {
+            return FileUtilities.GetDocumentsFolder();
+        }
+    }
 }
 

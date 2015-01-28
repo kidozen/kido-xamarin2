@@ -30,19 +30,21 @@ using Newtonsoft.Json.Linq;
 namespace Kidozen.iOS
 {
 	public static partial class KidozenAnalyticsExtensions
-	{        
-		public static void EnableAnalytics(this Kidozen.KidoApplication app) {
+	{
+        public static void EnableAnalytics(this Kidozen.KidoApplication app) {
+            NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, willEnterForegroud);
+            NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, didEnterBackground);
+
             AnalyticsSession.GetInstance(app.GetIdentity).New();
 		}
 
-        public static Task TagClick(this Kidozen.KidoApplication app, string message)
+        private static void willEnterForegroud(NSNotification obj)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                AnalyticsSession.GetInstance(app.GetIdentity)
-                    .AddValueEvent(new ValueEvent { eventName = "Click", eventValue = message });
-                return ;
-            });		
+            throw new NotImplementedException();
+        }
+        private static void didEnterBackground(NSNotification obj)
+        {
+            throw new NotImplementedException();
         }
 
         public static Task Stop(this Kidozen.KidoApplication app)
@@ -75,6 +77,16 @@ namespace Kidozen.iOS
             });
         }
 
+        public static Task TagClick(this Kidozen.KidoApplication app, string message)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                AnalyticsSession.GetInstance(app.GetIdentity)
+                    .AddValueEvent(new ValueEvent { eventName = "Click", eventValue = message });
+                return;
+            });
+        }
+        
         public static Task TagView(this Kidozen.KidoApplication app, string message)
         {
             return Task.Factory.StartNew(() =>
@@ -103,12 +115,12 @@ namespace Kidozen.iOS
 
 		private static void storeAnalyticsData (string crash) {
 			var filename = String.Format ("{0}.crash", System.Guid.NewGuid ().ToString ());
-			var documents = FileUtilities.getDocumentsFolder ();
+			var documents = FileUtilities.GetDocumentsFolder ();
 			System.IO.File.WriteAllText (Path.Combine (documents, filename), crash);
 		}
 
 		private static IEnumerable<string> getAnalyticsPendingData() {
-			return Directory.EnumerateFiles (FileUtilities.getDocumentsFolder (), "*.crash");
+			return Directory.EnumerateFiles (FileUtilities.GetDocumentsFolder (), "*.crash");
 		}
 
 		private static void sendAnalyticsData (string crashpath, string marketplace, string application, string key) {
