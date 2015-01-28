@@ -5,6 +5,7 @@ using System.Diagnostics;
 
 using Kidozen;
 using Kidozen.iOS;
+using Kidozen.iOS.Analytics;
 
 
 namespace Examples
@@ -55,7 +56,7 @@ namespace Examples
 
         public void TagButton() {
             kido.TagClick("Abc");
-            kido.Stop();
+            //kido.Stop();
             
         }
 

@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 
 using U = Utilities;
 using A = KzApplication;
@@ -18,16 +13,13 @@ using Android.OS;
 #endif
 
 using Newtonsoft.Json;
-using Newtonsoft;
 
 #if __ANDROID__
 namespace Kidozen.Android
 #else
 namespace Kidozen.iOS
 #endif
-
 {
-
 	public static partial class KidozenExtensions	{
 		static IDataVisualization datavisualization;
 

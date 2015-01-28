@@ -1,58 +1,67 @@
 ﻿using System;
-using System.Threading;
+using System.Globalization;
 using System.Threading.Tasks;
-using System.Diagnostics;
-
-#if __UNIFIED__
-using MonoTouch;
-using UIKit;
 using Foundation;
+using Kidozen.iOS.Analytics;
+using Newtonsoft.Json;
+using UIKit;
+#if __UNIFIED__
 #else
 using MonoTouch;
 using MonoTouch.UIKit;
 using MonoTouch.Foundation;
 #endif
 
-using System.IO;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-
-using K = Kidozen;
-using U = Utilities;
-using A = KzApplication;
-using C = Crash;
-
-using Newtonsoft;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
+#if __ANDROID__
+namespace Kidozen.Android
+#else
 namespace Kidozen.iOS
+#endif
 {
 	public static partial class KidozenAnalyticsExtensions
 	{
+	    private static AnalyticsSession _analyticsSession;
+	    private static IDeviceStorage _deviceStorage;
+	    
+#if __ANDROID__
         public static void EnableAnalytics(this Kidozen.KidoApplication app) {
-            NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, willEnterForegroud);
-            NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, didEnterBackground);
+            NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, WillEnterForegroud);
+            NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, DidEnterBackground);
 
-            AnalyticsSession.GetInstance(app.GetIdentity).New();
+	        _analyticsSession = AnalyticsSession.GetInstance(app.GetIdentity);
+	        _analyticsSession.New();
 		}
-
-        private static void willEnterForegroud(NSNotification obj)
+#else
+        public static void EnableAnalytics(this Kidozen.KidoApplication app)
         {
-            throw new NotImplementedException();
-        }
-        private static void didEnterBackground(NSNotification obj)
-        {
-            throw new NotImplementedException();
+            NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, WillEnterForegroud);
+            NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, DidEnterBackground);
+            _deviceStorage = new DeviceStorage();
+            _analyticsSession = AnalyticsSession.GetInstance(app.GetIdentity);
+            _analyticsSession.New();
         }
 
+        private static void WillEnterForegroud(NSNotification obj)
+        {
+            var value = FileUtilities.GetNsUserDefaultStoredValue("SessionSavedDateTime");
+            var savedDateTime = DateTime.Parse(value);
+
+            _analyticsSession.RestoreFromDisk(_deviceStorage,savedDateTime);
+        }
+
+        private static void DidEnterBackground(NSNotification obj)
+        {
+            var savedDateTime = DateTime.Now;
+            FileUtilities.SetNsUserDefaultStoredValue("SessionSavedDateTime", savedDateTime.ToString(CultureInfo.InvariantCulture));
+            _analyticsSession.SaveToDisk(_deviceStorage);
+        }
+#endif
+        
         public static Task Stop(this Kidozen.KidoApplication app)
         {
             return Task.Factory.StartNew(() =>
             {
-                AnalyticsSession.GetInstance(app.GetIdentity)
-                    .Stop();
+                _analyticsSession.Stop();
                 return;
             });
         }
@@ -61,8 +70,7 @@ namespace Kidozen.iOS
         {
             return Task.Factory.StartNew(() =>
             {
-                AnalyticsSession.GetInstance(app.GetIdentity)
-                    .Pause();
+                _analyticsSession.Pause();
                 return;
             });
         }
@@ -71,8 +79,7 @@ namespace Kidozen.iOS
         {
             return Task.Factory.StartNew(() =>
             {
-                AnalyticsSession.GetInstance(app.GetIdentity)
-                    .Resume();
+                _analyticsSession.Resume();
                 return;
             });
         }
@@ -81,7 +88,7 @@ namespace Kidozen.iOS
         {
             return Task.Factory.StartNew(() =>
             {
-                AnalyticsSession.GetInstance(app.GetIdentity)
+                _analyticsSession
                     .AddValueEvent(new ValueEvent { eventName = "Click", eventValue = message });
                 return;
             });
@@ -91,7 +98,8 @@ namespace Kidozen.iOS
         {
             return Task.Factory.StartNew(() =>
             {
-                AnalyticsSession.GetInstance(app.GetIdentity).AddValueEvent(new ValueEvent { eventName = "View", eventValue = message });
+                _analyticsSession
+                    .AddValueEvent(new ValueEvent { eventName = "View", eventValue = message });
                 
                 return;
             });
@@ -102,35 +110,15 @@ namespace Kidozen.iOS
             return Task.Factory.StartNew(() =>
             {
                 var serialized = JsonConvert.SerializeObject(message);
-                AnalyticsSession.GetInstance(app.GetIdentity)
+                _analyticsSession
                     .AddValueEvent(new ValueEvent { eventName = "CustomEvent", eventValue = serialized });
                 
                 return;
             });
         }
 
-		private static void processPendingAnalytics(string marketplace, string application, string key) {
-            getAnalyticsPendingData().ToList().ForEach(m => sendAnalyticsData(m, marketplace, application, key));
-		}
-
-		private static void storeAnalyticsData (string crash) {
-			var filename = String.Format ("{0}.crash", System.Guid.NewGuid ().ToString ());
-			var documents = FileUtilities.GetDocumentsFolder ();
-			System.IO.File.WriteAllText (Path.Combine (documents, filename), crash);
-		}
-
-		private static IEnumerable<string> getAnalyticsPendingData() {
-			return Directory.EnumerateFiles (FileUtilities.GetDocumentsFolder (), "*.crash");
-		}
-
-		private static void sendAnalyticsData (string crashpath, string marketplace, string application, string key) {
-			var crash = System.IO.File.ReadAllText (crashpath);
-			C.Crash.Create (crash, marketplace, application, key).ContinueWith(
-				t=> {
-					if (t.Result) System.IO.File.Delete (crashpath);						
-				}
-			);
-		}
 	}
+
+
 }
 

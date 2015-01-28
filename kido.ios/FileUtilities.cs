@@ -44,8 +44,23 @@ namespace Kidozen.iOS
                 return Path.GetFullPath(Path.Combine(documents, "..", "Library", "Caches"));
             }
         }
-		
 
+        public static String GetNsUserDefaultStoredValue(string key)
+        {
+            var value = NSUserDefaults.StandardUserDefaults.StringForKey(key);
+            return value ?? string.Empty;
+        }
+
+        public static void SetNsUserDefaultStoredValue(string key, string value)
+        {
+            NSUserDefaults.StandardUserDefaults.SetString(value, key);
+            NSUserDefaults.StandardUserDefaults.Synchronize();
+        }
+
+        public static void DeleteNsUserDefaultStoredValue(string key)
+        {
+            NSUserDefaults.StandardUserDefaults.RemoveObject(key);
+        }
 	}
 }
 

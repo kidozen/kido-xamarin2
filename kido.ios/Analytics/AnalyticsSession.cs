@@ -1,85 +1,78 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Foundation;
-using UIKit;
+using System.IO;
 using System.Timers;
-
-using Newtonsoft;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-namespace Kidozen.iOS
+namespace Kidozen.iOS.Analytics
 {
     public class AnalyticsSession
     {
-        const double DEFAULT_TIMER_INTERVAL = 5 * 1000; //* 60 
-        Timer timerUploader = new Timer(DEFAULT_TIMER_INTERVAL);
-        String currentSessionId = System.Guid.NewGuid().ToString();
-        List<Event> sessionEvents = new List<Event>();
-        SessionAttributes eventAttributes;
+        const string Subfolder = "AnaliticsSessions";
+        private const double DefaultTimerInterval = 5*1000*60; 
+        readonly Timer _timerUploader = new Timer(DefaultTimerInterval);
+        String _currentSessionId = System.Guid.NewGuid().ToString();
+        List<Event> _sessionEvents = new List<Event>();
+        SessionAttributes _eventAttributes;
 
-        long startDate = 0 ;
+        long _startDate = 0;
 
-        
-        static volatile AnalyticsSession instance;
-        static object syncRoot = new Object();
+        static volatile AnalyticsSession _instance;
+        static readonly object SyncRoot = new Object();
 
-        Analytics kidoAnalyticsEp;
-        KzApplication.Identity identity;
+        readonly Kidozen.Analytics _kidoAnalyticsEp;
+        private double _defaultSessionTimeoutInSeconds = 5;
+        private SessionEvent _mainSessionEvent;
 
         public static AnalyticsSession GetInstance(KzApplication.Identity identity)
         {
-            lock (syncRoot)
+            lock (SyncRoot)
             {
-                if (instance == null)
+                if (_instance == null)
                 {
-                    instance = new AnalyticsSession(identity);                    
+                    _instance = new AnalyticsSession(identity);
                 }
             }
-            return instance;
+            return _instance;
         }
 
         public AnalyticsSession(KzApplication.Identity identity)
         {
-            this.identity = identity;
-            this.kidoAnalyticsEp = new Analytics(this.identity);
-            timerUploader.Elapsed += timerUploader_Elapsed;
+            this._kidoAnalyticsEp = new Kidozen.Analytics(identity);
+            _timerUploader.Elapsed += timerUploader_Elapsed;
         }
 
         void timerUploader_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (sessionEvents.Count > 0)
-            {
-                doUpload();
-            }
-
+            if (_sessionEvents.Count <= 0) return;
+            var message = JsonConvert.SerializeObject(_sessionEvents);
+            DoUpload(message);
         }
 
-        private void doUpload()
+        private void DoUpload(string message)
         {
-            var jsonmessage = JsonConvert.SerializeObject(sessionEvents);
-            Console.WriteLine(jsonmessage);
-            kidoAnalyticsEp.SaveSession(sessionEvents)
+            Console.WriteLine(message);
+            if (_sessionEvents.Count <= 0) return;
+
+            _kidoAnalyticsEp.SaveSession(_sessionEvents)
                 .ContinueWith(
-                    t => {
+                    t =>
+                    {
                         if (!t.IsFaulted)
                         {
                             Console.WriteLine("Cleanup");
                         }
                     }
                 );
-
         }
 
-        public void New() {
-            timerUploader.Enabled = true;
-            timerUploader.Start();
+        public void New()
+        {
+            _timerUploader.Enabled = true;
+            _timerUploader.Start();
 
-            eventAttributes = new SessionAttributes
-            { 
+            _eventAttributes = new SessionAttributes
+            {
                 isoCountryCode = "AR",
                 platform = "iOS",
                 networkAccess = "Wifi",
@@ -87,53 +80,93 @@ namespace Kidozen.iOS
                 systemVersion = "1.0",
                 deviceModel = "X"
             };
-            startDate = DateTime.UtcNow.Ticks;
+            _startDate = DateTime.UtcNow.Ticks;
         }
 
         public void AddValueEvent(ValueEvent evt)
         {
-            evt.sessionUUID = this.currentSessionId;
-            sessionEvents.Add(evt);
+            evt.sessionUUID = this._currentSessionId;
+            _sessionEvents.Add(evt);
         }
 
-        public void Stop() {
-            timerUploader.Enabled = false;
-            timerUploader.Stop();
+        public void Stop()
+        {
+            _timerUploader.Enabled = false;
+            _timerUploader.Stop();
+
+            var message = JsonConvert.SerializeObject(_sessionEvents);
+            this.DoUpload(message);
+        }
+
+        public void Resume()
+        {
+            _timerUploader.Enabled = true;
+            _timerUploader.Start();
+        }
+
+        public void Pause()
+        {
+            _timerUploader.Enabled = false;
+            _timerUploader.Stop();
+        }
+
+        public void SaveToDisk(IDeviceStorage storage)
+        {
+            var path = CreateCurrentSessionStoragePath(storage);
+            var serialized = JsonConvert.SerializeObject(_sessionEvents);
+            storage.WriteText(path, serialized);
+        }
+
+        public void RestoreFromDisk(IDeviceStorage storage, DateTime savedDateTime)
+        {
+            var datePlusSessionTimeout = savedDateTime.AddSeconds(_defaultSessionTimeoutInSeconds);
+            if (DateTime.Now.Ticks <= datePlusSessionTimeout.Ticks) return;
 
             var end = DateTime.UtcNow;
-            var lenght = end.Subtract( new DateTime(startDate));
+            var lenght = end.Subtract(new DateTime(_startDate));
 
-            var mainEvent = new SessionEvent
+            var path = CreateCurrentSessionStoragePath(storage);
+            var content = storage.ReadAllText(path);
+
+            var sessionEvent = new SessionEvent
             {
-                sessionUUID = currentSessionId,
-                eventAttr = eventAttributes,
-                StartDate = startDate,
+                sessionUUID = _currentSessionId,
+                eventAttr = _eventAttributes,
+                StartDate = _startDate,
                 EndDate = end.Ticks,
                 length = lenght.Ticks
-            }; 
+            };
 
-            sessionEvents.Add(mainEvent);
-            this.doUpload();
+            var message = JsonConvert.DeserializeObject<List<Object>>(content);
+            message.Add(sessionEvent);
+
+            this.DoUpload(message);
         }
 
-        public void Resume(){
-            timerUploader.Enabled = true;
-            timerUploader.Start();
+        private void DoUpload(IReadOnlyCollection<object> message)
+        {
+            this.DoUpload(JsonConvert.SerializeObject(message));
         }
 
-        public void Pause(){
-            timerUploader.Enabled = false;
-            timerUploader.Stop();
+        private string CreateCurrentSessionStoragePath(IDeviceStorage storage)
+        {
+            
+            var folder = Path.Combine(storage.GetBasePath(), Subfolder);
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+            return Path.Combine(folder, _currentSessionId);
         }
 
         private void Reset()
         {
-            this.currentSessionId = System.Guid.NewGuid().ToString();
-            sessionEvents = new List<Event>();
-            if (!timerUploader.Enabled)
+            this._currentSessionId = System.Guid.NewGuid().ToString();
+            _sessionEvents = new List<Event>();
+            if (!_timerUploader.Enabled)
             {
-                timerUploader.Enabled = false;  
-            } 
+                _timerUploader.Enabled = false;
+            }
         }
-     }
+    }
 }
