@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Timers;
 using Newtonsoft.Json;
 
@@ -9,7 +10,7 @@ namespace Kidozen.iOS.Analytics
     public class AnalyticsSession
     {
         const string Subfolder = "AnaliticsSessions";
-        private const double DefaultTimerInterval = 5*1000*60; 
+        private const double DefaultTimerInterval = 1*1000*60; 
         readonly Timer _timerUploader = new Timer(DefaultTimerInterval);
         String _currentSessionId = System.Guid.NewGuid().ToString();
         List<Event> _sessionEvents = new List<Event>();
@@ -22,8 +23,7 @@ namespace Kidozen.iOS.Analytics
 
         readonly Kidozen.Analytics _kidoAnalyticsEp;
         private double _defaultSessionTimeoutInSeconds = 5;
-        private SessionEvent _mainSessionEvent;
-
+        
         public static AnalyticsSession GetInstance(KzApplication.Identity identity)
         {
             lock (SyncRoot)
@@ -44,26 +44,32 @@ namespace Kidozen.iOS.Analytics
 
         void timerUploader_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (_sessionEvents.Count <= 0) return;
+            this.Pause();
+            if (_sessionEvents.Count <= 0)
+            {
+                this.Resume();
+                return;
+            }
             var message = JsonConvert.SerializeObject(_sessionEvents);
-            DoUpload(message);
-        }
-
-        private void DoUpload(string message)
-        {
-            Console.WriteLine(message);
-            if (_sessionEvents.Count <= 0) return;
-
-            _kidoAnalyticsEp.SaveSession(_sessionEvents)
-                .ContinueWith(
+            DoUpload(message).ContinueWith
+                (
                     t =>
                     {
-                        if (!t.IsFaulted)
-                        {
-                            Console.WriteLine("Cleanup");
-                        }
+                        if (!t.IsFaulted) this.Cleanup();
+                        this.Resume();
                     }
                 );
+        }
+
+        private void Cleanup()
+        {
+            _sessionEvents = new List<Event>();
+        }
+
+        private Task<bool> DoUpload(string message)
+        {
+            Console.WriteLine(message);
+            return _sessionEvents.Count <= 0 ?  new Task<bool>(() => true) : _kidoAnalyticsEp.SaveSession(_sessionEvents);
         }
 
         public void New()
@@ -145,7 +151,12 @@ namespace Kidozen.iOS.Analytics
 
         private void DoUpload(IReadOnlyCollection<object> message)
         {
-            this.DoUpload(JsonConvert.SerializeObject(message));
+            this.DoUpload(JsonConvert.SerializeObject(message))
+                .ContinueWith(t =>
+                {
+                    if (t.IsFaulted) return;
+                    this.Reset();
+                });
         }
 
         private string CreateCurrentSessionStoragePath(IDeviceStorage storage)
@@ -163,10 +174,10 @@ namespace Kidozen.iOS.Analytics
         {
             this._currentSessionId = System.Guid.NewGuid().ToString();
             _sessionEvents = new List<Event>();
-            if (!_timerUploader.Enabled)
-            {
-                _timerUploader.Enabled = false;
-            }
+            if (_timerUploader.Enabled) return;
+
+            _timerUploader.Enabled = true;
+            _timerUploader.Start();
         }
     }
 }
