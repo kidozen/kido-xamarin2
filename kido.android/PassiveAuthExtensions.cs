@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Diagnostics;
-
+using System.Threading.Tasks;
+using Android.Content;
 using U = Utilities;
 using A = KzApplication;
-
-using Android.Content;
 
 namespace Kidozen.Android
 {
@@ -17,9 +14,9 @@ namespace Kidozen.Android
 		private static string authErrorMessage = "One or more errors occurred in Passive Authentication";
 		private static Task dummyPassiveFailTask = new Task(()=> {throw new Exception(authErrorMessage);});
 
-		private static Kidozen.KidoApplication currentApplication;
+		private static KidoApplication currentApplication;
 		
-		public static Task Authenticate(this Kidozen.KidoApplication app, Context context) {
+		public static Task Authenticate(this KidoApplication app, Context context) {
 			currentApplication = app;
             var url = A.fetchConfigValue("signInUrl", app.marketplace, app.application, app.key);
             var startPassiveAuthIntent = new Intent(context, typeof(PassiveAuthActivity));

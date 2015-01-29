@@ -1,5 +1,4 @@
-﻿using System;
-using AOS = Android.OS ;
+﻿using AOS = Android.OS ;
 
 namespace Kidozen.Android
 {

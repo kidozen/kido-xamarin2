@@ -1,33 +1,16 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-
 using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-using Java.Interop;
-using Android.Webkit;
-using System.IO;
-
-using Java.IO;
-using Java.Util.Zip;
-using System.Threading.Tasks;
-using System.Threading;
-
-using A = KzApplication;
-using C = Crash;
-
 using Android.Graphics;
 using Android.Net.Http;
+using Android.OS;
+using Android.Views;
+using Android.Webkit;
+using Android.Widget;
+using A = KzApplication;
+using C = Crash;
+using Path = System.IO.Path;
 
 namespace Kidozen.Android
 {
@@ -57,7 +40,7 @@ namespace Kidozen.Android
 				this.destinationdir = this.Intent.Extras.GetString("destinationdir");
 
 				this.addWebView(this);
-				var path = String.Format ("file://{0}", System.IO.Path.Combine (destinationdir, visualization) + "/index.html");
+				var path = String.Format ("file://{0}", Path.Combine (destinationdir, visualization) + "/index.html");
 				webView.LoadUrl (path );
 			}
 		}

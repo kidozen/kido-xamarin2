@@ -53,16 +53,20 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\sources\kido\common\AnalyticsMessages.cs">
+      <Link>Analytics\AnalyticsMessages.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\AnalyticsSession.cs">
+      <Link>Analytics\AnalyticsSession.cs</Link>
+    </Compile>
     <Compile Include="..\sources\kido\common\IDeviceInformation.cs">
       <Link>Analytics\IDeviceInformation.cs</Link>
     </Compile>
-    <Compile Include="..\sources\kido\common\KidozenAnalyticsExtension.cs">
-      <Link>Analytics\KidozenAnalyticsExtension.cs</Link>
-    </Compile>
-    <Compile Include="Analytics\AnalyticsMessages.cs" />
-    <Compile Include="Analytics\AnalyticsSession.cs" />
     <Compile Include="..\sources\kido\common\IDeviceStorage.cs">
       <Link>IDeviceStorage.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\KidozenAnalyticsExtension.cs">
+      <Link>Analytics\KidozenAnalyticsExtension.cs</Link>
     </Compile>
     <Compile Include="Analytics\DeviceInformation.cs" />
     <Compile Include="Analytics\DeviceStorage.cs" />

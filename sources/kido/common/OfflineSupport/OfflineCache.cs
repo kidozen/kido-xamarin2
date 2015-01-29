@@ -1,23 +1,15 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Diagnostics;
-
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-
 using System.Security.Cryptography;
 using System.Text;
-
-
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using K = Kidozen;
 using U = Utilities;
 using A = KzApplication;
 using C = Crash;
-
-using Newtonsoft.Json;
 
 #if __ANDROID__
 namespace Kidozen.Android.Offline
@@ -39,31 +31,31 @@ namespace Kidozen.iOS.Offline
 		public OfflineCache (string path, string name, string service, string parameters = "") {
 			Service = service;
 			ServiceName = name;
-			DirectoryPath = System.IO.Path.Combine(path, Service);
+			DirectoryPath = Path.Combine(path, Service);
 			parametersAsHash = (string.IsNullOrEmpty(parameters) ? parameters : createHash (parameters)) ;
 			Filename = string.Format("{0}.{1}.json",name, parametersAsHash);
 		}
 
 		private string save (string content, string parameters = "") {
 			if (!Directory.Exists(DirectoryPath)) {
-				System.IO.Directory.CreateDirectory (DirectoryPath);
+				Directory.CreateDirectory (DirectoryPath);
 			}
 			if (Expiration==null) {
 				Expiration = new TimeSpan (DateTime.Now.Ticks);
 			}
 			var expiration = DateTime.Now.AddTicks(Expiration.Value.Ticks).Ticks;
 			var contentWithHeader = string.Format("{0}\t{1}", expiration, content);
-			System.IO.File.WriteAllText(getFullFilePath(), contentWithHeader,System.Text.UTF8Encoding.UTF8);
+			System.IO.File.WriteAllText(getFullFilePath(), contentWithHeader,UTF8Encoding.UTF8);
 			return contentWithHeader;
 		}
 
 		public string get () {
-			return System.IO.File.ReadAllText(getFullFilePath(),System.Text.UTF8Encoding.UTF8);
+			return System.IO.File.ReadAllText(getFullFilePath(),UTF8Encoding.UTF8);
 		}
 
 		private string getFullFilePath() {
 			if (string.IsNullOrEmpty(FilenamePath)) {
-				FilenamePath = System.IO.Path.Combine (DirectoryPath, Filename);
+				FilenamePath = Path.Combine (DirectoryPath, Filename);
 			}
 			return FilenamePath;
 		}
@@ -169,7 +161,7 @@ namespace Kidozen.iOS.Offline
 		{
 			// First we need to convert the string into bytes, which
 			// means using a text encoder.
-			var enc = System.Text.Encoding.Unicode.GetEncoder();
+			var enc = Encoding.Unicode.GetEncoder();
 
 			// Create a buffer large enough to hold the string
 			var unicodeText = new byte[str.Length * 2];
@@ -197,16 +189,16 @@ namespace Kidozen.iOS.Offline
 		private Task<string> queueRequest(string content) {
 			return Task.Factory.StartNew<string>(()=> {
 				if (!Directory.Exists(DirectoryPath)) {
-					System.IO.Directory.CreateDirectory (DirectoryPath);
+					Directory.CreateDirectory (DirectoryPath);
 				}
-				var requestDirectoryPath = System.IO.Path.Combine(this.DirectoryPath,this.ServiceName);
+				var requestDirectoryPath = Path.Combine(this.DirectoryPath,this.ServiceName);
 				if (!Directory.Exists(requestDirectoryPath)) {
-					System.IO.Directory.CreateDirectory (requestDirectoryPath);
+					Directory.CreateDirectory (requestDirectoryPath);
 				}
 
 				var requestFileName = string.Format("{0}.request",Guid.NewGuid().ToString());
 
-				System.IO.File.WriteAllText(System.IO.Path.Combine(requestDirectoryPath,requestFileName), content,System.Text.UTF8Encoding.UTF8);
+				System.IO.File.WriteAllText(Path.Combine(requestDirectoryPath,requestFileName), content,UTF8Encoding.UTF8);
 
 				return requestFileName;
 			});		
@@ -214,10 +206,10 @@ namespace Kidozen.iOS.Offline
 
 		private Task processPending() {
 			return Task.Factory.StartNew(()=> {
-				var requestDirectoryPath = System.IO.Path.Combine(this.DirectoryPath,this.ServiceName);
+				var requestDirectoryPath = Path.Combine(this.DirectoryPath,this.ServiceName);
 				var requests = Directory.EnumerateFiles(requestDirectoryPath,"*.request").ToList().Select(f=> {
-					var fullfilename = System.IO.Path.Combine(requestDirectoryPath,f);
-					return System.IO.File.ReadAllText(fullfilename,System.Text.UTF8Encoding.UTF8);
+					var fullfilename = Path.Combine(requestDirectoryPath,f);
+					return System.IO.File.ReadAllText(fullfilename,UTF8Encoding.UTF8);
 				});
 				if (RequestQueueManagerFetch!=null) {
 					RequestQueueManagerFetch(this,new RequestQueueManagerEventArgs { Requests = requests.ToList() });

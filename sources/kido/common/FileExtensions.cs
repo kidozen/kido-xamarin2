@@ -1,12 +1,5 @@
-﻿using System;
-using System.Threading;
+﻿using System.IO;
 using System.Threading.Tasks;
-using System.Diagnostics;
-
-using System.IO;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 
 #if __ANDROID__
 using Android.Runtime;

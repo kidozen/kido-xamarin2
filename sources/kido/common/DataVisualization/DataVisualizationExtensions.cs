@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.IO;
-
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using U = Utilities;
 using A = KzApplication;
 using C = Crash;
@@ -11,8 +11,6 @@ using Android.Content;
 using Android.OS;
 #elif __IOS__
 #endif
-
-using Newtonsoft.Json;
 
 #if __ANDROID__
 namespace Kidozen.Android
@@ -29,14 +27,14 @@ namespace Kidozen.iOS
 			ShowVisualization (app, datavisualization, visualization);
 		}
 		#else
-		public static void ShowDataVisualization(this Kidozen.KidoApplication app, String visualization) {
+		public static void ShowDataVisualization(this KidoApplication app, String visualization) {
 			datavisualization = new iOSDataVisualization ();
 			ShowVisualization (app, datavisualization, visualization);
 		}
 		#endif
 
 
-		private static void ShowVisualization(this Kidozen.KidoApplication app, IDataVisualization datavisualization, String visualization) {
+		private static void ShowVisualization(this KidoApplication app, IDataVisualization datavisualization, String visualization) {
             var baseurl = A.fetchConfigValue("url", app.marketplace, app.application, app.key);
             String url = String.Format("{0}api/v2/visualizations/{1}/app/download?type=mobile", baseurl.Result.Trim("\"".ToCharArray()), visualization);
             var files = new Files(app.GetIdentity);
@@ -55,7 +53,7 @@ namespace Kidozen.iOS
             
 		}
 
-		private static void replacePlaceholders( Kidozen.KidoApplication app, String dataVizName ) {
+		private static void replacePlaceholders( KidoApplication app, String dataVizName ) {
 			var indexString = System.IO.File.ReadAllText( indexFilePath(dataVizName));
 			var options = optionsString (app);
 			indexString = indexString.Replace("{{:options}}", options);
@@ -64,7 +62,7 @@ namespace Kidozen.iOS
 			System.IO.File.WriteAllText( indexFilePath(dataVizName),indexString);
 		}
 
-		private static String optionsString(Kidozen.KidoApplication app) {
+		private static String optionsString(KidoApplication app) {
 			if (app.isPassiveAuthenticated ) {
                 var token = new DsPassiveJsSDKBridge(app);
                 return JsonConvert.SerializeObject(token);

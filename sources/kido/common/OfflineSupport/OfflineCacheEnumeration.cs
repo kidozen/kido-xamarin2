@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 #if __ANDROID__
 namespace Kidozen.Android.Offline
 #else

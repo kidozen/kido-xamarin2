@@ -1,31 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-using Java.Interop;
-using Android.Webkit;
 using System.IO;
-
+using Android.Content;
 using Java.IO;
 using Java.Util.Zip;
-using System.Threading.Tasks;
-using System.Threading;
-
 using A = KzApplication;
 using C = Crash;
 
 using AOS = Android.OS;
+using Console = System.Console;
+using IOException = Java.IO.IOException;
 
 namespace Kidozen.Android
 {
@@ -65,8 +48,8 @@ namespace Kidozen.Android
 			{
 				String filename;
 				var inputstream = System.IO.File.Open(Path.Combine(path,zipname + ".zip"),FileMode.Open);
-				var zis = new Java.Util.Zip.ZipInputStream(inputstream);
-				Java.Util.Zip.ZipEntry ze;
+				var zis = new ZipInputStream(inputstream);
+				ZipEntry ze;
 				byte[] buffer = new byte[1024];
 				int count;
 
@@ -81,7 +64,7 @@ namespace Kidozen.Android
 						continue;
 					}
 
-					var fout = new Java.IO.FileOutputStream(Path.Combine(Path.Combine(path,zipname ) ,filename));
+					var fout = new FileOutputStream(Path.Combine(Path.Combine(path,zipname ) ,filename));
 					while ((count = zis.Read(buffer)) != -1) fout.Write(buffer, 0, count);
 
 					fout.Close();
@@ -90,9 +73,9 @@ namespace Kidozen.Android
 
 				zis.Close();
 			}
-			catch(Java.IO.IOException iox)
+			catch(IOException iox)
 			{
-				System.Console.WriteLine (iox.Message);
+				Console.WriteLine (iox.Message);
 				return false;
 			}
 

@@ -5,14 +5,21 @@ using System.Threading.Tasks;
 using System.Timers;
 using Newtonsoft.Json;
 
+#if __ANDROID__
+using Kidozen.Android;
+namespace Kidozen.Android.Analytics
+#else
+using Kidozen.iOS;
 namespace Kidozen.iOS.Analytics
+#endif
+
 {
     public class AnalyticsSession
     {
         const string Subfolder = "AnaliticsSessions";
         private const double DefaultTimerInterval = 1*1000*60; 
         readonly Timer _timerUploader = new Timer(DefaultTimerInterval);
-        String _currentSessionId = System.Guid.NewGuid().ToString();
+        String _currentSessionId = Guid.NewGuid().ToString();
         List<Event> _sessionEvents = new List<Event>();
         SessionAttributes _eventAttributes;
 
@@ -164,7 +171,7 @@ namespace Kidozen.iOS.Analytics
 
         private void Reset()
         {
-            this._currentSessionId = System.Guid.NewGuid().ToString();
+            this._currentSessionId = Guid.NewGuid().ToString();
             _sessionEvents = new List<Event>();
             if (_timerUploader.Enabled) return;
 

@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-
 using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-using Java.Interop;
-using Android.Webkit;
 using Android.Net.Http;
+using Android.OS;
+using Android.Views;
+using Android.Webkit;
+using Android.Widget;
+using Java.Interop;
+using Newtonsoft.Json;
+using Debug = System.Diagnostics.Debug;
+using Object = Java.Lang.Object;
 
 namespace Kidozen.Android
 {
@@ -27,7 +23,7 @@ namespace Kidozen.Android
 
 	public delegate void AuthenticationResponse(object sender, AuthenticationResponseEventArgs e);
 
-	public class AuthenticationJavaScriptInterface : Java.Lang.Object {
+	public class AuthenticationJavaScriptInterface : Object {
 		private Context context;
 
 		public event AuthenticationResponse AuthenticationResponseArrived;
@@ -152,7 +148,7 @@ namespace Kidozen.Android
 
 		void HandleAuthenticationResponseArrived (object sender, AuthenticationResponseEventArgs e)
 		{
-			System.Diagnostics.Debug.WriteLine ("PassiveAuthActivity: " + e.Success.ToString ());
+			Debug.WriteLine ("PassiveAuthActivity: " + e.Success.ToString ());
 			KidozenExtensions.HandleAuthenticationResponseArrived (e);
 			this.Finish ();
 		}

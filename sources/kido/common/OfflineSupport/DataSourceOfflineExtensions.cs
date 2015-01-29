@@ -1,20 +1,10 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Diagnostics;
-
-using System.IO;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-
+using Newtonsoft.Json;
 using K = Kidozen;
 using U = Utilities;
 using A = KzApplication;
 using C = Crash;
-
-using Newtonsoft;
-using Newtonsoft.Json;
 
 #if __ANDROID__
 namespace Kidozen.Android.Offline

@@ -1,34 +1,25 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Diagnostics;
-
 using System.IO;
 using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-
+using Android.Content;
+using Android.Content.PM;
+using Android.Runtime;
 using K = Kidozen;
 using U = Utilities;
 using A = KzApplication;
 using C = Crash;
-
-using Android.Content;
-using Android.OS;
-
-using Android.Runtime;
-using Android.Content.PM;
 using AOS=Android.OS ;
-using Android.OS.Storage;
 
 namespace Kidozen.Android
 {
 	public static partial class KidozenExtensions
 	{
-		public static void EnableCrash(this Kidozen.KidoApplication app,Context context) {
+		public static void EnableCrash(this KidoApplication app,Context context) {
 			AndroidEnvironment.UnhandledExceptionRaiser += delegate(object sender, RaiseThrowableEventArgs e) {
 				var ex = e.Exception;
-				var stack = new System.Diagnostics.StackTrace(ex,true);
+				var stack = new StackTrace(ex,true);
 				var frame = stack.GetFrame(0);
 				var filename = frame.GetFileName();
 				var linenumber = frame.GetFileLineNumber();
@@ -39,10 +30,10 @@ namespace Kidozen.Android
 				var appVersionCode = context.PackageManager.GetPackageInfo(context.PackageName, PackageInfoFlags.MetaData).VersionCode;
 				var appVersionName = context.PackageManager.GetPackageInfo(context.PackageName, PackageInfoFlags.MetaData).VersionName;
 
-				var message = C.Crash.CreateCrashMessage("monotouch",
-					Build.Device,
-					Build.Model,
-					Build.VERSION.Release, 
+				var message = Crash.Crash.CreateCrashMessage("monotouch",
+					AOS.Build.Device,
+					AOS.Build.Model,
+					AOS.Build.VERSION.Release, 
 					filename ,
 					linenumber , 
 					methodname ,
@@ -53,7 +44,7 @@ namespace Kidozen.Android
 					appVersionCode.ToString());
 
 				storeCrash(message);
-				System.Diagnostics.Debug.WriteLine("about to exit application");
+				Debug.WriteLine("about to exit application");
 				AOS.Process.KillProcess(AOS.Process.MyPid());
 
 			};
@@ -66,7 +57,7 @@ namespace Kidozen.Android
 		}
 
 		private static void storeCrash (string crash) {
-			var filename = String.Format ("{0}.crash", System.Guid.NewGuid ().ToString ());
+			var filename = String.Format ("{0}.crash", Guid.NewGuid ().ToString ());
 			var documents = AOS.Environment.ExternalStorageDirectory.ToString ();
 			System.IO.File.WriteAllText (Path.Combine (documents, filename), crash);
 		}
@@ -78,7 +69,7 @@ namespace Kidozen.Android
 
 		private static void send (string crashpath, string marketplace, string application, string key) {
 			var crash = System.IO.File.ReadAllText (crashpath);
-			C.Crash.Create (crash, marketplace, application, key).ContinueWith(
+			Crash.Crash.Create (crash, marketplace, application, key).ContinueWith(
 					t=> {
 						if (t.Result) System.IO.File.Delete (crashpath);						
 					}

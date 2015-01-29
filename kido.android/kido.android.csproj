@@ -55,6 +55,23 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\sources\kido\common\AnalyticsMessages.cs">
+      <Link>Analytics\AnalyticsMessages.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\AnalyticsSession.cs">
+      <Link>Analytics\AnalyticsSession.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\IDeviceInformation.cs">
+      <Link>Analytics\IDeviceInformation.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\IDeviceStorage.cs">
+      <Link>IDeviceStorage.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\KidozenAnalyticsExtension.cs">
+      <Link>Analytics\KidozenAnalyticsExtension.cs</Link>
+    </Compile>
+    <Compile Include="Analytics\DeviceInformation.cs" />
+    <Compile Include="Analytics\DeviceStorage.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="PassiveAuthActivity.cs" />
     <Compile Include="..\sources\kido\common\FileExtensions.cs">
