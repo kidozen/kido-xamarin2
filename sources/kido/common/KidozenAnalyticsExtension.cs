@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 #if __ANDROID__
+using Android.Content;
 using Kidozen.Android.Analytics;
 #else
 using Kidozen.iOS.Analytics;
@@ -28,9 +29,9 @@ namespace Kidozen.iOS
 	    private static IDeviceStorage _deviceStorage;
 	    private static IDeviceInformation _deviceInformation;
 #if __ANDROID__
-        public static void EnableAnalytics(this Kidozen.KidoApplication app) {
+        public static void EnableAnalytics(this Kidozen.KidoApplication app, Context context) {
             _deviceStorage = new DeviceStorage();
-            _deviceInformation = new DeviceInformation();
+            _deviceInformation = new DeviceInformation(context);
             _analyticsSession = AnalyticsSession.GetInstance(app.GetIdentity);
             _analyticsSession.New(_deviceInformation);
         }

@@ -1,5 +1,4 @@
 ﻿#if __ANDROID__
-using Android.Runtime;
 namespace Kidozen.Android
     {
 #else

@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using AOS = Android.OS;
 
 namespace Kidozen.Android.Analytics
 
@@ -10,7 +8,7 @@ namespace Kidozen.Android.Analytics
     {
         public string GetBasePath()
         {
-            return "";
+            return AOS.Environment.ExternalStorageDirectory.AbsolutePath.ToString();
         }
 
         public void WriteText(string path, string content)
