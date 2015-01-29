@@ -56,6 +56,9 @@
     <Compile Include="..\sources\kido\common\IDeviceInformation.cs">
       <Link>Analytics\IDeviceInformation.cs</Link>
     </Compile>
+    <Compile Include="..\sources\kido\common\KidozenAnalyticsExtension.cs">
+      <Link>Analytics\KidozenAnalyticsExtension.cs</Link>
+    </Compile>
     <Compile Include="Analytics\AnalyticsMessages.cs" />
     <Compile Include="Analytics\AnalyticsSession.cs" />
     <Compile Include="..\sources\kido\common\IDeviceStorage.cs">
@@ -63,7 +66,6 @@
     </Compile>
     <Compile Include="Analytics\DeviceInformation.cs" />
     <Compile Include="Analytics\DeviceStorage.cs" />
-    <Compile Include="Analytics\KidozenAnalyticsExtension.cs" />
     <Compile Include="Analytics\NetworkStatus.cs" />
     <Compile Include="Analytics\Reachability.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
