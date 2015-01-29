@@ -72,20 +72,12 @@ namespace Kidozen.iOS.Analytics
             return _sessionEvents.Count <= 0 ?  new Task<bool>(() => true) : _kidoAnalyticsEp.SaveSession(_sessionEvents);
         }
 
-        public void New()
+        public void New(IDeviceInformation information)
         {
             _timerUploader.Enabled = true;
             _timerUploader.Start();
 
-            _eventAttributes = new SessionAttributes
-            {
-                isoCountryCode = "AR",
-                platform = "iOS",
-                networkAccess = "Wifi",
-                carrierName = "Personal",
-                systemVersion = "1.0",
-                deviceModel = "X"
-            };
+            _eventAttributes = information.GetAttributes();
             _startDate = DateTime.UtcNow.Ticks;
         }
 
@@ -138,9 +130,9 @@ namespace Kidozen.iOS.Analytics
             {
                 sessionUUID = _currentSessionId,
                 eventAttr = _eventAttributes,
-                StartDate = _startDate,
-                EndDate = end.Ticks,
-                length = lenght.Ticks
+                elapsedTime = lenght.TotalSeconds
+                //StartDate = _startDate,
+                //EndDate = end.Ticks,
             };
 
             var message = JsonConvert.DeserializeObject<List<Object>>(content);

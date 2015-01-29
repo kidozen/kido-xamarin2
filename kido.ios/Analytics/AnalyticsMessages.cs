@@ -59,17 +59,18 @@ namespace Kidozen.iOS
                 base.eventName = EVENT_NAME;
             }
         }
-        public SessionAttributes eventAttr { get; set; }
+
         public string sessionUUID { get; set; }
-        public long length { get; set; }
+        public double elapsedTime { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string eventValue { get; set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public long EndDate { get; set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public long StartDate { get; set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public bool isPending { get; set; }
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public long EndDate { get; set; }
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public long StartDate { get; set; }
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public bool isPending { get; set; }
+        public SessionAttributes eventAttr { get; set; }
     }
 
 
@@ -82,19 +83,6 @@ namespace Kidozen.iOS
         public string carrierName { get; set; }
         public string systemVersion { get; set; }
         public string deviceModel { get; set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string TAG { get; set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string adminArea { get; set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string countryName { get; set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string locale { get; set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string locality { get; set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string subAdminArea { get; set; }
-
     }
 
 }

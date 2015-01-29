@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using Foundation;
 using Kidozen.iOS.Analytics;
 using Newtonsoft.Json;
-using UIKit;
+
 #if __UNIFIED__
+using Foundation;
+using UIKit;
+
 #else
 using MonoTouch;
 using MonoTouch.UIKit;
@@ -22,7 +24,9 @@ namespace Kidozen.iOS
 	{
 	    private static AnalyticsSession _analyticsSession;
 	    private static IDeviceStorage _deviceStorage;
-	    
+	    private static IDeviceInformation _deviceInformation;
+
+
 #if __ANDROID__
         public static void EnableAnalytics(this Kidozen.KidoApplication app) {
             NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, WillEnterForegroud);
@@ -37,8 +41,10 @@ namespace Kidozen.iOS
             NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, WillEnterForegroud);
             NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, DidEnterBackground);
             _deviceStorage = new DeviceStorage();
+            _deviceInformation = new DeviceInformation();
+            var x = _deviceInformation.GetAttributes();
             _analyticsSession = AnalyticsSession.GetInstance(app.GetIdentity);
-            _analyticsSession.New();
+            _analyticsSession.New(_deviceInformation);
         }
 
         private static void WillEnterForegroud(NSNotification obj)
@@ -118,7 +124,5 @@ namespace Kidozen.iOS
         }
 
 	}
-
-
 }
 
