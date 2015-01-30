@@ -5,7 +5,7 @@ using Android.OS;
 using Android.Telephony;
 using Kidozen.Android;
 
-namespace Kidozen.Android.Analytics
+namespace Kidozen.Analytics.Android
 {
     public class DeviceInformation : IDeviceInformation
     {
@@ -14,11 +14,13 @@ namespace Kidozen.Android.Analytics
         private Address mDefaultAddress = null;
         public DeviceInformation(Context context)
         {
+            mContext = context;
             mDefaultAddress = locationHelper.GetAddress(context);
         }
 
         string GetIsoCountryCode()
         {
+
             return mDefaultAddress.CountryCode;
         }
 

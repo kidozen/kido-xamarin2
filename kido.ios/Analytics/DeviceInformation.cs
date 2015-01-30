@@ -1,4 +1,5 @@
 using CoreTelephony;
+using Kidozen.Analytics;
 using UIKit;
 
 namespace Kidozen.iOS.Analytics

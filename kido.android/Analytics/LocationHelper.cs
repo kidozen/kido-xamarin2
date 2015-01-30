@@ -5,7 +5,7 @@ using Java.Lang;
 using Java.Util;
 using Exception = System.Exception;
 
-namespace Kidozen.Android.Analytics
+namespace Kidozen.Analytics.Android
 {
     class LocationHelper
     {

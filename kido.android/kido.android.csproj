@@ -17,6 +17,8 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <NuGetPackageImportStamp>51f21b1b</NuGetPackageImportStamp>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,9 +44,6 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
@@ -53,6 +52,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Data" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>bin\Release\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\sources\kido\common\AnalyticsMessages.cs">
@@ -67,9 +69,8 @@
     <Compile Include="..\sources\kido\common\IDeviceStorage.cs">
       <Link>IDeviceStorage.cs</Link>
     </Compile>
-    <Compile Include="..\sources\kido\common\KidozenAnalyticsExtension.cs">
-      <Link>Analytics\KidozenAnalyticsExtension.cs</Link>
-    </Compile>
+    <Compile Include="Analytics\KidozenAnalyticsExtension.cs" />
+    <Compile Include="Analytics\AnalyticsActivityLifecycleCallbacks.cs" />
     <Compile Include="Analytics\DeviceInformation.cs" />
     <Compile Include="Analytics\DeviceStorage.cs" />
     <Compile Include="Analytics\LocationHelper.cs" />
@@ -113,21 +114,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\kido\kido.fsproj">
       <Project>{92a04503-19d0-43e1-aeeb-f100a7635d15}</Project>
       <Name>kido</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -1,7 +1,7 @@
 using System;
 using AOS = Android.OS;
 
-namespace Kidozen.Android.Analytics
+namespace Kidozen.Analytics.Android
 
 {
     class DeviceStorage : IDeviceStorage

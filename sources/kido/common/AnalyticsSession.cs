@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Timers;
+using Kidozen;
 using Newtonsoft.Json;
 
-#if __ANDROID__
-using Kidozen.Android;
-namespace Kidozen.Android.Analytics
-#else
-using Kidozen.iOS;
-namespace Kidozen.iOS.Analytics
-#endif
+namespace Kido
+{
+    public class AnalyticsEp
+    {
+        public Analytics KidoAnalyticsEp;
+    }
+}
 
+namespace Kidozen.Analytics
 {
     public class AnalyticsSession
     {
@@ -27,10 +29,11 @@ namespace Kidozen.iOS.Analytics
 
         static volatile AnalyticsSession _instance;
         static readonly object SyncRoot = new Object();
+        private readonly Kido.AnalyticsEp _kidoAnalyticsEp;
 
-        readonly Kidozen.Analytics _kidoAnalyticsEp;
-        private double _defaultSessionTimeoutInSeconds = 5;
-        
+
+        private const double DefaultSessionTimeoutInSeconds = 5;
+
         public static AnalyticsSession GetInstance(KzApplication.Identity identity)
         {
             lock (SyncRoot)
@@ -45,7 +48,7 @@ namespace Kidozen.iOS.Analytics
 
         public AnalyticsSession(KzApplication.Identity identity)
         {
-            this._kidoAnalyticsEp = new Kidozen.Analytics(identity);
+            this._kidoAnalyticsEp = new Kido.AnalyticsEp();
             _timerUploader.Elapsed += timerUploader_Elapsed;
         }
 
@@ -76,7 +79,7 @@ namespace Kidozen.iOS.Analytics
         private Task<bool> DoUpload(string message)
         {
             Console.WriteLine(message);
-            return _sessionEvents.Count <= 0 ?  new Task<bool>(() => true) : _kidoAnalyticsEp.SaveSession(_sessionEvents);
+            return _sessionEvents.Count <= 0 ?  new Task<bool>(() => true) : _kidoAnalyticsEp.KidoAnalyticsEp.SaveSession(_sessionEvents);
         }
 
         public void New(IDeviceInformation information)
@@ -124,7 +127,7 @@ namespace Kidozen.iOS.Analytics
 
         public void RestoreFromDisk(IDeviceStorage storage, DateTime savedDateTime)
         {
-            var datePlusSessionTimeout = savedDateTime.AddSeconds(_defaultSessionTimeoutInSeconds);
+            var datePlusSessionTimeout = savedDateTime.AddSeconds(DefaultSessionTimeoutInSeconds);
             if (DateTime.Now.Ticks <= datePlusSessionTimeout.Ticks) return;
 
             var end = DateTime.UtcNow;

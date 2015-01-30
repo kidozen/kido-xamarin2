@@ -13,6 +13,7 @@ using Kidozen.iOS.Analytics;
 #if __UNIFIED__
     using Foundation;
     using UIKit;
+using Kidozen.Analytics;
 #else
 #endif
 #endif

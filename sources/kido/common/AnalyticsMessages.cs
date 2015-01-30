@@ -1,13 +1,7 @@
 ﻿using Newtonsoft.Json;
 
-#if __ANDROID__
-using Android.Runtime;
-namespace Kidozen.Android
-    {
-#else
-namespace Kidozen.iOS
-    {
-#endif
+namespace Kidozen.Analytics 
+{
     public class Event
     {
         public Event() { }
