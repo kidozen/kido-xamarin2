@@ -32,4 +32,20 @@ type Analytics (identity:Identity) =
             }
         service |> Async.StartAsTask
 
+    member this.SaveSession (session) =
+        let baseurl =(getJsonStringValue (identity.config) "url" ).Value 
+        let logep = baseurl + "api/v3/logging/events?level=1"
+        let service =  async {
+            let! result = createRequest HttpMethod.Post logep  
+                            |> withHeader (Authorization this.identity.rawToken) 
+                            |> withHeader (ContentType "application/json")  
+                            |> withHeader (Accept "application/json") 
+                            |> withBody session
+                            |> getResponseAsync 
+            return 
+                match result.StatusCode with
+                    | 201 -> true
+                    | _ -> raise (new Exception (result.EntityBody.Value))
+            }
+        service |> Async.StartAsTask
     

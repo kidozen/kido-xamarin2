@@ -11,6 +11,11 @@ namespace Kido
     public class AnalyticsEp
     {
         public Analytics KidoAnalyticsEp;
+
+        public AnalyticsEp(KzApplication.Identity identity)
+        {
+            this.KidoAnalyticsEp = new Analytics(identity);
+        }
     }
 }
 
@@ -48,7 +53,7 @@ namespace Kidozen.Analytics
 
         public AnalyticsSession(KzApplication.Identity identity)
         {
-            this._kidoAnalyticsEp = new Kido.AnalyticsEp();
+            this._kidoAnalyticsEp = new Kido.AnalyticsEp(identity);
             _timerUploader.Elapsed += timerUploader_Elapsed;
         }
 
@@ -79,7 +84,7 @@ namespace Kidozen.Analytics
         private Task<bool> DoUpload(string message)
         {
             Console.WriteLine(message);
-            return _sessionEvents.Count <= 0 ?  new Task<bool>(() => true) : _kidoAnalyticsEp.KidoAnalyticsEp.SaveSession(_sessionEvents);
+            return _sessionEvents.Count <= 0 ?  new Task<bool>(() => true) : _kidoAnalyticsEp.KidoAnalyticsEp.SaveSession(message);
         }
 
         public void New(IDeviceInformation information)

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Drawing;
-
+using System.Net;
 using Foundation;
 using UIKit;
 
@@ -60,6 +60,7 @@ namespace AnalyticsTouch
 
         partial void SignInButton_TouchUpInside(UIButton sender)
         {
+            ServicePointManager.ServerCertificateValidationCallback+=(o, certificate, chain, errors) => true;
             kidoModel.Authenticate().ContinueWith(t =>
                 InvokeOnMainThread(() =>
                 {
