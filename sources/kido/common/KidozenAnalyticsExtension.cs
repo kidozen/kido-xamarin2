@@ -117,7 +117,7 @@ namespace Kidozen.iOS
             {
                 var serialized = JsonConvert.SerializeObject(message);
                 _analyticsSession
-                    .AddCustomEvent(new CustomEvent { eventName = title, eventAttr = serialized });
+                    .AddCustomEvent(new CustomEvent<T> { eventName = title, eventAttr = message });
                 
                 return;
             });

@@ -26,7 +26,7 @@ namespace Kidozen.Analytics
         public string sessionUUID { get; set; }
     }
 
-    public class CustomEvent : Event
+    public class CustomEvent<T> : Event
     {
         public CustomEvent() { }
         public override string eventName
@@ -40,7 +40,7 @@ namespace Kidozen.Analytics
                 base.eventName = value;
             }
         }
-        public object eventAttr { get; set; }
+        public T eventAttr { get; set; }
         public string sessionUUID { get; set; }
     }
 

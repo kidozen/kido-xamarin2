@@ -102,7 +102,7 @@ namespace Kidozen.Analytics
             _sessionEvents.Add(evt);
         }
 
-        public void AddCustomEvent(CustomEvent evt)
+        public void AddCustomEvent<T>(CustomEvent<T> evt)
         {
             evt.sessionUUID = this._currentSessionId;
             _sessionEvents.Add(evt);
