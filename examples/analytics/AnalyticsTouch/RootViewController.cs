@@ -66,6 +66,7 @@ namespace AnalyticsTouch
                 {
                     TagClickButton.Enabled = t.Result;
                     TagCustomButton.Enabled = t.Result;
+                    TagViewButton.Enabled = t.Result;
                     if (t.Result)
                     {
                         kidoModel.EnableAnalytics();
@@ -80,11 +81,18 @@ namespace AnalyticsTouch
 
         partial void TagClickButton_TouchUpInside(UIButton sender)
         {
-            kidoModel.TagButton();
+            kidoModel.TagButton("my button tag : " + System.Guid.NewGuid().ToString());
         }
 
         partial void TagCustomButton_TouchUpInside(UIButton sender)
         {
+            kidoModel.TagCustom(new { category = "bug" });
+        }
+
+        partial void TagViewButton_TouchUpInside(UIButton sender)
+        {
+            kidoModel.TagView("my view tag : " + System.Guid.NewGuid().ToString());
+            
         }
     }
 }

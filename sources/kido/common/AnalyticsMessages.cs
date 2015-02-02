@@ -26,6 +26,24 @@ namespace Kidozen.Analytics
         public string sessionUUID { get; set; }
     }
 
+    public class CustomEvent : Event
+    {
+        public CustomEvent() { }
+        public override string eventName
+        {
+            get
+            {
+                return base.eventName;
+            }
+            set
+            {
+                base.eventName = value;
+            }
+        }
+        public object eventAttr { get; set; }
+        public string sessionUUID { get; set; }
+    }
+
     public class SessionEvent : Event
     {
         const string EVENT_NAME = "usersession";

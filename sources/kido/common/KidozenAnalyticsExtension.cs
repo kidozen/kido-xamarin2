@@ -111,13 +111,13 @@ namespace Kidozen.iOS
             });
         }
 
-        public static Task TagCustom<T>(this KidoApplication app,  T message)
+        public static Task TagCustom<T>(this KidoApplication app, string title,  T message)
         {
             return Task.Factory.StartNew(() =>
             {
                 var serialized = JsonConvert.SerializeObject(message);
                 _analyticsSession
-                    .AddValueEvent(new ValueEvent { eventName = "CustomEvent", eventValue = serialized });
+                    .AddCustomEvent(new CustomEvent { eventName = title, eventAttr = serialized });
                 
                 return;
             });

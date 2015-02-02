@@ -102,6 +102,12 @@ namespace Kidozen.Analytics
             _sessionEvents.Add(evt);
         }
 
+        public void AddCustomEvent(CustomEvent evt)
+        {
+            evt.sessionUUID = this._currentSessionId;
+            _sessionEvents.Add(evt);
+        }
+
         public void Stop()
         {
             _timerUploader.Enabled = false;

@@ -30,6 +30,10 @@ namespace AnalyticsTouch
 		[GeneratedCode ("iOS Designer", "1.0")]
 		UIButton TagCustomButton { get; set; }
 
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		UIButton TagViewButton { get; set; }
+
 		[Action ("SignInButton_TouchUpInside:")]
 		[GeneratedCode ("iOS Designer", "1.0")]
 		partial void SignInButton_TouchUpInside (UIButton sender);
@@ -45,6 +49,10 @@ namespace AnalyticsTouch
 		[Action ("TagCustomButton_TouchUpInside:")]
 		[GeneratedCode ("iOS Designer", "1.0")]
 		partial void TagCustomButton_TouchUpInside (UIButton sender);
+
+		[Action ("TagViewButton_TouchUpInside:")]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		partial void TagViewButton_TouchUpInside (UIButton sender);
 
 		void ReleaseDesignerOutlets ()
 		{
@@ -63,6 +71,10 @@ namespace AnalyticsTouch
 			if (TagCustomButton != null) {
 				TagCustomButton.Dispose ();
 				TagCustomButton = null;
+			}
+			if (TagViewButton != null) {
+				TagViewButton.Dispose ();
+				TagViewButton = null;
 			}
 		}
 	}

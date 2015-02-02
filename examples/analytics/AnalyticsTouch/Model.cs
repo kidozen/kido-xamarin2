@@ -54,15 +54,21 @@ namespace Examples
 			} );
 		}
 
-        public void TagButton() {
-            kido.TagClick("Abc");
-            //kido.Stop();
-            
+
+        internal void TagCustom<T>(T p)
+        {
+            kido.TagCustom("custom",p);
         }
 
-        public void TagCustom() {
+        internal void TagButton(string p)
+        {
+            kido.TagClick(p);
         }
 
+        internal void TagView(string p)
+        {
+            kido.TagView(p);
+        }
     }
 }
 

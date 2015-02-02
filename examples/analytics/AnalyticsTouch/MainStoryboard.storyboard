@@ -53,6 +53,15 @@
                                     <action selector="TagClickButton_TouchUpInside:" destination="vXZ-lx-hvc" id="20" eventType="touchUpInside"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="25" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" enabled="NO">
+                                <rect key="frame" x="222" y="206" width="72" height="30"/>
+                                <state key="normal" title="Tag View">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="TagViewButton_TouchUpInside:" destination="vXZ-lx-hvc" id="26" eventType="touchUpInside"/>
+                                </connections>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
@@ -60,6 +69,7 @@
                         <outlet property="SignOutButton" destination="6" id="name-outlet-6"/>
                         <outlet property="TagCustomButton" destination="8" id="name-outlet-8"/>
                         <outlet property="TagClickButton" destination="7" id="name-outlet-7"/>
+                        <outlet property="TagViewButton" destination="25" id="name-outlet-25"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
