@@ -70,7 +70,8 @@ namespace Kidozen.Analytics
                 (
                     t =>
                     {
-                        if (!t.IsFaulted) this.Cleanup();
+                        if (!t.IsFaulted) 
+                            this.Cleanup();
                         this.Resume();
                     }
                 );
