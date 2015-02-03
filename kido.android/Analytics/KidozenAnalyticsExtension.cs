@@ -29,7 +29,7 @@ namespace Kidozen.Android
             LifecycleCallbacks.BackgroundCallback(DidEnterBackground);
             application.RegisterActivityLifecycleCallbacks(lifecycleCallbacks);
         }
-
+                
         public static Task Stop(this KidoApplication app)
         {
             return Task.Factory.StartNew(() =>
@@ -66,30 +66,30 @@ namespace Kidozen.Android
                 return;
             });
         }
-
+        
         public static Task TagView(this KidoApplication app, string message)
         {
             return Task.Factory.StartNew(() =>
             {
                 _analyticsSession
                     .AddValueEvent(new ValueEvent { eventName = "View", eventValue = message });
-
+                
                 return;
             });
         }
 
-        public static Task TagCustom<T>(this KidoApplication app, T message)
+        public static Task TagCustom<T>(this KidoApplication app, string title,  T message)
         {
             return Task.Factory.StartNew(() =>
             {
                 var serialized = JsonConvert.SerializeObject(message);
                 _analyticsSession
-                    .AddValueEvent(new ValueEvent { eventName = "CustomEvent", eventValue = serialized });
-
+                    .AddCustomEvent(new CustomEvent<T> { eventName = title, eventAttr = message });
+                
                 return;
             });
         }
 
-    }
+	}
 }
 
