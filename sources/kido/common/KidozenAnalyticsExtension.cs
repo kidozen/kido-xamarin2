@@ -29,14 +29,7 @@ namespace Kidozen.iOS
 	    private static AnalyticsSession _analyticsSession;
 	    private static IDeviceStorage _deviceStorage;
 	    private static IDeviceInformation _deviceInformation;
-#if __ANDROID__
-        public static void EnableAnalytics(this Kidozen.KidoApplication app, Context context) {
-            _deviceStorage = new DeviceStorage();
-            _deviceInformation = new DeviceInformation(context);
-            _analyticsSession = AnalyticsSession.GetInstance(app.GetIdentity);
-            _analyticsSession.New(_deviceInformation);
-        }
-#else
+
         public static void EnableAnalytics(this KidoApplication app)
         {
             NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, WillEnterForegroud);
@@ -52,7 +45,7 @@ namespace Kidozen.iOS
             var value = FileUtilities.GetNsUserDefaultStoredValue("SessionSavedDateTime");
             var savedDateTime = DateTime.Parse(value);
 
-            _analyticsSession.RestoreFromDisk(_deviceStorage,savedDateTime);
+            _analyticsSession.RestoreFromDiskAndUpload(_deviceStorage,savedDateTime);
         }
 
         private static void DidEnterBackground(NSNotification obj)
@@ -61,7 +54,6 @@ namespace Kidozen.iOS
             FileUtilities.SetNsUserDefaultStoredValue("SessionSavedDateTime", savedDateTime.ToString(CultureInfo.InvariantCulture));
             _analyticsSession.SaveToDisk(_deviceStorage);
         }
-#endif
         
         public static Task Stop(this KidoApplication app)
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using Kidozen;
@@ -137,7 +138,7 @@ namespace Kidozen.Analytics
             storage.WriteText(path, serialized);
         }
 
-        public void RestoreFromDisk(IDeviceStorage storage, DateTime savedDateTime)
+        public void RestoreFromDiskAndUpload(IDeviceStorage storage, DateTime savedDateTime)
         {
             var datePlusSessionTimeout = savedDateTime.AddSeconds(DefaultSessionTimeoutInSeconds);
             if (DateTime.Now.Ticks <= datePlusSessionTimeout.Ticks) return;
@@ -153,8 +154,6 @@ namespace Kidozen.Analytics
                 sessionUUID = _currentSessionId,
                 eventAttr = _eventAttributes,
                 elapsedTime = lenght.TotalSeconds
-                //StartDate = _startDate,
-                //EndDate = end.Ticks,
             };
 
             var message = JsonConvert.DeserializeObject<List<Object>>(content);
@@ -162,6 +161,24 @@ namespace Kidozen.Analytics
 
             this.DoUpload(message);
         }
+
+        public void Upload(Double totalSeconds)
+        {
+            if (totalSeconds < DefaultSessionTimeoutInSeconds) return;
+            
+            var sessionEvent = new SessionEvent
+            {
+                sessionUUID = _currentSessionId,
+                eventAttr = _eventAttributes,
+                elapsedTime = totalSeconds
+            };
+
+            var message = _sessionEvents.Select(itm => itm as object).ToList();
+            message.Add(sessionEvent);
+
+            this.DoUpload(message);
+        }
+
 
         private void DoUpload(IReadOnlyCollection<object> message)
         {
@@ -175,7 +192,6 @@ namespace Kidozen.Analytics
 
         private string CreateCurrentSessionStoragePath(IDeviceStorage storage)
         {
-            
             var folder = Path.Combine(storage.GetBasePath(), Subfolder);
             if (!Directory.Exists(folder))
             {

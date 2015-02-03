@@ -15,22 +15,19 @@ namespace Kidozen.Android
 
         private static void DidEnterBackground(Double seconds)
         {
-            Console.WriteLine(seconds.ToString());
+            _analyticsSession.Upload(seconds);
         }
 
         public static void EnableAnalytics(this Kidozen.KidoApplication app, Application application)
         {
-
             var deviceStorage = new DeviceStorage();
             var deviceInformation = new DeviceInformation(application.ApplicationContext);
             _analyticsSession = AnalyticsSession.GetInstance(app.GetIdentity);
-
             _analyticsSession.New(deviceInformation);
 
             var lifecycleCallbacks = new AnalyticsActivityLifecycleCallbacks();
             LifecycleCallbacks.BackgroundCallback(DidEnterBackground);
             application.RegisterActivityLifecycleCallbacks(lifecycleCallbacks);
-
         }
 
         public static Task Stop(this KidoApplication app)
