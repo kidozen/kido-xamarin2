@@ -25,7 +25,7 @@ namespace Kidozen.Analytics
     public class AnalyticsSession
     {
         const string Subfolder = "AnaliticsSessions";
-        private const double DefaultTimerInterval = 1*1000*60; 
+        private const double DefaultTimerInterval = 5 * 60 * 1000; 
         readonly Timer _timerUploader = new Timer(DefaultTimerInterval);
         String _currentSessionId = Guid.NewGuid().ToString();
         List<Event> _sessionEvents = new List<Event>();
