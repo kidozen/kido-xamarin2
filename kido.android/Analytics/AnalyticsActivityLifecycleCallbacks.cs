@@ -1,19 +1,9 @@
 using System;
-using Android.App;
-using Android.OS;
-
-using System;
-using Android.App;
-using Android.OS;
-
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Diagnostics;
-using Debug = System.Diagnostics.Debug;
-
+using Android.App;
+using Android.OS;
+using Object = Java.Lang.Object;
 
 namespace Kidozen.Analytics.Android
 {
@@ -35,7 +25,7 @@ namespace Kidozen.Analytics.Android
      * For more information, please refer to :
      * http://developer.android.com/reference/android/app/Activity.html
      */
-    class AnalyticsActivityLifecycleCallbacks : Java.Lang.Object, Application.IActivityLifecycleCallbacks
+    class AnalyticsActivityLifecycleCallbacks : Object, Application.IActivityLifecycleCallbacks
     {
         private List<KeyValuePair<string, ActivityTrackStatus>> _normalFlowTracking =
             new List<KeyValuePair<string, ActivityTrackStatus>>();
@@ -57,7 +47,7 @@ namespace Kidozen.Analytics.Android
 
         public void OnActivityPaused(Activity activity)
         {
-            System.Console.WriteLine("1 - OnActivityPaused", activity.GetType().FullName);
+            //System.Console.WriteLine("1 - OnActivityPaused", activity.GetType().FullName);
             lock (_locker)
             {
                 _normalFlowTracking = new List<KeyValuePair<string, ActivityTrackStatus>>();
@@ -66,19 +56,19 @@ namespace Kidozen.Analytics.Android
         }
         public void OnActivityStopped(Activity activity)
         {
-            System.Console.WriteLine("2 - OnActivityStopped", activity.GetType().FullName);
+            //System.Console.WriteLine("2 - OnActivityStopped", activity.GetType().FullName);
             AddToDictionary(2, activity);
         }
 
         public void OnActivityStarted(Activity activity)
         {
-            System.Console.WriteLine("3 - OnActivityStarted", activity.GetType().FullName);
+            //System.Console.WriteLine("3 - OnActivityStarted", activity.GetType().FullName);
             AddToDictionary(3, activity);
         }
 
         public void OnActivityResumed(Activity activity)
         {
-            System.Console.WriteLine("4 - OnActivityResumed: " + activity.GetType().FullName + "; HashCode: " + activity.GetHashCode().ToString() );
+            //System.Console.WriteLine("4 - OnActivityResumed: " + activity.GetType().FullName + "; HashCode: " + activity.GetHashCode().ToString() );
             AddToDictionary(4, activity);
 
             var classname = activity.GetType().FullName;
@@ -122,24 +112,20 @@ namespace Kidozen.Analytics.Android
             }
         }
 
-
         public void OnActivityCreated(Activity activity, Bundle savedInstanceState)
         {
-            //aca incremento el contador
-            System.Console.WriteLine("OnActivityCreated", activity.GetType().FullName);
+            //System.Console.WriteLine("OnActivityCreated", activity.GetType().FullName);
         }
 
         public void OnActivityDestroyed(Activity activity)
         {
-            System.Console.WriteLine("OnActivityDestroyed", activity.GetType().FullName);
-            
+            //System.Console.WriteLine("OnActivityDestroyed", activity.GetType().FullName);
         }
 
         public void OnActivitySaveInstanceState(Activity activity, Bundle outState)
         {
-            System.Console.WriteLine("OnActivitySaveInstanceState", activity.GetType().FullName);
+            //System.Console.WriteLine("OnActivitySaveInstanceState", activity.GetType().FullName);
         }
-
 
         public void BackgroundCallback(Action<double> didEnterBackground)
         {

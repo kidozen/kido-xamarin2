@@ -27,7 +27,7 @@ namespace Kidozen.Analytics.Android
         string GetNetworkAccess()
         {
             var manager = (ConnectivityManager)mContext.GetSystemService(Context.ConnectivityService);
-            return manager == null ? "Unknown" : manager.ActiveNetworkInfo.ToString() ?? "Unknown";
+            return manager == null ? "Unknown" : manager.ActiveNetworkInfo.Type.ToString() ?? "Unknown";
         }
 
         string GetCarrierName()

@@ -42,11 +42,15 @@ namespace AnalyticsDroid
                 {
                     if (auth.Result)
                     {
-                        buttonCustom.Enabled = true;
-                        buttonView.Enabled = true;
-                        buttonTag.Enabled = true;
+                        RunOnUiThread(() =>
+                        {
+                            buttonCustom.Enabled = true;
+                            buttonView.Enabled = true;
+                            buttonTag.Enabled = true;
 
-                        model.EnableAnalytics(this.Application);
+                            model.EnableAnalytics(this.Application);
+                        });
+                        
                     }
                 });
 
