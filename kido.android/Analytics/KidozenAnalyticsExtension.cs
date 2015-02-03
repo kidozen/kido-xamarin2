@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Android.App;
 using Kidozen.Analytics;
@@ -9,7 +10,13 @@ namespace Kidozen.Android
     public static partial class KidozenAnalyticsExtensions
     {
         private static AnalyticsSession _analyticsSession;
-        private static AnalyticsActivityLifecycleCallbacks LifecycleCallbacks = new AnalyticsActivityLifecycleCallbacks();
+        private static AnalyticsActivityLifecycleCallbacks LifecycleCallbacks = 
+            new AnalyticsActivityLifecycleCallbacks();
+
+        private static void DidEnterBackground(Double seconds)
+        {
+            Console.WriteLine(seconds.ToString());
+        }
 
         public static void EnableAnalytics(this Kidozen.KidoApplication app, Application application)
         {
@@ -21,7 +28,9 @@ namespace Kidozen.Android
             _analyticsSession.New(deviceInformation);
 
             var lifecycleCallbacks = new AnalyticsActivityLifecycleCallbacks();
+            LifecycleCallbacks.BackgroundCallback(DidEnterBackground);
             application.RegisterActivityLifecycleCallbacks(lifecycleCallbacks);
+
         }
 
         public static Task Stop(this KidoApplication app)
