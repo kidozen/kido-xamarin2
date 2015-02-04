@@ -1,13 +1,8 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Kidozen.Examples;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-
-using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 using Kidozen;
-
 #if __IOS__
 using Kidozen.iOS;
 #else

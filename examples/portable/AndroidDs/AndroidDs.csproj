@@ -54,11 +54,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Settings.cs">
+      <Link>Settings.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\DataSources.cs">
       <Link>DataSources.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared\Settings.cs">
-      <Link>Settings.cs</Link>
     </Compile>
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />

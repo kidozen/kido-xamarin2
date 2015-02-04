@@ -1,11 +1,9 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Diagnostics;
-
+using System.Threading.Tasks;
 using Kidozen;
+using Kidozen.Examples;
 using Kidozen.iOS;
-
 
 namespace Examples
 {

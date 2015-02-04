@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Diagnostics;
-
-using Kidozen;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
 
 namespace Kidozen.Examples.Portable
 {
@@ -45,7 +36,7 @@ namespace Kidozen.Examples.Portable
         {
             var qds = kido.DataSource(name);
             return qds.Query<JObject>(paramters).ContinueWith(t => {
-                System.Diagnostics.Debug.WriteLine(t.Result);
+                Debug.WriteLine(t.Result);
                 return !t.IsFaulted; 
             });
         }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 using Kidozen;
+using Kidozen.Examples;
 using Kidozen.iOS;
 using Kidozen.iOS.Analytics;
 

@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using Android.App;
-using Examples;
 using Kidozen;
 using Kidozen.Android;
-
+using Kidozen.Examples;
+using System.Threading;
 namespace AnalyticsDroid
 {
 	public class Model

@@ -1,4 +1,6 @@
-namespace Kidozen.Examples
+using System;
+
+namespace Examples
 {
 	public class Settings
 	{

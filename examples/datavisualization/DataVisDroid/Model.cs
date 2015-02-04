@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
-
-using Android;
 using Android.Content;
-using Android.Util;
-
 using Kidozen;
 using Kidozen.Android;
+using Kidozen.Examples;
 
 namespace DataVisDroid
 {
