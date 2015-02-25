@@ -49,7 +49,16 @@ namespace kido.tests
             var results = await ds.Query(new {city = "Buenos Aires,AR"});
             Assert.IsTrue(results.IndexOf("description")>-1);
         }
-
+        [Test()]
+        public async void ShouldQueryAsString2()
+        {
+            this.kidozenApplication = new KidoApplication("kidodemo.kidocloud.com", "gusxamarin", "/KoCVAZ9+9R0ws6pWLHGvI++gBl45NURAWqmovbJ7TI=");
+            await this.kidozenApplication.Authenticate("demo@kidozen.com", "pass", "Kidozen");
+            var ds = kidozenApplication.DataSource("teamsVacations3");
+            var results = await ds.Query();
+            Assert.IsTrue(results.IndexOf("Gustavo") > -1);
+        }
+        //
     }
 
 }

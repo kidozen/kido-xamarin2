@@ -13,9 +13,23 @@ open Utilities
 type IAnalytics =
     abstract member Enable : Boolean -> Unit
 
-type User(name,rawtoken) =
-    member this.Name = name
-    member this.RawToken = rawtoken
+type User (rawtoken:string) =
+    let mutable token = rawtoken
+    member this.RawToken = token
+
+    new() = User(String.Empty)
+    
+    member this.AllClaims = 
+        let decodeAndSplit item =
+            let claims = Uri.UnescapeDataString(item).Split [|'='|]
+            (claims.[0],claims.[1])
+        match String.IsNullOrEmpty (token) with
+            | true -> null
+            | _ ->
+                    let claims = token.Split [|'&'|] |> Seq.map (fun itm -> decodeAndSplit(itm))
+                    Dictionary<string,string>(claims |> Map.ofSeq) :> IDictionary<string,string>
+
+    member this.UserName = this.AllClaims.["http://schemas.kidozen.com/name"] 
 
 type PassiveAuthenticationEventArgs(token:string) =
     inherit System.EventArgs()
@@ -25,13 +39,16 @@ type PassiveAuthenticationEventArgs(token:string) =
 type KidoApplication(marketplace, application, key )  =
     let zeroIdentity = { token= None; rawToken = ""; id = ""; config = ""; expiration = System.DateTime.Now; authenticationRequest  = { Key = ""; ProviderRequest = None; Marketplace = marketplace; Application = application  } }
     let mutable identity = zeroIdentity
-    let mutable currentUser = User("","")
-    member this.setUser user = currentUser <- user
+    let mutable authenticated = false
+    // TODO: validate what must be internal
     member this.marketplace = marketplace
     member this.application = application
     member this.key = key
     member this.setIdentity id = identity <- id
     member this.GetIdentity = identity
+    
+    member this.IsAuthenticated = authenticated
+    member val CurrentUser = new User()  with get,set
 
     //passive authentication support
     member this.setPassiveIdentity tokenRaw tokenRefresh =
@@ -50,15 +67,18 @@ type KidoApplication(marketplace, application, key )  =
             expiration = tokenExpiresOn;
             authenticationRequest  = { Key = key; ProviderRequest = None; Marketplace = marketplace; Application = application  }
         }
+        this.CurrentUser <- User(tokenRaw)
         identity<-passiveIdentity
+        authenticated <- true
 
     member private this.authWithUser user password provider = async {
         let! result = asyncGetFederatedToken marketplace application user password provider
         match result with
         | Token t -> 
             identity <- t
-            currentUser <- User(user,t.rawToken)
-            return currentUser
+            authenticated <- true
+            this.CurrentUser <- User(t.rawToken)
+            return this.CurrentUser
         | InvalidApplication e -> return raise e
         | InvalidCredentials e -> return raise e
         | InvalidIpCredentials e -> return raise e
@@ -126,6 +146,3 @@ type KidoApplication(marketplace, application, key )  =
     member this.isPassiveAuthenticated =
         identity.authenticationRequest.ProviderRequest.IsSome
     
-    //Analytics supports
-    member this.EnableAnalytics =
-        ""

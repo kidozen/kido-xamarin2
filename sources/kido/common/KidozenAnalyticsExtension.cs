@@ -32,10 +32,15 @@ namespace Kidozen.iOS
 
         public static void EnableAnalytics(this KidoApplication app)
         {
+            if (!app.IsAuthenticated)
+            {
+                throw new ArgumentException("You must be authenticated to use Analytics");
+            }
             NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, WillEnterForegroud);
             NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, DidEnterBackground);
             _deviceStorage = new DeviceStorage();
             _deviceInformation = new DeviceInformation();
+            
             _analyticsSession = AnalyticsSession.GetInstance(app.GetIdentity);
             _analyticsSession.New(_deviceInformation);
         }

@@ -20,6 +20,10 @@ namespace Kidozen.Android
 
         public static void EnableAnalytics(this Kidozen.KidoApplication app, Application application)
         {
+            if (!app.IsAuthenticated)
+            {
+                throw new ArgumentException("You must be authenticated to use Analytics");
+            }
             var deviceStorage = new DeviceStorage();
             var deviceInformation = new DeviceInformation(application.ApplicationContext);
             _analyticsSession = AnalyticsSession.GetInstance(app.GetIdentity);
