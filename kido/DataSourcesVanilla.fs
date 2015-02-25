@@ -23,7 +23,7 @@ type DataSource (name, identity:Identity) =
     member this.dsname = name
     member this.identity = identity
 
-    member private this.ProcessResponse<'a> result =
+    member private this.ProcessResponse result =
         let content = result.EntityBody.Value
         match result.StatusCode with
                 | 200 ->
@@ -31,7 +31,7 @@ type DataSource (name, identity:Identity) =
                     let error = jobj.["error"]
                     let data = jobj.["data"]
                     match Some (data) with
-                        | Some d -> JsonConvert.DeserializeObject<'a>(d.ToString())
+                        | Some d -> d.ToString()
                         | _ -> match Some ( error ) with
                                     | Some e -> raise ( new Exception (e.ToString()))
                                     | _ -> raise ( new Exception ("Unknown error."))
@@ -41,14 +41,14 @@ type DataSource (name, identity:Identity) =
     member this.Invoke<'a>() = 
             let invoke = async {
                 let! result = createDs this.dsname this.identity |> withDSType DSInvoke|> getResult
-                return this.ProcessResponse<'a>(result)
+                return JsonConvert.DeserializeObject<'a>( this.ProcessResponse result )                
             }
             invoke |> Async.StartAsTask
         
     member this.Query<'a>() = 
         let query = async {
             let! result = createDs this.dsname this.identity |> getResult
-            return this.ProcessResponse<'a>(result )
+            return JsonConvert.DeserializeObject<'a>( this.ProcessResponse result )                
         }
         query |> Async.StartAsTask
 
@@ -57,7 +57,7 @@ type DataSource (name, identity:Identity) =
         let dsParams = DSInvokeParams paramsAsString 
         let invoke = async {
             let! result = createDs this.dsname this.identity |> withDSType DSInvoke |> withParameters dsParams |> getResult
-            return this.ProcessResponse<'a>(result)
+            return JsonConvert.DeserializeObject<'a>( this.ProcessResponse result )                
         }
         invoke |> Async.StartAsTask
    
@@ -66,21 +66,40 @@ type DataSource (name, identity:Identity) =
         let dsParams = DSGetParams paramsAsValueList 
         let query = async {
             let! result = createDs this.dsname this.identity |> withParameters dsParams |> getResult
-            return this.ProcessResponse<'a>(result)
+            return JsonConvert.DeserializeObject<'a>( this.ProcessResponse result )                
         }
         query |> Async.StartAsTask
 
     member this.Invoke () = 
-        this.Invoke<string>()
-        
+        let invoke = async {
+            let! result = createDs this.dsname this.identity |> withDSType DSInvoke|> getResult
+            return this.ProcessResponse result           
+        }
+        invoke |> Async.StartAsTask 
+               
     member this.Query () = 
-        this.Query<string>()
+        let query = async {
+            let! result = createDs this.dsname this.identity |> getResult
+            return this.ProcessResponse result      
+        }
+        query |> Async.StartAsTask
 
     member this.Invoke (parameters) =
-        this.Invoke<string>(parameters)
+        let invoke = async {
+            let! result = createDs this.dsname this.identity |> withDSType DSInvoke|> getResult
+            return this.ProcessResponse result              
+        }
+        invoke |> Async.StartAsTask
    
     member this.Query (parameters) =
-        this.Query<string>(parameters)
+        let paramsAsValueList = JSONSerializer.toNameValueList parameters
+        let dsParams = DSGetParams paramsAsValueList 
+        let query = async {
+            let! result = createDs this.dsname this.identity |> withParameters dsParams |> getResult
+            return this.ProcessResponse result
+        }
+        query |> Async.StartAsTask
+
 
     //File support
     member private this.processFileResponse result = 

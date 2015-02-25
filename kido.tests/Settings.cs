@@ -4,13 +4,13 @@ namespace kido.tests
 {
 	public class Settings
 	{
-        public static string Marketplace = "you.kidocloud.com" ;
-		public static string Application = "application";
-		public static string Key = "getit from coding tab";
+        public static string Marketplace = "contoso.local.kidozen.com";
+        public static string Application = "tests";
+        public static string Key = "JBe0TbHysrO5R33YpC9R4PoQwMnusqiWJqYsMQgmK9U=";
 
-		public static string User = "you@kidozen.com" ;
-		public static string Provider = "Kidozen";
-		public static string Pass = "supersecret";
+        public static string User = "contoso@kidozen.com";
+        public static string Provider = "Kidozen";
+        public static string Pass = "pass";
 	}
 }
 

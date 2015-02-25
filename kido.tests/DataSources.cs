@@ -8,6 +8,17 @@ using Kidozen;
 
 namespace kido.tests
 {
+    public class Weather
+    {
+        public string main { get; set; }
+        public string description { get; set; }
+    }
+
+    public class WeatherResponse
+    {
+        public List<Weather> weather { get; set; }
+    }
+
 	[TestFixture ()]
 	public class DataSources
 	{
@@ -20,32 +31,26 @@ namespace kido.tests
 			System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 		}
 
-		[Test ()]
-		public async void ShouldQueryFile ()
-		{
-			await this.kidozenApplication.Authenticate (Settings.User, Settings.Pass, Settings.Provider);
-			var ds = kidozenApplication.DataSource ("fileGetDs");
-			var results = await ds.QueryFile (new {fullpath ="/Users/christian/img1.png"});
-			Assert.IsNotNull (results);
-		}
 
 		[Test ()]
-		public async void ShouldQuery ()
+		public async void ShouldQueryAsType ()
 		{
 			await this.kidozenApplication.Authenticate (Settings.User, Settings.Pass, Settings.Provider);
-			var ds = kidozenApplication.DataSource ("sampleTable");
-			var results = await ds.Query<IEnumerable<MyClass>>();
-			Assert.IsNotNull (results);
+            var ds = kidozenApplication.DataSource("query-for-tests");
+            var results = await ds.Query<WeatherResponse>(new {city = "Buenos Aires,AR"});
+			Assert.IsNotNull (results.weather);
 		}
-	}
 
-	public class MyClass {
-		public string id { get; set;}
-		public string latitude { get; set;}
-		public string longitude{ get; set;}   
-		public string phoneNumber { get; set;} 
-		public string email { get; set;}
+        [Test()]
+        public async void ShouldQueryAsString()
+        {
+            await this.kidozenApplication.Authenticate(Settings.User, Settings.Pass, Settings.Provider);
+            var ds = kidozenApplication.DataSource("query-for-tests");
+            var results = await ds.Query(new {city = "Buenos Aires,AR"});
+            Assert.IsTrue(results.IndexOf("description")>-1);
+        }
 
-	}
+    }
+
 }
 
