@@ -69,4 +69,13 @@ let append item listOption =
 
 let transform listOption =
         Some(listOption)
-   
+
+let keyValueStringToDictionary token = 
+        let decodeAndSplit item =
+            let claims = Uri.UnescapeDataString(item).Split [|'='|]
+            (claims.[0],claims.[1])
+        match String.IsNullOrEmpty (token) with
+            | true -> None
+            | _ ->
+                let claims = token.Split [|'&'|] |> Seq.map (fun itm -> decodeAndSplit(itm))
+                Some (Dictionary<string,string>(claims |> Map.ofSeq) :> IDictionary<string,string>)

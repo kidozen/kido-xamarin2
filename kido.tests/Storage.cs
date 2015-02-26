@@ -20,7 +20,9 @@ namespace kido.tests
 		public void TestInit()
 		{
 			this.kidozenApplication = new KidoApplication (Settings.Marketplace, Settings.Application, Settings.Key);
-		}
+            System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+
+        }
 
 		[Test ()]
 		public async void ShouldUpdate ()
@@ -29,7 +31,6 @@ namespace kido.tests
 			var os = kidozenApplication.ObjectSet ("tests");
 			var entityMetadata = await os.Create<MyEntity> (new MyEntity {Bar ="foo"});
 			Assert.IsNotNull (entityMetadata);
-			entityMetadata._metadata.sync = 3;
 			var updated = new MyEntity { Bar = "foooo", _metadata = entityMetadata._metadata, _id = entityMetadata._id };
 			var saved = await os.Save<MyEntity> (updated);
 			Assert.IsNotNull (saved);

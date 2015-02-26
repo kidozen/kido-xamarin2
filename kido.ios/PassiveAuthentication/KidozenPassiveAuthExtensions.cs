@@ -54,10 +54,8 @@ namespace Kidozen.iOS
 			Debug.WriteLine ("response from passive view arrived");
 			if (e.Success) {
 				if(dummyPassiveAuthenticationTask.Status==TaskStatus.RanToCompletion) dummyPassiveAuthenticationTask = new Task(()=> Console.WriteLine("success passive auth"));
-
-				var rawToken = e.TokenInfo ["access_token"];
+                var rawToken = e.TokenInfo ["access_token"];
 				var refreshToken = e.TokenInfo ["refresh_token"];
-
                 currentApplication.setPassiveIdentity(rawToken, refreshToken);
 
 				dummyPassiveAuthenticationTask.Start();

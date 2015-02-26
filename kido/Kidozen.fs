@@ -6,9 +6,14 @@ open System.Collections
 open System.Collections.Generic
 open System.Threading.Tasks
 open System.Runtime.InteropServices
+open System.Runtime.CompilerServices
 
 open KzApplication
 open Utilities
+
+[<assembly:InternalsVisibleTo("kido.ios")>]
+[<assembly:InternalsVisibleTo("kido.android")>]
+do()
 
 type IAnalytics =
     abstract member Enable : Boolean -> Unit
@@ -16,20 +21,9 @@ type IAnalytics =
 type User (rawtoken:string) =
     let mutable token = rawtoken
     member this.RawToken = token
-
     new() = User(String.Empty)
-    
-    member this.AllClaims = 
-        let decodeAndSplit item =
-            let claims = Uri.UnescapeDataString(item).Split [|'='|]
-            (claims.[0],claims.[1])
-        match String.IsNullOrEmpty (token) with
-            | true -> null
-            | _ ->
-                    let claims = token.Split [|'&'|] |> Seq.map (fun itm -> decodeAndSplit(itm))
-                    Dictionary<string,string>(claims |> Map.ofSeq) :> IDictionary<string,string>
-
-    member this.UserName = this.AllClaims.["http://schemas.kidozen.com/name"] 
+    member this.AllClaims = keyValueStringToDictionary token
+    member this.UserName = this.AllClaims.Value.["http://schemas.kidozen.com/name"] 
 
 type PassiveAuthenticationEventArgs(token:string) =
     inherit System.EventArgs()
@@ -56,18 +50,17 @@ type KidoApplication(marketplace, application, key )  =
         let cfg =  match getAppConfig (createConfigUrl this.marketplace this.application) with
                     | Configuration c -> c 
                     | _ ->  raise (System.ArgumentException("fail getting app configuration once again"))
-
+        this.CurrentUser <- User(tokenRaw)
         let tokenExpiresOn = getExpiration tokenRaw
         let tk =  { raw = Some( tokenRaw ) ; refresh = Some (tokenRefresh) ; expiration = Some( tokenExpiresOn.ToString()) };
         let passiveIdentity = {
-            id = "3";
+            id = this.CurrentUser.AllClaims.Value.["http://schemas.kidozen.com/userid"];
             rawToken = tokenRaw;
             token =  Some (tk);
             config = cfg;
             expiration = tokenExpiresOn;
             authenticationRequest  = { Key = key; ProviderRequest = None; Marketplace = marketplace; Application = application  }
         }
-        this.CurrentUser <- User(tokenRaw)
         identity<-passiveIdentity
         authenticated <- true
 
@@ -130,19 +123,19 @@ type KidoApplication(marketplace, application, key )  =
         this.Log.Clear()
 
     //helpers to JS injection
-    member this.getPassiveAuthInformation =
+    member internal this.getPassiveAuthInformation =
         let d = new Dictionary<_, _>()
         d.["refresh_token"] <- identity.token.Value.refresh.Value
         d.["rawToken"] <- identity.token.Value.raw.Value
         d :> IDictionary<String, String>
 
-    member this.getActiveAuthInformation =
+    member internal this.getActiveAuthInformation =
         let d = new Dictionary<_, _>()
         d.["username"] <- identity.authenticationRequest.ProviderRequest.Value.User
         d.["password"] <- identity.authenticationRequest.ProviderRequest.Value.Password
         d.["provider"] <- identity.authenticationRequest.ProviderRequest.Value.Key
         d :> IDictionary<String, String>
 
-    member this.isPassiveAuthenticated =
+    member internal this.isPassiveAuthenticated =
         identity.authenticationRequest.ProviderRequest.IsSome
     

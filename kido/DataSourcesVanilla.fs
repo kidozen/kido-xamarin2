@@ -30,11 +30,12 @@ type DataSource (name, identity:Identity) =
                     let jobj = JObject.Parse(content)
                     let error = jobj.["error"]
                     let data = jobj.["data"]
-                    match Some (data) with
-                        | Some d -> d.ToString()
-                        | _ -> match Some ( error ) with
-                                    | Some e -> raise ( new Exception (e.ToString()))
-                                    | _ -> raise ( new Exception ("Unknown error."))
+                    match data with
+                        | null -> match error  with
+                                    | null -> raise ( new Exception ("Unknown error."))
+                                    | _ -> raise ( new Exception (error.ToString()))
+                        | _ -> data.ToString()
+
                 | _ -> raise ( new Exception (result.EntityBody.Value))
 
 

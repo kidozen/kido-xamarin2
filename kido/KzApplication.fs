@@ -7,7 +7,6 @@ open System.Runtime.CompilerServices
 open System.Text.RegularExpressions
 open System.Collections.Generic 
 
-
 [<assembly:InternalsVisibleTo("Kidozen.iOS")>]
 do()
 
@@ -29,8 +28,6 @@ let getAppConfig cfgurl =
         | 404 -> InvalidApplicationError (new System.ArgumentException("application does not exits"))
         | _  -> InvalidApplicationError (new System.ArgumentException( sprintf "invalid status code = %i" response.StatusCode ))
                
-
-
 let createConfigUrl marketplace application =
     match  marketplace with
         | Prefix "http://" rest -> sprintf "%s/publicapi/apps?name=%s" marketplace application
@@ -97,8 +94,8 @@ let asyncGetFederatedToken marketplace application user password provider =
 
             // todo: use partial application to create differents logins ?
             let ipToken = 
-                match protocol.Value with
-                | "WSTrust" -> getWSTrustToken ipEndpoint.Value ipScope.Value user password
+                match protocol.Value.ToLower() with
+                | "wstrust" -> getWSTrustToken ipEndpoint.Value ipScope.Value user password
                 | _ -> getWrapv9Token ipEndpoint.Value ipScope.Value user password //default is Wrapv09
 
             match ipToken with
@@ -107,19 +104,23 @@ let asyncGetFederatedToken marketplace application user password provider =
                     let kidoEndpoint = getJsonStringValue c "authServiceEndpoint"
                     let encodedScope = urlEncode kidoAppScope.Value
                     let encodedtoken = urlEncode ipToken.Value 
-
                     let kidoToken = getKidoFederatedToken kidoEndpoint.Value encodedScope encodedtoken
                     match kidoToken.raw with
                         | Some t -> 
-                            let provider= { User = user; Password = password; Key = provider }
-                            let request = { Key = ""; ProviderRequest = Some( provider ) ; Marketplace = marketplace; Application = application } 
-                            return Token( { id = "1"; config = c; token = Some ( kidoToken ) ;rawToken = t ; expiration = getExpiration t; authenticationRequest = request})
+                            match keyValueStringToDictionary t with
+                                | Some kvd -> 
+                                    match kvd.["http://schemas.kidozen.com/usersource"] with
+                                        | null -> return InvalidCredentials (new System.ArgumentException("You dont have access to this resource"))
+                                        | _ -> 
+                                            let userid = kvd.["http://schemas.kidozen.com/userid"]
+                                            let provider= { User = user; Password = password; Key = provider }
+                                            let request = { Key = ""; ProviderRequest = Some( provider ) ; Marketplace = marketplace; Application = application } 
+                                            return Token( { id = userid; config = c; token = Some ( kidoToken ) ;rawToken = t ; expiration = getExpiration t; authenticationRequest = request})                                    
+                                | _ -> return InvalidCredentials( new System.ArgumentException("Could not get user tokens"))
                         | _ -> return InvalidCredentials (new System.ArgumentException("kidozen couldnt validate ip token, please check the username, password and identity provider"))
-
                 | _ -> return InvalidIpCredentials (new System.ArgumentException("invalid ip response, please check the username, password and identity provider"))
 
-        | InvalidApplicationError e -> 
-            return InvalidApplication e
+        | InvalidApplicationError e -> return InvalidApplication e
     }
 
 let asyncGetKeyToken marketplace application key = 
@@ -133,18 +134,17 @@ let asyncGetKeyToken marketplace application key =
             let kidoToken = getKidoKeyToken kidoEndpoint.Value appScope.Value domain.Value key
             match kidoToken.raw with
                 | Some t -> 
-                    let request =  { Key = key; ProviderRequest = None; Marketplace = marketplace; Application = application }
-                    return Token( { id = "2"; config = c; token = Some ( kidoToken ); rawToken = t;expiration = getExpiration t;  authenticationRequest = request} )
+                    match keyValueStringToDictionary t with
+                        | Some kvd -> 
+                            match kvd.["http://schemas.kidozen.com/usersource"] with
+                                | null -> return InvalidCredentials (new System.ArgumentException("You dont have access to this resource"))
+                                | _ -> 
+                                    let userid = kvd.["http://schemas.kidozen.com/userid"]
+                                    let request =  { Key = key; ProviderRequest = None; Marketplace = marketplace; Application = application }
+                                    return Token( { id =userid; config = c; token = Some ( kidoToken ); rawToken = t;expiration = getExpiration t;  authenticationRequest = request} )
+                        | _ -> return InvalidCredentials( new System.ArgumentException("Could not get user tokens"))
                 | _ -> return InvalidCredentials (new System.ArgumentException("invalid application key"))
-                       
-        | InvalidApplicationError e -> 
-            return InvalidApplication e
-    }
-                
-let asyncGeToken fAsyncGetToken = 
-    async {
-        let! result = fAsyncGetToken
-        return result
+        | InvalidApplicationError e -> return InvalidApplication e
     }
 
 let validateToken authRequest = 
@@ -165,7 +165,6 @@ let validateToken authRequest =
     }
 
 //passive auth and other forms support to be called from c#
-
 let fetchConfigValue name marketplace application key = 
     let valuetask = async {
         let! result = asyncGetKeyToken marketplace application key

@@ -52,9 +52,9 @@ namespace kido.tests
         [Test()]
         public async void ShouldQueryAsString2()
         {
-            this.kidozenApplication = new KidoApplication("kidodemo.kidocloud.com", "gusxamarin", "/KoCVAZ9+9R0ws6pWLHGvI++gBl45NURAWqmovbJ7TI=");
-            await this.kidozenApplication.Authenticate("demo@kidozen.com", "pass", "Kidozen");
-            var ds = kidozenApplication.DataSource("teamsVacations3");
+            await this.kidozenApplication.Authenticate(Settings.User, Settings.Pass, Settings.Provider);
+
+            var ds = kidozenApplication.DataSource("sql-query-witherror");
             var results = await ds.Query();
             Assert.IsTrue(results.IndexOf("Gustavo") > -1);
         }

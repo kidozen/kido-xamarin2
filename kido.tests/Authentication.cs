@@ -16,7 +16,8 @@ namespace kido.tests
 		public void TestInit()
 		{
 			this.kidozenApplication = new KidoApplication (Settings.Marketplace, Settings.Application, Settings.Key);
-		}
+            System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+        }
 
 		[Test ()]
 		public async void ShouldAuthenticateActive ()
