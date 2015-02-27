@@ -28,24 +28,32 @@ namespace Kidozen.iOS
 		private static Kidozen.KidoApplication currentApplication;
 		
 		public static Task Authenticate(this Kidozen.KidoApplication app) {
-			currentApplication = app;
-            var url = A.fetchConfigValue("signInUrl", app.marketplace, app.application, app.key);
-            var authController = new PassiveAuthViewController(url.Result.Replace("\"", string.Empty));
-            authController.AuthenticationResponseArrived += HandleAuthenticationResponseArrived;
-            var navController = new UINavigationController(authController);
+            try
+            {
+                System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+                currentApplication = app;
+                var url = A.fetchConfigValue("signInUrl", app.marketplace, app.application, app.key);
+                var authController = new PassiveAuthViewController(url.Result.Replace("\"", string.Empty));
+                authController.AuthenticationResponseArrived += HandleAuthenticationResponseArrived;
+                var navController = new UINavigationController(authController);
 #if __UNIFIED__
-			UIApplication.SharedApplication.Delegate.GetWindow().RootViewController.PresentViewController (navController, 
-				true, 
-				new Action ( () => Debug.WriteLine("passive view loaded") )
-			);
+                UIApplication.SharedApplication.Delegate.GetWindow().RootViewController.PresentViewController(navController,
+                    true,
+                    new Action(() => Debug.WriteLine("passive view loaded"))
+                );
 #else
         UIApplication.SharedApplication.Delegate.Window.RootViewController.PresentViewController(navController,
             true,
             new NSAction(() => Debug.WriteLine("passive view loaded"))
         );
 #endif
-
-
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+			
 			return Task.WhenAny( new Task[] {dummyPassiveAuthenticationTask, dummyPassiveFailTask} );
 		}
 

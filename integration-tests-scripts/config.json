@@ -1,0 +1,13 @@
+[
+    {
+        "tenantDomain": "https://kidodemo.kidocloud.com",
+        "tenantName": "kidodemo",
+        "tenantPrivateKey": "553LPfjXI0c6XhmjfAuol+1jhzwliegbNDdJFv4z3Wg=",
+        "tenantAppDomain":"https://xamarintests-kidodemo.kidocloud.com",
+        "adminUserEmail" : "demo@kidozen.com",
+
+        "appName" : "xamarintests",
+        "serviceName" : "xamarin-tests-weather",
+		"dsName" : "xamarin-tests-weather-get"
+    }
+]

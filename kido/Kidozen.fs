@@ -22,8 +22,11 @@ type User (rawtoken:string) =
     let mutable token = rawtoken
     member this.RawToken = token
     new() = User(String.Empty)
-    member this.AllClaims = keyValueStringToDictionary token
-    member this.UserName = this.AllClaims.Value.["http://schemas.kidozen.com/name"] 
+    member this.AllClaims = 
+        match keyValueStringToDictionary token with 
+            | Some v -> v
+            | None -> null                    
+    member this.UserName = this.AllClaims.["http://schemas.kidozen.com/name"] 
 
 type PassiveAuthenticationEventArgs(token:string) =
     inherit System.EventArgs()
@@ -54,7 +57,7 @@ type KidoApplication(marketplace, application, key )  =
         let tokenExpiresOn = getExpiration tokenRaw
         let tk =  { raw = Some( tokenRaw ) ; refresh = Some (tokenRefresh) ; expiration = Some( tokenExpiresOn.ToString()) };
         let passiveIdentity = {
-            id = this.CurrentUser.AllClaims.Value.["http://schemas.kidozen.com/userid"];
+            id = this.CurrentUser.AllClaims.["http://schemas.kidozen.com/userid"];
             rawToken = tokenRaw;
             token =  Some (tk);
             config = cfg;

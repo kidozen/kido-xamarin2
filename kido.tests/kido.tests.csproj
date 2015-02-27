@@ -38,7 +38,7 @@
   <ItemGroup>
     <Compile Include="FileDataSources.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Authentication.cs" />
+    <Compile Include="ActiveAuthentication.cs" />
     <Compile Include="DataSources.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="Services.cs" />

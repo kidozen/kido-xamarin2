@@ -1,0 +1,1 @@
+instruments -t ~/aut-scripts/resources/Automation.tracetemplate -w "iPhone 6 (8.1 Simulator)" "~/Library/Developer/Xcode/DerivedData/DataVizSampleApp-beoeeqmzlhjjttcijqyiufptxbxi/Build/Products/Release-iphonesimulator/DataVizSampleApp.app" -e UIASCRIPT ~/aut-scripts/resources/iosAut.js -e UIARESULTSPATH ~/aut-scripts/iosResults

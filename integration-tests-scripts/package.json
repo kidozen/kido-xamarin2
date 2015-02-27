@@ -1,0 +1,37 @@
+{
+  "name": "aut-scripts",
+  "description": "automated tests scripts",
+  "version": "0.1.0",
+  "main": "./aut-scripts",
+  "author": "Kidozen <development@kidozen.com>",
+  "contributors": [
+    {
+      "name": "Enzo Heredia",
+      "email": "enzo.heredia@kidozen.com"
+    }
+  ],
+  "bugs": {
+    "email": "enzo.heredia@kidozen.com",
+    "url": ""
+  },
+  "preferGlobal": true,
+  "directories": {
+  },
+  "dependencies": {
+    "request": "2.51.0",
+    "simplewebtoken": "0.1.0",
+    "colors": "1.0.3",
+    "async": "0.9.0",
+    "stringify":"3.0.0",
+    "stdio":"0.2.7"
+  },
+  "devDependencies": {
+
+  },
+  "scripts": {
+
+  },
+  "bin": {
+
+  }
+}

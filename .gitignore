@@ -27,3 +27,5 @@ packages
 */*/Resource.designer.cs
 */*/*/Resource.designer.cs
 */*/*/*/Resource.designer.cs
+/node_modules
+
