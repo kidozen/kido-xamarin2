@@ -33,18 +33,49 @@ type CustomEndpoint (name, identity:Identity) =
                         | _ -> data.ToString()
                 | _ -> raise ( new Exception (result.EntityBody.Value))
 
-
-    member this.Execute<'a>(parameters:String) =
+    member this.Execute<'a>() =
         let url = sprintf "%s/%s/" baseurl name
         let service =  async {
             let! result = createRequest HttpMethod.Post url  
                             |> withHeader (Authorization this.identity.rawToken) 
-                            |> withBody parameters
                             |> getResponseAsync                             
             return  JsonConvert.DeserializeObject<'a>( this.ProcessResponse result )                
             }
         service |> Async.StartAsTask
 
+    member this.Execute() =
+        let url = sprintf "%s/%s/" baseurl name
+        let service =  async {
+            let! result = createRequest HttpMethod.Post url  
+                            |> withHeader (Authorization this.identity.rawToken) 
+                            |> getResponseAsync                             
+            return this.ProcessResponse result                
+            }
+        service |> Async.StartAsTask
+
+
     member this.Execute<'a>(parameters) =
         let paramsAsString = JSONSerializer.toString parameters
-        this.Execute<'a> paramsAsString
+        let url = sprintf "%s/%s/" baseurl name
+        let service =  async {
+            let! result = createRequest HttpMethod.Post url  
+                            |> withHeader (Authorization this.identity.rawToken) 
+                            |> withBody paramsAsString
+                            |> getResponseAsync                             
+            return  JsonConvert.DeserializeObject<'a>( this.ProcessResponse result )                
+            }
+        service |> Async.StartAsTask
+
+    member this.Execute(parameters) =
+        let paramsAsString = JSONSerializer.toString parameters
+        let url = sprintf "%s/%s/" baseurl name
+        let service =  async {
+            let! result = createRequest HttpMethod.Post url  
+                            |> withHeader (Authorization this.identity.rawToken) 
+                            |> withBody paramsAsString
+                            |> getResponseAsync                             
+            return this.ProcessResponse result                
+            }
+        service |> Async.StartAsTask
+
+

@@ -8,12 +8,7 @@ using Kidozen;
 
 namespace kido.tests
 {
-    public class WeatherResponse
-    {
-        public List<Weather> weather { get; set; }
-    }
-
-	[TestFixture ()]
+    [TestFixture ()]
 	public class DataSources
 	{
 		KidoApplication kidozenApplication;
