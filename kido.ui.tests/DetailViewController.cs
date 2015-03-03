@@ -10,7 +10,7 @@ namespace kido.ui.tests
 {
     public partial class DetailViewController : UIViewController
     {
-        object detailItem;
+        object testExpectedDetail;
 
         public DetailViewController(IntPtr handle)
             : base(handle)
@@ -19,27 +19,21 @@ namespace kido.ui.tests
 
         public void SetDetailItem(object newDetailItem)
         {
-            if (detailItem != newDetailItem)
+            if (testExpectedDetail != newDetailItem)
             {
-                detailItem = newDetailItem;
-
-                // Update the view
-                //ConfigureView();
+                testExpectedDetail = newDetailItem;
             }
         }
 
-        void ConfigureView()
-        {
-            // Update the user interface for the detail item
-            if (IsViewLoaded && detailItem != null)
-                detailDescriptionLabel.Text = detailItem.ToString();
-        }
 
-        void ShowKido()
+        void ShowExpectedResult()
         {
             var kidozen = new Kidozen.KidoApplication("kidodemo.kidocloud.com", "tasks", "");
             kidozen.Authenticate().ContinueWith(authTask => 
                 InvokeOnMainThread(()=> {
+                    //assert
+                    var expected = testExpectedDetail as KidoUIXTestDetails<string>;
+                    var isOk = expected.ExpectedValue == kidozen.CurrentUser.UserName;
                     detailDescriptionLabel.Text = kidozen.CurrentUser.UserName;
                     })
                 );
@@ -48,18 +42,13 @@ namespace kido.ui.tests
 
         public override void DidReceiveMemoryWarning()
         {
-            // Releases the view if it doesn't have a superview.
             base.DidReceiveMemoryWarning();
-
-            // Release any cached data, images, etc that aren't in use.
         }
 
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-
-            // Perform any additional setup after loading the view, typically from a nib.
-            ShowKido();
+            ShowExpectedResult();
         }
     }
 }

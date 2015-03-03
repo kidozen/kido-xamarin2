@@ -10,47 +10,43 @@ namespace kido.ui.tests
     {
         DataSource dataSource;
 
-        public MasterViewController(IntPtr handle)
-            : base(handle)
+        public MasterViewController(IntPtr handle) : base(handle)
         {
             Title = NSBundle.MainBundle.LocalizedString("Master", "Master");
-
-            // Custom initialization
         }
 
-        void AddNewItem(object sender, EventArgs args)
+        void AddTest(KidoUIXTestDetails<string> value)
         {
-            dataSource.Objects.Insert(0, DateTime.Now);
+            dataSource.Objects.Add(value);
 
             using (var indexPath = NSIndexPath.FromRowSection(0, 0))
                 TableView.InsertRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Automatic);
         }
-
+        
         public override void DidReceiveMemoryWarning()
         {
-            // Releases the view if it doesn't have a superview.
             base.DidReceiveMemoryWarning();
-
-            // Release any cached data, images, etc that aren't in use.
         }
 
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
 
-            // Perform any additional setup after loading the view, typically from a nib.
             NavigationItem.LeftBarButtonItem = EditButtonItem;
-
-            var addButton = new UIBarButtonItem(UIBarButtonSystemItem.Add, AddNewItem);
-            NavigationItem.RightBarButtonItem = addButton;
-
             TableView.Source = dataSource = new DataSource(this);
+
+            this.AddTest(new KidoUIXTestDetails<string> { Name = "passiveShouldDisplayName", ExpectedValue = "John Admin" });
+        }
+
+        public override void ViewWillAppear(bool animated)
+        {
+            base.ViewWillAppear(animated);
         }
 
         class DataSource : UITableViewSource
         {
             static readonly NSString CellIdentifier = new NSString("Cell");
-            readonly List<object> objects = new List<object>();
+            readonly List<object> testList = new List<object>();
             readonly MasterViewController controller;
 
             public DataSource(MasterViewController controller)
@@ -60,7 +56,7 @@ namespace kido.ui.tests
 
             public IList<object> Objects
             {
-                get { return objects; }
+                get { return testList; }
             }
 
             // Customize the number of sections in the table view.
@@ -71,7 +67,7 @@ namespace kido.ui.tests
 
             public override nint RowsInSection(UITableView tableview, nint section)
             {
-                return objects.Count;
+                return testList.Count;
             }
 
             // Customize the appearance of table view cells.
@@ -79,44 +75,10 @@ namespace kido.ui.tests
             {
                 var cell = (UITableViewCell)tableView.DequeueReusableCell(CellIdentifier, indexPath);
 
-                cell.TextLabel.Text = objects[indexPath.Row].ToString();
+                cell.TextLabel.Text = testList[indexPath.Row].ToString();
 
                 return cell;
             }
-
-            public override bool CanEditRow(UITableView tableView, NSIndexPath indexPath)
-            {
-                // Return false if you do not want the specified item to be editable.
-                return true;
-            }
-
-            public override void CommitEditingStyle(UITableView tableView, UITableViewCellEditingStyle editingStyle, NSIndexPath indexPath)
-            {
-                if (editingStyle == UITableViewCellEditingStyle.Delete)
-                {
-                    // Delete the row from the data source.
-                    objects.RemoveAt(indexPath.Row);
-                    controller.TableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Fade);
-                }
-                else if (editingStyle == UITableViewCellEditingStyle.Insert)
-                {
-                    // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-                }
-            }
-            /*
-            // Override to support rearranging the table view.
-            public override void MoveRow (UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath)
-            {
-            }
-            */
-            /*
-            // Override to support conditional rearranging of the table view.
-            public override bool CanMoveRow (UITableView tableView, NSIndexPath indexPath)
-            {
-                // Return false if you do not want the item to be re-orderable.
-                return true;
-            }
-            */
         }
 
         public override void PrepareForSegue(UIStoryboardSegue segue, NSObject sender)
@@ -127,8 +89,6 @@ namespace kido.ui.tests
                 var item = dataSource.Objects[indexPath.Row];
 
                 ((DetailViewController)segue.DestinationViewController).SetDetailItem(item);
-
-                
 
             }
         }
