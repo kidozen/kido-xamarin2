@@ -8,12 +8,6 @@ using Kidozen;
 
 namespace kido.tests
 {
-    public class Weather
-    {
-        public string main { get; set; }
-        public string description { get; set; }
-    }
-
     public class WeatherResponse
     {
         public List<Weather> weather { get; set; }
@@ -49,6 +43,7 @@ namespace kido.tests
             var results = await ds.Query(new {city = "Buenos Aires,AR"});
             Assert.IsTrue(results.IndexOf("description")>-1);
         }
+
         [Test()]
         public async void ShouldQueryAsString2()
         {

@@ -71,7 +71,6 @@
     <Compile Include="ConfigurationVanilla.fs" />
     <Compile Include="DataSources.fs" />
     <Compile Include="DataSourcesVanilla.fs" />
-    <Compile Include="Files.fs" />
     <Compile Include="Mail.fs" />
     <Compile Include="MailSender.fs" />
     <Compile Include="Queue.fs" />
@@ -82,6 +81,8 @@
     <Compile Include="Storage.fs" />
     <Compile Include="StorageVanilla.fs" />
     <Compile Include="AnalyticsVanilla.fs" />
+    <Compile Include="Files.fs" />
+    <Compile Include="CustomEndpointsVanilla.fs" />
     <Compile Include="Kidozen.fs" />
     <None Include="app.config" />
     <Compile Include="Crash.fs" />
