@@ -36,18 +36,19 @@ namespace kido.tests
         public async void ShouldExecuteAsType()
         {
             await this.kidozenApplication.Authenticate(Settings.User, Settings.Pass, Settings.Provider);
-            var ds = kidozenApplication.CustomEndpoint("query-for-tests");
-            var results = await ds.Execute<WeatherResponse>(new { city = "Buenos Aires,AR" });
-            Assert.IsNotNull(results.weather);
+            var ds = kidozenApplication.CustomEndpoint("customScript1");
+            var results = await ds.Execute<EndpointResponse>();
+            Assert.IsNotNull(results.length);
+            Assert.AreEqual(4, results.length);
         }
 
         [Test()]
         public async void ShouldExecuteAsString()
         {
             await this.kidozenApplication.Authenticate(Settings.User, Settings.Pass, Settings.Provider);
-            var ds = kidozenApplication.CustomEndpoint("query-for-tests");
-            var results = await ds.Execute(new { city = "Buenos Aires,AR" });
-            Assert.IsTrue(results.IndexOf("description") > -1);
+            var ds = kidozenApplication.CustomEndpoint("customScript2");
+            var results = await ds.Execute( new { name = "kidoScript"});
+            Assert.IsTrue(results.IndexOf("name") > -1);
         }
 
         //

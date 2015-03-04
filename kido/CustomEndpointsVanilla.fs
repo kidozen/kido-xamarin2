@@ -16,7 +16,7 @@ open System.Collections.Generic
 
 type CustomEndpoint (name, identity:Identity) = 
     let name = name
-    let baseurl =(getJsonStringValue (identity.config) "customEndpoints" ).Value
+    let baseurl =(getJsonStringValue (identity.config) "ssc" ).Value
     member this.identity = identity
 
     member private this.ProcessResponse result =
@@ -34,7 +34,7 @@ type CustomEndpoint (name, identity:Identity) =
                 | _ -> raise ( new Exception (result.EntityBody.Value))
 
     member this.Execute<'a>() =
-        let url = sprintf "%s/%s/" baseurl name
+        let url = sprintf "%s/%s" baseurl name
         let service =  async {
             let! result = createRequest HttpMethod.Post url  
                             |> withHeader (Authorization this.identity.rawToken) 
@@ -44,7 +44,7 @@ type CustomEndpoint (name, identity:Identity) =
         service |> Async.StartAsTask
 
     member this.Execute() =
-        let url = sprintf "%s/%s/" baseurl name
+        let url = sprintf "%s/%s" baseurl name
         let service =  async {
             let! result = createRequest HttpMethod.Post url  
                             |> withHeader (Authorization this.identity.rawToken) 
@@ -56,10 +56,11 @@ type CustomEndpoint (name, identity:Identity) =
 
     member this.Execute<'a>(parameters) =
         let paramsAsString = JSONSerializer.toString parameters
-        let url = sprintf "%s/%s/" baseurl name
+        let url = sprintf "%s/%s" baseurl name
         let service =  async {
             let! result = createRequest HttpMethod.Post url  
                             |> withHeader (Authorization this.identity.rawToken) 
+                            |> withHeader (ContentType "application/json")
                             |> withBody paramsAsString
                             |> getResponseAsync                             
             return  JsonConvert.DeserializeObject<'a>( this.ProcessResponse result )                
@@ -68,10 +69,11 @@ type CustomEndpoint (name, identity:Identity) =
 
     member this.Execute(parameters) =
         let paramsAsString = JSONSerializer.toString parameters
-        let url = sprintf "%s/%s/" baseurl name
+        let url = sprintf "%s/%s" baseurl name
         let service =  async {
             let! result = createRequest HttpMethod.Post url  
                             |> withHeader (Authorization this.identity.rawToken) 
+                            |> withHeader (ContentType "application/json")
                             |> withBody paramsAsString
                             |> getResponseAsync                             
             return this.ProcessResponse result                
