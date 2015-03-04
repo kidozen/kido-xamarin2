@@ -6,25 +6,30 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 
+using Kidozen;
+using Kidozen.Android;
+
 namespace kido.droid.ui.tests
 {
     [Activity(Label = "kido.droid.ui.tests", MainLauncher = true, Icon = "@drawable/icon")]
-    public class MainActivity : Activity
+    public class MainActivity : ListActivity
     {
-        int count = 1;
+        string[] testList;
 
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
 
-            // Set our view from the "main" layout resource
+            testList = new string[] { "passiveAuthentication"};
+
             SetContentView(Resource.Layout.Main);
+            ListAdapter = new ArrayAdapter<String>(this, Android.Resource.Layout.SimpleListItem1, testList);
+        }
 
-            // Get our button from the layout resource,
-            // and attach an event to it
-            Button button = FindViewById<Button>(Resource.Id.MyButton);
-
-            button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
+        protected override void OnListItemClick(ListView l, View v, int position, long id)
+        {
+            var t = testList[position];
+            PassiveTests.DoPassiveAuth(this);
         }
     }
 }
