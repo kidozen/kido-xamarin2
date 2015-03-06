@@ -11,9 +11,11 @@ namespace Kidozen.iOS
 {
     public static partial class KidozenExtensions
     {
+        private static PubSub psInstance;
+
         public static PubSub SubscribeToChannel(this Kidozen.KidoApplication app, string name)
         {
-            var psInstance = app.PubSub(name);
+            psInstance = app.PubSub(name);
             psInstance.SubscriberInstance = new PubSubChannel();
 
             //

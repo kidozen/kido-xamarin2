@@ -30,13 +30,17 @@ namespace kido.ui.tests
         {
             var kidozen = new Kidozen.KidoApplication("kidodemo.kidocloud.com", "tasks"
                 , "wb8KTX2/21A6ISM7PncaNozhxxCxcL8+TtB2aKbZyu8=");
-            kidozen.Authenticate("demo@kidozen.com","pass","Kidozen").ContinueWith(authTask => 
+            kidozen.Authenticate().ContinueWith(authTask => 
                 {
                     try 
 	                    {
-                            var ps = kidozen.SubscribeToChannel("test");
-                            var ok = ps.Subscribe().Result;
-                            ps.Publish(new { bar = "foo" });                           
+                            var ps = kidozen.SubscribeToChannel("ABCDEF-222223333");
+                            var ok = ps.Subscribe().ContinueWith(
+                                t => {
+                                    Console.WriteLine("Task Subscribe Result: " + t.Result.ToString());
+                                    ps.Publish(new { bar = "foo" }); 
+                                }    
+                            );
 	                    }
 	                    catch (Exception e)
 	                    {

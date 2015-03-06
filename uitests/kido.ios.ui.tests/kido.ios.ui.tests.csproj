@@ -117,10 +117,6 @@
     <BundleResource Include="Resources\Default-568h%402x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="kido, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\kido\bin\Debug\kido.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -134,6 +130,10 @@
       <Project>{aa9ba43a-cad5-4c71-8c94-f0e4aecdc06a}</Project>
       <Name>kido.ios</Name>
       <IsAppExtension>false</IsAppExtension>
+    </ProjectReference>
+    <ProjectReference Include="..\..\kido\kido.fsproj">
+      <Project>{92a04503-19d0-43e1-aeeb-f100a7635d15}</Project>
+      <Name>kido</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

@@ -24,7 +24,7 @@ type ISubscriber =
 
 type PubSub (name, identity:Identity) = 
     let name = name
-    let subscriber:ISubscriber = null 
+    let mutable subscriber:ISubscriber = null 
     let subscribeUrl =(getJsonStringValue (identity.config) "ws" ).Value
     let publishUrl =(getJsonStringValue (identity.config) "pubsub" ).Value
   
@@ -50,7 +50,11 @@ type PubSub (name, identity:Identity) =
     member this.Subscribe() = 
         let url = subscribeUrl
         let channel = name
+
         let service =  async {
-            return subscriber.Subscribe url channel
+            System.Diagnostics.Debug.WriteLine("Subscribe FS, 2 " + url + ", " + channel );
+
+            let result = this.SubscriberInstance.Subscribe url channel
+            return result
         }
         service |> Async.StartAsTask

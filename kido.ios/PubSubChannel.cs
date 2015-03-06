@@ -13,27 +13,41 @@ namespace Kidozen.iOS
 {
     public class PubSubChannel : Kidozen.ISubscriber
     {
-        private ManualResetEvent subscribeEvent = new ManualResetEvent(false);
-        private int subscriptionTimeout = 10000;
+        //private ManualResetEvent subscribeEvent = new ManualResetEvent(false);
+        //private int subscriptionTimeout = 10000;
         private WebSocket websocket ;
         public event PubSubMessageArrivedDelegate OnMessageEvent;
-        
+
+        public PubSubChannel()
+        {
+            Console.WriteLine("Constructor  ..." );
+
+        }
+
         public bool Subscribe(string endpoint, string name)
         {
+            Console.WriteLine("Subscribe, " + endpoint + ", " + name );
+            NSObject caller = new NSObject();
+            var connectionSuccess = true;
+
+            caller.InvokeOnMainThread( () => { 
             this.websocket = new WebSocket(endpoint);
             websocket.AllowUnstrustedCertificate = true;
-            var connectionSuccess = false;
             websocket.Opened += (obj, args) =>
             {
+                Console.WriteLine("Opened");
                 var message = "bindToChannel::{\"application\":\"local\",\"channel\":\"" + name +"\"}";
+                Console.WriteLine("Bind: " + message);
+
                 websocket.Send(message);
-                connectionSuccess = true;
-                subscribeEvent.Set();
+
             };
 
             websocket.Error += (obj, args) =>
             {
-                Console.WriteLine("Error");
+                Console.WriteLine("Error, " + args.ToString());
+                connectionSuccess = false;
+          //      subscribeEvent.Set();
             };
 
             websocket.Closed += (obj, args) =>
@@ -46,9 +60,13 @@ namespace Kidozen.iOS
                 Console.WriteLine("MessageReceived: " + args.ToString() );
             };
 
+            Console.WriteLine("Opening ...");
             websocket.Open();
+            Console.WriteLine("Opened");
+            });
+            //WaitHandle.WaitAll(new WaitHandle[] { subscribeEvent }, subscriptionTimeout);
+            Console.WriteLine("Finished: " + connectionSuccess.ToString());
 
-            WaitHandle.WaitAll(new WaitHandle[] { subscribeEvent }, subscriptionTimeout);
             return connectionSuccess;
         }
     }
