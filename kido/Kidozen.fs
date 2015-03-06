@@ -28,9 +28,6 @@ type User (rawtoken:string) =
             | None -> null                    
     member this.UserName = this.AllClaims.["http://schemas.kidozen.com/name"] 
 
-type PassiveAuthenticationEventArgs(token:string) =
-    inherit System.EventArgs()
-    member this.Token = token
 
 
 type KidoApplication(marketplace, application, key )  =
@@ -144,4 +141,7 @@ type KidoApplication(marketplace, application, key )  =
 
     member internal this.isPassiveAuthenticated =
         identity.authenticationRequest.ProviderRequest.IsSome
-    
+
+    //Support to PubSub channel. Maybe I can create a PCL WebSocket lib to avoid it
+    member internal this.PubSub channel = 
+        new PubSub(channel, identity)    

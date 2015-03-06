@@ -10,7 +10,6 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-
 using Kidozen;
 using Kidozen.Android;
 
@@ -31,6 +30,7 @@ namespace kido.droid.ui.tests
                 ContinueWith(
                 t =>
                 {
+                    kido.Subscribe();
                     var testResults = new Intent(context, typeof(TestsResultsActivity));
                     testResults.PutExtra("TestData", kido.CurrentUser.UserName);
 

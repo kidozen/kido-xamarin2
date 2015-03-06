@@ -77,7 +77,6 @@ namespace Kidozen.iOS
 				dummyPassiveFailTask.Start ();
 			}
 		}
-
-	}
+    }
 }
 

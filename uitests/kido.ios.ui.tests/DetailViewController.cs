@@ -28,15 +28,28 @@ namespace kido.ui.tests
 
         void ShowExpectedResult()
         {
-            var kidozen = new Kidozen.KidoApplication("kidodemo.kidocloud.com", "tasks", "");
-            kidozen.Authenticate().ContinueWith(authTask => 
-                InvokeOnMainThread(()=> {
+            var kidozen = new Kidozen.KidoApplication("kidodemo.kidocloud.com", "tasks"
+                , "wb8KTX2/21A6ISM7PncaNozhxxCxcL8+TtB2aKbZyu8=");
+            kidozen.Authenticate("demo@kidozen.com","pass","Kidozen").ContinueWith(authTask => 
+                {
+                    try 
+	                    {
+                            var ps = kidozen.SubscribeToChannel("test");
+                            var ok = ps.Subscribe().Result;
+                            ps.Publish(new { bar = "foo" });                           
+	                    }
+	                    catch (Exception e)
+	                    {
+		                    throw;
+	                    }
+                //
+                //InvokeOnMainThread(()=> {
                     //assert
-                    var expected = testExpectedDetail as KidoUIXTestDetails<string>;
-                    var isOk = expected.ExpectedValue == kidozen.CurrentUser.UserName;
-                    detailDescriptionLabel.Text = kidozen.CurrentUser.UserName;
-                    })
-                );
+                    //var expected = testExpectedDetail as KidoUIXTestDetails<string>;
+                    //var isOk = expected.ExpectedValue == kidozen.CurrentUser.UserName;
+                    //detailDescriptionLabel.Text = kidozen.CurrentUser.UserName;
+                //    })
+                });
  
         }
 

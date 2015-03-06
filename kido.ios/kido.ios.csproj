@@ -44,6 +44,18 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="SuperSocket.ClientEngine.Common">
+      <HintPath>..\..\SuperSocket.ClientEngine.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.ClientEngine.Core">
+      <HintPath>..\..\SuperSocket.ClientEngine.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.ClientEngine.Protocol">
+      <HintPath>..\..\SuperSocket.ClientEngine.Protocol.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.ClientEngine.Proxy">
+      <HintPath>..\..\SuperSocket.ClientEngine.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -88,6 +100,8 @@
     </Compile>
     <Compile Include="DataVisualization\iOSDataVisualization.cs" />
     <Compile Include="DataVisualization\DataVisualizationViewController.cs" />
+    <Compile Include="PubSubChannel.cs" />
+    <Compile Include="PubsubExtensionscs.cs" />
     <None Include="..\sources\kido\common\OfflineSupport\OfflineCacheEnumeration.cs">
       <Link>Offline\OfflineCacheEnumeration.cs</Link>
     </None>
@@ -113,9 +127,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\clientengine\WebSocket4Net.MonoTouch\WebSocket4Net.MonoTouch.csproj">
+      <Project>{3a42609f-0dc8-4f4e-9069-8d7782592577}</Project>
+      <Name>WebSocket4Net.MonoTouch</Name>
+      <IsAppExtension>false</IsAppExtension>
+    </ProjectReference>
     <ProjectReference Include="..\kido\kido.fsproj">
       <Project>{92a04503-19d0-43e1-aeeb-f100a7635d15}</Project>
       <Name>kido</Name>
