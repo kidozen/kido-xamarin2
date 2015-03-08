@@ -9,18 +9,22 @@ using A = KzApplication;
 
 namespace Kidozen.iOS
 {
+
     public static partial class KidozenExtensions
     {
         private static PubSub psInstance;
-
-        public static PubSub SubscribeToChannel(this Kidozen.KidoApplication app, string name)
+        
+        public static PubSub SubscribeToChannel<T>(this Kidozen.KidoApplication app, string name, 
+            PubSubMessageArrivedDelegate onMessageArrive)
         {
             psInstance = app.PubSub(name);
-            psInstance.SubscriberInstance = new PubSubChannel();
-
+            psInstance.SubscriberInstance = new PubSubChannel<T>();
+            psInstance.SubscriberInstance.OnMessageEvent += onMessageArrive;
             //
             psInstance.Subscribe();
             return psInstance;
         }
+
+        
     }
 }

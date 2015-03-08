@@ -2,31 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 using Foundation;
 using UIKit;
 
 using WebSocket4Net;
-using System.Threading;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Kidozen.iOS
 {
-    public class PubSubChannel : Kidozen.ISubscriber
+    public class PubSubChannel<T> : Kidozen.ISubscriber
     {
-        //private ManualResetEvent subscribeEvent = new ManualResetEvent(false);
-        //private int subscriptionTimeout = 10000;
         private WebSocket websocket ;
         public event PubSubMessageArrivedDelegate OnMessageEvent;
 
         public PubSubChannel()
         {
             Console.WriteLine("Constructor  ..." );
-
         }
 
         public bool Subscribe(string endpoint, string name)
         {
-            Console.WriteLine("Subscribe, " + endpoint + ", " + name );
             NSObject caller = new NSObject();
             var connectionSuccess = true;
 
@@ -47,7 +45,6 @@ namespace Kidozen.iOS
             {
                 Console.WriteLine("Error, " + args.ToString());
                 connectionSuccess = false;
-          //      subscribeEvent.Set();
             };
 
             websocket.Closed += (obj, args) =>
@@ -58,15 +55,17 @@ namespace Kidozen.iOS
             websocket.MessageReceived += (obj, args) =>
             {
                 Console.WriteLine("MessageReceived: " + args.ToString() );
+                if (this.OnMessageEvent!=null)
+                {
+                    var eom = args.Message.IndexOf("::") + 2;
+                    var jsonmessage = args.Message.Substring(eom, args.Message.Length);
+                    var message = JsonConvert.DeserializeObject<T>(jsonmessage);
+                    this.OnMessageEvent.Invoke(this, new PubSubChannelEventArgs<T>(message,true));
+                }
             };
 
-            Console.WriteLine("Opening ...");
             websocket.Open();
-            Console.WriteLine("Opened");
             });
-            //WaitHandle.WaitAll(new WaitHandle[] { subscribeEvent }, subscriptionTimeout);
-            Console.WriteLine("Finished: " + connectionSuccess.ToString());
-
             return connectionSuccess;
         }
     }

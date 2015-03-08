@@ -8,6 +8,10 @@ using Kidozen.iOS;
 
 namespace kido.ui.tests
 {
+    public class PSMessage  {
+        public string bar { get; set; }
+    }
+
     public partial class DetailViewController : UIViewController
     {
         object testExpectedDetail;
@@ -34,11 +38,11 @@ namespace kido.ui.tests
                 {
                     try 
 	                    {
-                            var ps = kidozen.SubscribeToChannel("ABCDEF-222223333");
+                            var ps = kidozen.SubscribeToChannel<PSMessage>("ABCDEF-0000000", onMessageArrive);
                             var ok = ps.Subscribe().ContinueWith(
                                 t => {
                                     Console.WriteLine("Task Subscribe Result: " + t.Result.ToString());
-                                    ps.Publish(new { bar = "foo" }); 
+                                    ps.Publish(new PSMessage { bar = "2" });
                                 }    
                             );
 	                    }
@@ -55,6 +59,16 @@ namespace kido.ui.tests
                 //    })
                 });
  
+        }
+
+        private void onMessageArrive(object instance, EventArgs value)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ps_MyEvent(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         public override void DidReceiveMemoryWarning()

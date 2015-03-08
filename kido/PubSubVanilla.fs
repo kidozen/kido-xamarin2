@@ -14,6 +14,11 @@ open System.IO
 open System.Linq
 open System.Collections.Generic
 
+type PubSubChannelEventArgs<'a>(value : 'a, success : Boolean) =
+    inherit System.EventArgs()
+    member this.Success = success
+    member this.Value = value
+
 type PubSubMessageArrivedDelegate = delegate of obj * EventArgs -> unit
 
 [<AllowNullLiteral>]
@@ -27,10 +32,11 @@ type PubSub (name, identity:Identity) =
     let mutable subscriber:ISubscriber = null 
     let subscribeUrl =(getJsonStringValue (identity.config) "ws" ).Value
     let publishUrl =(getJsonStringValue (identity.config) "pubsub" ).Value
-  
+    let e = Event<EventHandler<_>,_>()
+
     member this.identity = identity
     member val SubscriberInstance = subscriber with get, set
-
+    
     member this.Publish(parameters) =
         let paramsAsString = JSONSerializer.toString parameters
         let url = sprintf "%s/%s" publishUrl name
@@ -52,8 +58,6 @@ type PubSub (name, identity:Identity) =
         let channel = name
 
         let service =  async {
-            System.Diagnostics.Debug.WriteLine("Subscribe FS, 2 " + url + ", " + channel );
-
             let result = this.SubscriberInstance.Subscribe url channel
             return result
         }
