@@ -15,7 +15,7 @@ namespace kido.ui.tests
     public partial class DetailViewController : UIViewController
     {
         object testExpectedDetail;
-
+        Kidozen.PubSub ps;
         public DetailViewController(IntPtr handle)
             : base(handle)
         {
@@ -34,15 +34,14 @@ namespace kido.ui.tests
         {
             var kidozen = new Kidozen.KidoApplication("kidodemo.kidocloud.com", "tasks"
                 , "wb8KTX2/21A6ISM7PncaNozhxxCxcL8+TtB2aKbZyu8=");
-            kidozen.Authenticate().ContinueWith(authTask => 
+            kidozen.Authenticate("demo@kidozen.com","pass","Kidozen").ContinueWith(authTask => 
                 {
                     try 
 	                    {
-                            var ps = kidozen.SubscribeToChannel<PSMessage>("ABCDEF-0000000", onMessageArrive);
+                            ps = kidozen.SubscribeToChannel<PSMessage>("ABCDEF-000005", onMessageArrive);
                             var ok = ps.Subscribe().ContinueWith(
                                 t => {
                                     Console.WriteLine("Task Subscribe Result: " + t.Result.ToString());
-                                    ps.Publish(new PSMessage { bar = "2" });
                                 }    
                             );
 	                    }
@@ -63,13 +62,9 @@ namespace kido.ui.tests
 
         private void onMessageArrive(object instance, EventArgs value)
         {
-            throw new NotImplementedException();
+            
         }
 
-        void ps_MyEvent(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         public override void DidReceiveMemoryWarning()
         {
@@ -80,6 +75,13 @@ namespace kido.ui.tests
         {
             base.ViewDidLoad();
             ShowExpectedResult();
+        }
+
+        partial void UIButton7_TouchUpInside(UIButton sender)
+        {
+            var message = new PSMessage { bar = Guid.NewGuid().ToString() };
+            var result = ps.Publish(message).Result;
+            Console.WriteLine("Publish result: " + result);
         }
     }
 }
