@@ -84,6 +84,7 @@
     <Compile Include="Files.fs" />
     <Compile Include="CustomEndpointsVanilla.fs" />
     <Compile Include="PubSubVanilla.fs" />
+    <Compile Include="Notifications.fs" />
     <Compile Include="Kidozen.fs" />
     <None Include="app.config" />
     <Compile Include="Crash.fs" />

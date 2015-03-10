@@ -106,6 +106,7 @@
     <Compile Include="..\sources\kido\common\pubsub\PubsubExtensions.cs">
       <Link>PubSubChannel\PubsubExtensions.cs</Link>
     </Compile>
+    <Compile Include="PushNotifications\PushExtensions.cs" />
     <None Include="..\sources\kido\common\OfflineSupport\OfflineCacheEnumeration.cs">
       <Link>Offline\OfflineCacheEnumeration.cs</Link>
     </None>

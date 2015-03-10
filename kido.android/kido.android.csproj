@@ -83,6 +83,7 @@
     <Compile Include="Analytics\DeviceInformation.cs" />
     <Compile Include="Analytics\DeviceStorage.cs" />
     <Compile Include="Analytics\LocationHelper.cs" />
+    <Compile Include="PushNotifications\PushExtensions.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="PassiveAuthActivity.cs" />
     <Compile Include="..\sources\kido\common\FileExtensions.cs">
