@@ -7,7 +7,15 @@ using K = Kidozen;
 using U = Utilities;
 using A = KzApplication;
 
+#if __ANDROID__
+
+namespace Kidozen.Android
+
+#else
+
 namespace Kidozen.iOS
+
+#endif
 {
 
     public static partial class KidozenExtensions

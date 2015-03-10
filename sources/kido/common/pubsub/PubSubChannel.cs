@@ -4,21 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-using Foundation;
-using UIKit;
 
 using WebSocket4Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+#if __ANDROID__
+
+namespace Kidozen.Android
+
+#else
+using Foundation;
+using UIKit;
+
 namespace Kidozen.iOS
+
+#endif
 {
-    /*
-    type PubSubChannelEventArgs<'a>(value : 'a, success : Boolean) =
-    inherit System.EventArgs()
-    member this.Success = success
-    member this.Value = value
-    */
+
     public class PubSubChannelEventArgs<A> : System.EventArgs
     {
         public Boolean Success { get; set; }
@@ -29,19 +32,15 @@ namespace Kidozen.iOS
     {
         private WebSocket websocket;
         public event PubSubMessageArrivedDelegate OnMessageEvent;
-        static NSObject caller = new NSObject();
         private string _name = string.Empty;   
-        public PubSubChannel()
-        {
-            Console.WriteLine("Constructor  ...");
-        }
+        public PubSubChannel(){}
 
         public bool Subscribe(string endpoint, string name)
         {
-            var connectionSuccess = true;
-            _name = name;
-            PubSubChannel<T>.caller.InvokeOnMainThread(() =>
+            var success = true;
+            try
             {
+                _name = name;
                 websocket = new WebSocket(endpoint);
                 websocket.AllowUnstrustedCertificate = true;
                 websocket.EnableAutoSendPing = true;
@@ -49,26 +48,38 @@ namespace Kidozen.iOS
                 websocket.Opened += OnConnect;
                 websocket.MessageReceived += OnMessageReceived;
 
-                websocket.Error += (obj, args) =>
-                {
-                    Console.WriteLine("Error, " + args.Exception.Message.ToString());
-                    connectionSuccess = false;
-                };
+                websocket.Error += OnError;
+                // TODO: Check why there is an error with this lib
+                System.Net.ServicePointManager.ServerCertificateValidationCallback +=
+                    (sender, certificate, chain, sslPolicyErrors) => true; System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
-                websocket.Closed += (obj, args) =>
-                {
-                    Console.WriteLine("Closed");
-                };
-
-                
                 websocket.Open();
-            });
-            return connectionSuccess;
+            }
+            catch (Exception)
+            {
+                success = false;
+            }
+            
+            return success;
+        }
+
+
+        private void OnError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e)
+        {
+            if (e.Exception != null)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Exception.Message);
+            }
+            if (this.OnMessageEvent != null) {
+                if (e.Exception.Message.ToLower().IndexOf("you must send data by websocket after websocket is opened") == -1)
+                {
+                    this.OnMessageEvent.Invoke(this, new PubSubChannelEventArgs<SuperSocket.ClientEngine.ErrorEventArgs> { Value = e, Success = false });
+                }
+            }
         }
 
         internal void OnConnect(object sender, EventArgs args)
         {
-            Console.WriteLine("Opened");
             var message = "bindToChannel::{\"application\":\"local\",\"channel\":\"" + _name + "\"}";
             websocket.Send(message);
             Console.WriteLine("Bind: " + message);
@@ -76,8 +87,6 @@ namespace Kidozen.iOS
 
         internal void OnMessageReceived(object sender, MessageReceivedEventArgs args)
         {
-            Console.WriteLine("MessageReceived: " + args.Message);
-            
             if (this.OnMessageEvent != null)
             {
                 var eom = args.Message.IndexOf("::") + 2;

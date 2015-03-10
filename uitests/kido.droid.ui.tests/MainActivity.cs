@@ -29,7 +29,9 @@ namespace kido.droid.ui.tests
         protected override void OnListItemClick(ListView l, View v, int position, long id)
         {
             var t = testList[position];
-            PassiveTests.DoPassiveAuth(this);
+            //PassiveTests.DoPassiveAuth(this);
+            var p = new PassiveTests();
+            p.testPubSub(this);
         }
     }
 }

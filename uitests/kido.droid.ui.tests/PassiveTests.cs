@@ -38,5 +38,13 @@ namespace kido.droid.ui.tests
                 }
             );
         }
+
+        internal void testPubSub(Context context)
+        {
+            var testResults = new Intent(context, typeof(TestsResultsActivity));
+            //testResults.PutExtra("TestData", kido.CurrentUser.UserName);
+
+            context.StartActivity(testResults);
+        }
     }
 }

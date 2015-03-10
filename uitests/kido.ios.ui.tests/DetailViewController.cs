@@ -39,7 +39,7 @@ namespace kido.ui.tests
                 {
                     try 
 	                    {
-                            ps = kidozen.SubscribeToChannel<PSMessage>("ABCDEF-000005", onMessageArrive);
+                            ps = kidozen.SubscribeToChannel<PSMessage>("ABCDEF-000010", onMessageArrive);
                             var ok = ps.Subscribe().ContinueWith(
                                 t => {
                                     Console.WriteLine("Task Subscribe Result: " + t.Result.ToString());
