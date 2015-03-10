@@ -14,11 +14,7 @@ open System.IO
 open System.Linq
 open System.Collections.Generic
 
-type PubSubChannelEventArgs<'a>(value : 'a, success : Boolean) =
-    inherit System.EventArgs()
-    member this.Success = success
-    member this.Value = value
-
+//TODO -> Create a typed <T> delegate
 type PubSubMessageArrivedDelegate = delegate of obj * EventArgs -> unit
 
 [<AllowNullLiteral>]

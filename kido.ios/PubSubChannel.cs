@@ -13,6 +13,18 @@ using Newtonsoft.Json.Linq;
 
 namespace Kidozen.iOS
 {
+    /*
+    type PubSubChannelEventArgs<'a>(value : 'a, success : Boolean) =
+    inherit System.EventArgs()
+    member this.Success = success
+    member this.Value = value
+    */
+    public class PubSubChannelEventArgs<A> : System.EventArgs
+    {
+        public Boolean Success { get; set; }
+        public A Value { get; set; }
+    }
+
     public class PubSubChannel<T> : Kidozen.ISubscriber
     {
         private WebSocket websocket;
@@ -73,11 +85,11 @@ namespace Kidozen.iOS
                 if (typeof(T)!= typeof( System.String ) )
                 {
                     var message = JsonConvert.DeserializeObject<T>(jsonmessage);
-                    this.OnMessageEvent.Invoke(this, new PubSubChannelEventArgs<T>(message, true ));
+                    this.OnMessageEvent.Invoke(this, new PubSubChannelEventArgs<T> { Value = message, Success = true } );
                 }
                 else
                 {
-                    this.OnMessageEvent.Invoke(this, new PubSubChannelEventArgs<string>(jsonmessage,true ));
+                    this.OnMessageEvent.Invoke(this, new PubSubChannelEventArgs<string>{ Value = jsonmessage, Success = true });
                 }
 
             }

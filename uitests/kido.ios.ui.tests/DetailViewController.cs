@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Foundation;
 using UIKit;
 
+using Kidozen;
 using Kidozen.iOS;
 
 namespace kido.ui.tests
@@ -60,10 +61,11 @@ namespace kido.ui.tests
  
         }
 
-        private void onMessageArrive(object instance, EventArgs value)
+        private void onMessageArrive(object obj, EventArgs value)
         {
-            
+            Console.WriteLine("Message arrived: " + value.ToString());
         }
+
 
 
         public override void DidReceiveMemoryWarning()
