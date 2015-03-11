@@ -22,7 +22,7 @@ namespace Kidozen.iOS
     {
         private static PubSub psInstance;
         
-        public static PubSub SubscribeToChannel<T>(this Kidozen.KidoApplication app, string name, 
+        public static PubSub SetupChannel<T>(this Kidozen.KidoApplication app, string name, 
             PubSubMessageArrivedDelegate onMessageArrive)
         {
             psInstance = app.PubSub(name);

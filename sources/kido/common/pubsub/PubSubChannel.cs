@@ -22,10 +22,10 @@ namespace Kidozen.iOS
 #endif
 {
 
-    public class PubSubChannelEventArgs<A> : System.EventArgs
+    public class PubSubChannelEventArgs : System.EventArgs
     {
         public Boolean Success { get; set; }
-        public A Value { get; set; }
+        public Object Value { get; set; }
     }
 
     public class PubSubChannel<T> : Kidozen.ISubscriber
@@ -70,12 +70,14 @@ namespace Kidozen.iOS
             {
                 System.Diagnostics.Debug.WriteLine(e.Exception.Message);
             }
+            /*
             if (this.OnMessageEvent != null) {
                 if (e.Exception.Message.ToLower().IndexOf("you must send data by websocket after websocket is opened") == -1)
                 {
                     this.OnMessageEvent.Invoke(this, new PubSubChannelEventArgs<SuperSocket.ClientEngine.ErrorEventArgs> { Value = e, Success = false });
                 }
             }
+             */
         }
 
         internal void OnConnect(object sender, EventArgs args)
@@ -94,11 +96,11 @@ namespace Kidozen.iOS
                 if (typeof(T)!= typeof( System.String ) )
                 {
                     var message = JsonConvert.DeserializeObject<T>(jsonmessage);
-                    this.OnMessageEvent.Invoke(this, new PubSubChannelEventArgs<T> { Value = message, Success = true } );
+                    this.OnMessageEvent.Invoke(this, new PubSubChannelEventArgs { Value = message, Success = true } );
                 }
                 else
                 {
-                    this.OnMessageEvent.Invoke(this, new PubSubChannelEventArgs<string>{ Value = jsonmessage, Success = true });
+                    this.OnMessageEvent.Invoke(this, new PubSubChannelEventArgs{ Value = jsonmessage, Success = true });
                 }
 
             }
