@@ -1,14 +1,13 @@
 # KidoZen .NET SDK 2.0
 This is a new version of the SDK for .NET platform Kidozen 
 
-## Version
-2.0.3.0
-## What's new?
+## Version 2.0.3.0
+### What's new?
 - Pub sub support for Android and iOS
 - Custom endpoints support for Android and iOS (Beta)
 
-2.0.2.0
-## What's new?
+## Version 2.0.2.0
+### What's new?
 - Analytics support for Android and iOS
  
 [Analytics Documentation](http://docs.kidozen.com/analytics/)  
