@@ -16,7 +16,6 @@ namespace Kidozen.Android
 		private static Task dummyPassiveFailTask = new Task(()=> {throw new Exception(authErrorMessage);});
 
 		private static KidoApplication currentApplication;
-        private static WebSocket websocket = new WebSocket("wss://kidowebsocket-tasks-kidodemo.kidocloud.com/");
             
 		public static Task Authenticate(this KidoApplication app, Context context) {
 			currentApplication = app;
@@ -52,35 +51,6 @@ namespace Kidozen.Android
 				dummyPassiveFailTask = new Task(()=> {throw new Exception(authErrorMessage);});
 		}
 
-        
-        public static void Subscribe(this Kidozen.KidoApplication app) {
-             
-            websocket.Opened += (obj, args) => {
-                var message = "bindToChannel::{\"application\":\"local\",\"channel\":\"x-channel\"}";
-                
-                websocket.Send(message);
-                Console.WriteLine("opened");
-            };
-            websocket.AllowUnstrustedCertificate = true;
-            websocket.DataReceived += (obj, args) =>
-            {
-                Console.WriteLine("Data");
-            };
-            websocket.Error += (obj, args) => { 
-                Console.WriteLine("Error");
-            };
-            websocket.Closed += (obj, args) => { 
-                Console.WriteLine("Closed");
-            };
-            websocket.MessageReceived += (obj, args) =>
-            {
-                Console.WriteLine("MessageReceived");
-            };
-            
-            websocket.Open();
-
-            
-        }
-	}
+    }
 }
 
