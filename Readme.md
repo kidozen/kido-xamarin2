@@ -1,5 +1,5 @@
 # KidoZen .NET SDK 2.0
-This is a new version of the SDK for .NET platform Kidozen 
+This is a new version of the SDK for .NET platform Kidozen. If you are using the previous SDK version please refer to [our migration guide](http://docs.kidozen.com/xamarin-sdk-vnext-migration-guide/)
 
 ## Version 2.0.3.0
 ### What's new?
