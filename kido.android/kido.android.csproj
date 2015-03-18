@@ -13,12 +13,10 @@
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
     <AssemblyName>kido.android</AssemblyName>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <NuGetPackageImportStamp>51f21b1b</NuGetPackageImportStamp>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -132,7 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\kido\kido.fsproj">
-      <Project>{92a04503-19d0-43e1-aeeb-f100a7635d15}</Project>
+      <Project>{92A04503-19D0-43E1-AEEB-F100A7635D15}</Project>
       <Name>kido</Name>
     </ProjectReference>
   </ItemGroup>
