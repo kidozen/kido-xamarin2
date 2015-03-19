@@ -135,6 +135,7 @@
     <Compile Include="..\sources\kido\common\ServiceExtensions.cs">
       <Link>ServiceExtensions.cs</Link>
     </Compile>
+    <Compile Include="KidozenAppDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
