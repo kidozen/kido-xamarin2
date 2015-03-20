@@ -104,8 +104,8 @@ type KidoApplication(marketplace, application, key )  =
     member this.Service name =
         new Service(name,identity)
 
-    member this.CustomEndpoint name =
-        new CustomEndpoint(name,identity)
+    member this.CustomApi name =
+        new CustomApi(name,identity)
 
     member this.Configuration name = 
         new Configuration(name, identity)
