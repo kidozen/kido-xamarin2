@@ -36,8 +36,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomEndpoints.cs" />
-    <Compile Include="EndpointResponse.cs" />
+    <Compile Include="CustomApi.cs" />
     <Compile Include="FileDataSources.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ActiveAuthentication.cs" />

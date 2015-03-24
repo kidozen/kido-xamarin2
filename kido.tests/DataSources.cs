@@ -8,6 +8,17 @@ using Kidozen;
 
 namespace kido.tests
 {
+    public class Weather
+    {
+        public string main { get; set; }
+        public string description { get; set; }
+    }
+
+    public class WeatherResponse
+    {
+        public List<Weather> weather { get; set; }
+    }
+
     [TestFixture ()]
 	public class DataSources
 	{

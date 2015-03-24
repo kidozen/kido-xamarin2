@@ -4,13 +4,13 @@ namespace kido.tests
 {
 	public class Settings
 	{
-        public static string Marketplace = "yourtenant.kidocloud.com";
+        public static string Marketplace = "testssl.kidocloud.com";
         public static string Application = "tasks";
-        public static string Key = "SDK Secret Key";
+        public static string Key = "upTbyOhvjn7/D2jia1D5LkzI66Di4HBoyf4AMFjkZN0=";
 
-        public static string User = "user@kidozen.com";
+        public static string User = "testssl@kidozen.com";
         public static string Provider = "Kidozen";
-        public static string Pass = "password";
+        public static string Pass = "pass";
 	}
 }
 
