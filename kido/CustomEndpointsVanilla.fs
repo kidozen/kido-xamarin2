@@ -14,9 +14,9 @@ open System.IO
 open System.Linq
 open System.Collections.Generic
 
-type CustomEndpoint (name, identity:Identity) = 
+type CustomApi (name, identity:Identity) = 
     let name = name
-    let baseurl =(getJsonStringValue (identity.config) "ssc" ).Value
+    let baseurl =(getJsonStringValue (identity.config) "customApi" ).Value
     member this.identity = identity
 
     member private this.ProcessResponse result =

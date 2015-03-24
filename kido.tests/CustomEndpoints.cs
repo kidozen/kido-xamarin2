@@ -36,7 +36,7 @@ namespace kido.tests
         public async void ShouldExecuteAsType()
         {
             await this.kidozenApplication.Authenticate(Settings.User, Settings.Pass, Settings.Provider);
-            var ds = kidozenApplication.CustomEndpoint("customScript1");
+            var ds = kidozenApplication.CustomApi("customScript1");
             var results = await ds.Execute<EndpointResponse>();
             Assert.IsNotNull(results.length);
             Assert.AreEqual(4, results.length);
@@ -46,7 +46,7 @@ namespace kido.tests
         public async void ShouldExecuteAsString()
         {
             await this.kidozenApplication.Authenticate(Settings.User, Settings.Pass, Settings.Provider);
-            var ds = kidozenApplication.CustomEndpoint("customScript2");
+            var ds = kidozenApplication.CustomApi("customScript2");
             var results = await ds.Execute( new { name = "kidoScript"});
             Assert.IsTrue(results.IndexOf("name") > -1);
         }

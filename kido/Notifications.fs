@@ -80,3 +80,4 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
                     | _ -> raise ( new Exception (result.EntityBody.Value))                
             }
         service |> Async.StartAsTask
+    

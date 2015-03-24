@@ -8,8 +8,11 @@ open System.Threading.Tasks
 open System.Runtime.InteropServices
 open System.Runtime.CompilerServices
 
+open Serialization
+open HttpClient
 open KzApplication
 open Utilities
+
 
 [<assembly:InternalsVisibleTo("kido.ios")>]
 [<assembly:InternalsVisibleTo("kido.android")>]
@@ -101,8 +104,8 @@ type KidoApplication(marketplace, application, key )  =
     member this.Service name =
         new Service(name,identity)
 
-    member this.CustomEndpoint name =
-        new CustomEndpoint(name,identity)
+    member this.CustomApi name =
+        new CustomApi(name,identity)
 
     member this.Configuration name = 
         new Configuration(name, identity)
@@ -145,3 +148,19 @@ type KidoApplication(marketplace, application, key )  =
     //Support to PubSub channel. Maybe I can create a PCL WebSocket lib to avoid it
     member internal this.PubSub channel = 
         new PubSub(channel, identity)    
+
+    member internal this.TrackNotification parameters =
+        let pushbaseurl =(getJsonStringValue (identity.config) "notification" ).Value
+        let message = JSONSerializer.toString parameters
+        let url = sprintf "%s/track/open" pushbaseurl
+        let service =  async {
+            let! result = createRequest HttpMethod.Post url  
+                            |> withHeader (Authorization this.GetIdentity.rawToken) 
+                            |> withBody message
+                            |> getResponseAsync                             
+            return 
+                match result.StatusCode with
+                    | 200 | 201 -> true
+                    | _ -> raise ( new Exception (result.EntityBody.Value))                
+            }
+        service |> Async.StartAsTask
