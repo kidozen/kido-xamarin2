@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Kidozen.iOS
 {
 
-	public class KidozenAppDelegate : NSObject
+	public partial class KidozenAppDelegate : NSObject
 	{
 		public KidoApplication kidoApplication { get; set; }
 
@@ -37,7 +37,7 @@ namespace Kidozen.iOS
 			
 			this.registerForRemoteNotifications();
 
-			return this.initializeKidozen (launchOptions).ContinueWith(theUser=> { 
+			return this.initializeAndAuthenticate (launchOptions).ContinueWith(theUser=> { 
 					if (theUser.IsFaulted) {
 						return false;
 					} else {
@@ -78,7 +78,7 @@ namespace Kidozen.iOS
 
 
 
-		public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
+		public void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
 		{
 			if (UIApplication.SharedApplication.ApplicationState == UIApplicationState.Background ||
 			    UIApplication.SharedApplication.ApplicationState == UIApplicationState.Inactive) {
@@ -87,7 +87,7 @@ namespace Kidozen.iOS
 			
 		}
 
-		public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken) {
+		public void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken) {
 			this.deviceToken = deviceToken.ToString();
 		}
 
@@ -100,7 +100,7 @@ namespace Kidozen.iOS
 			UIApplication.SharedApplication.RegisterUserNotificationSettings (notificationSettings);
 		}
 
-		private Task<User> initializeKidozen(NSDictionary d) {
+		private Task<User> initializeAndAuthenticate(NSDictionary d) {
 			NSString marketPlaceURL = (NSString) d["marketPlaceURL"];
 			NSString applicationName = (NSString) d["applicationName"];
 			NSString applicationKey = (NSString) d["applicationkey"];
