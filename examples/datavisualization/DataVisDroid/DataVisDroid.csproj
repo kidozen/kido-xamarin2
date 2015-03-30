@@ -114,10 +114,6 @@
       <Project>{7a8b0a96-bd82-48a8-a154-0df0638d019a}</Project>
       <Name>kido.android</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\kido.android\kido.android.csproj">
-      <Project>{7a8b0a96-bd82-48a8-a154-0df0638d019a}</Project>
-      <Name>kido.android</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\kido\kido.fsproj">
       <Project>{92a04503-19d0-43e1-aeeb-f100a7635d15}</Project>
       <Name>kido</Name>

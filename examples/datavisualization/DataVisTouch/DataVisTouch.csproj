@@ -87,13 +87,13 @@
     <Reference Include="ICSharpCode.SharpZipLib.Portable">
       <HintPath>..\..\..\packages\SharpZipLib.Portable.0.86.0.0001\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\Components\json.net-4.5.11.1\lib\ios-unified\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\Components\json.net-4.5.11.1\lib\ios-unified\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Default-568h%402x.png" />
@@ -130,12 +130,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\kido.ios\kido.ios.csproj">
-      <Project>{aa9ba43a-cad5-4c71-8c94-f0e4aecdc06a}</Project>
+      <Project>{AA9BA43A-CAD5-4C71-8C94-F0E4AECDC06A}</Project>
       <Name>kido.ios</Name>
-      <IsAppExtension>false</IsAppExtension>
+      <IsAppExtension>False</IsAppExtension>
     </ProjectReference>
     <ProjectReference Include="..\..\..\kido\kido.fsproj">
-      <Project>{92a04503-19d0-43e1-aeeb-f100a7635d15}</Project>
+      <Project>{92A04503-19D0-43E1-AEEB-F100A7635D15}</Project>
       <Name>kido</Name>
     </ProjectReference>
   </ItemGroup>

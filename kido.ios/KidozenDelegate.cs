@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Kidozen.iOS
 {
 
-	public partial class KidozenAppDelegate : NSObject
+	public class KidozenDelegate : NSObject
 	{
-		public KidoApplication kidoApplication { get; set; }
+		public KidoApplication kzApplication { get; set; }
 
 //		public bool strictSSL {get; set;}
 
@@ -19,7 +19,7 @@ namespace Kidozen.iOS
 		///  This method should be called to initialize the Kidozen instance.
 		/// You should use this as this:
 		/// 
-		/// 	kidoAppDelegate.initializeInstance(launchOptions).ContinueWith(.....);
+		/// 	kidoAppDelegate.initializeKidozen(launchOptions).ContinueWith(.....);
 		/// 	kidoAppDelegate.Result(...);
 		/// 
 		/// </summary>
@@ -66,7 +66,7 @@ namespace Kidozen.iOS
 				NSString trackContextKey = (NSString) "trackContext";
 				if (notificationDictionary.ContainsKey (trackContextKey)) {
 					NSDictionary trackContext = (NSDictionary) notificationDictionary [trackContextKey];
-					kidoApplication.TrackNotification(trackContext);
+					kzApplication.TrackNotification(trackContext);
 				}
 
 			}
@@ -108,10 +108,10 @@ namespace Kidozen.iOS
 			NSString password = (NSString) d["password"];
 			NSString provider = (NSString) d["provider"];
 
-			this.kidoApplication = new KidoApplication(marketPlaceURL, applicationName, applicationKey);
+			this.kzApplication = new KidoApplication(marketPlaceURL, applicationName, applicationKey);
 
 			// TODO: Consider using passive authentication.
-			return this.kidoApplication.Authenticate (username, password, provider);
+			return this.kzApplication.Authenticate (username, password, provider);
 		}
 			
 	}

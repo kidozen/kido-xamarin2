@@ -23,12 +23,19 @@ namespace Passive
 			set;
 		}
 
+		private KidozenDelegate kzDelegate;
+
+
 		public override bool FinishedLaunching (UIApplication application, NSDictionary launchOptions)
 		{
+			
 			global::Xamarin.Forms.Forms.Init ();
 			LoadApplication (new App ()); 
 			Window.RootViewController = App.GetLoginPage ().CreateViewController ();
+
 			return base.FinishedLaunching (application, launchOptions);
 		}
+
+
 	}
 }
