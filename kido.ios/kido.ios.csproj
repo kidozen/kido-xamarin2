@@ -88,6 +88,9 @@
     <Compile Include="..\sources\kido\common\KidozenAnalyticsExtension.cs">
       <Link>Analytics\KidozenAnalyticsExtension.cs</Link>
     </Compile>
+    <Compile Include="..\sources\kido\common\Push\PushNotifications.cs">
+      <Link>PushNotifications\PushNotifications.cs</Link>
+    </Compile>
     <Compile Include="Analytics\DeviceInformation.cs" />
     <Compile Include="Analytics\DeviceStorage.cs" />
     <Compile Include="Analytics\NetworkStatus.cs" />
@@ -159,6 +162,7 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)release\ios\$(TargetFileName)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

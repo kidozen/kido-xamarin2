@@ -78,6 +78,9 @@
     <Compile Include="..\sources\kido\common\pubsub\PubsubExtensions.cs">
       <Link>PubSubChannel\PubsubExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\sources\kido\common\Push\PushNotifications.cs">
+      <Link>PushNotifications\PushNotifications.cs</Link>
+    </Compile>
     <Compile Include="Analytics\KidozenAnalyticsExtension.cs" />
     <Compile Include="Analytics\AnalyticsActivityLifecycleCallbacks.cs" />
     <Compile Include="Analytics\DeviceInformation.cs" />

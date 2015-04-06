@@ -14,6 +14,7 @@ open System.IO
 open System.Linq
 open System.Collections.Generic
 
+
 [<NoEquality;NoComparison>]
 type SubscriptionDetails = {
     mutable applicationName : string;
@@ -40,7 +41,7 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
                             |> getResponseAsync                             
             return 
                 match result.StatusCode with
-                    | 200 | 201 -> true
+                    | 200 | 201 | 204 -> true
                     | _ -> raise ( new Exception (result.EntityBody.Value))           
             }
         service |> Async.StartAsTask
@@ -69,7 +70,7 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
                             |> getResponseAsync                             
             return 
                 match result.StatusCode with
-                    | 200 | 201 -> true
+                    | 200 | 201 | 204-> true
                     | _ -> raise ( new Exception (result.EntityBody.Value))                
             }
         service |> Async.StartAsTask

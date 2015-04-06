@@ -11,14 +11,6 @@ using System.Threading.Tasks;
 
 namespace Kidozen.iOS
 {
-    public class PushNotification {
-        public String type {get;set;}
-        public String title { get; set; }
-        public String text { get; set; }
-        public String image { get; set; }
-        public int badge { get; set; } 
-    }
-
     public static partial class KidozenExtensions
     {
         private static Notifications notificationsIntance;
@@ -46,8 +38,7 @@ namespace Kidozen.iOS
 
         public static Task<Boolean> SubscribeToChannel(this Kidozen.KidoApplication app, string name, string deviceToken)
         {
-            KidozenExtensions.deviceToken = deviceToken;
-            var n = new Notifications(app.application, name, KidozenExtensions.deviceToken, app.GetIdentity);
+            var n = new Notifications(app.application, name, deviceToken, app.GetIdentity);
             return n.Subscribe(
                     new 
                     { 
@@ -58,33 +49,21 @@ namespace Kidozen.iOS
                 );
         }
 
-        public static Task<Boolean> PushToChannel(this Kidozen.KidoApplication app, string name, PushNotification message)
+        public static Task<Boolean> PushToChannel(this Kidozen.KidoApplication app, string channel, string deviceToken, PushNotification message)
         {
-            if (String.IsNullOrEmpty(KidozenExtensions.deviceToken))
-            {
-                throw new Exception("You must first call 'SubscribeToChannel'");
-            }
-            var n = new Notifications(app.application, name, KidozenExtensions.deviceToken, app.GetIdentity);
+            var n = new Notifications(app.application, channel, deviceToken, app.GetIdentity);
             return n.Push<PushNotification>(message);
         }
 
-        public static Task<Boolean> Unsubscribe(this Kidozen.KidoApplication app, string name)
+        public static Task<Boolean> Unsubscribe(this Kidozen.KidoApplication app, string channel, string deviceToken)
         {
-            if (String.IsNullOrEmpty(KidozenExtensions.deviceToken))
-            {
-                throw new Exception("You must first call 'SubscribeToChannel'");
-            }
-            var n = new Notifications(app.application, name, KidozenExtensions.deviceToken, app.GetIdentity);
+            var n = new Notifications(app.application, channel, deviceToken, app.GetIdentity);
             return n.UnSubscribe();
         }
 
-        public static Task<IEnumerable<object>> GetSubscriptions(this Kidozen.KidoApplication app, string name)
+        public static Task<IEnumerable<SubscriptionDetails>> GetSubscriptions(this Kidozen.KidoApplication app, string deviceToken)
         {
-            if (String.IsNullOrEmpty(KidozenExtensions.deviceToken))
-            {
-                throw new Exception("You must first call 'SubscribeToChannel'");
-            }
-            var n = new Notifications(app.application, name, KidozenExtensions.deviceToken, app.GetIdentity);
+            var n = new Notifications(app.application, string.Empty, deviceToken, app.GetIdentity);
             return n.GetSubscriptions();
         }
     }

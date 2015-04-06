@@ -9,15 +9,6 @@ using Kidozen;
 
 namespace Kidozen.Android
 {
-    public class PushNotification
-    {
-        public String type { get; set; }
-        public String title { get; set; }
-        public String text { get; set; }
-        public String image { get; set; }
-        public int badge { get; set; }
-    }
-
     public static partial class KidozenExtensions
     {
         public static Task<Boolean> SubscribeToChannel(this Kidozen.KidoApplication app, string channel, string subscriptionId, string deviceId)
@@ -35,8 +26,9 @@ namespace Kidozen.Android
 
         public static Task<Boolean> PushToChannel(this Kidozen.KidoApplication app, string channel, string subscriptionId, PushNotification message)
         {
+            
             var n = new Notifications(app.application, channel, subscriptionId, app.GetIdentity);
-            return n.Push<PushNotification>(message);
+            return n.Push<PushNotification>(new InternalPushNotification(message));
         }
 
         public static Task<Boolean> Unsubscribe(this Kidozen.KidoApplication app, string channel, string subscriptionId)
