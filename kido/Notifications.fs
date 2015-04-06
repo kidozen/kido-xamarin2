@@ -14,19 +14,27 @@ open System.IO
 open System.Linq
 open System.Collections.Generic
 
+[<NoEquality;NoComparison>]
+type SubscriptionDetails = {
+    mutable applicationName : string;
+    mutable channelName : string;
+    mutable subscriptionId : string;
+    }
+
 type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) = 
     let name = appName
     let channel = channel
     let deviceTokenOrSubscriptionId = tokenOrSubscriptionId
-    let mutable subscriptionId = String.Empty // for Android only
+    //let mutable subscriptionId = String.Empty // for Android only
     let baseurl =(getJsonStringValue (identity.config) "notification" ).Value
     member this.identity = identity
 
     member this.Push<'a>(parameters) =
-        let url = sprintf "%s/subscriptions/%s/%s/%s" baseurl name channel deviceTokenOrSubscriptionId
+        let url = sprintf "%s/push/%s/%s" baseurl name channel
         let message = JSONSerializer.toString parameters
         let service =  async {
             let! result = createRequest HttpMethod.Post url  
+                            |> withHeader (ContentType "application/json")  |> withHeader (Accept "application/json") 
                             |> withHeader (Authorization this.identity.rawToken) 
                             |> withBody message
                             |> getResponseAsync                             
@@ -38,7 +46,7 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
         service |> Async.StartAsTask
 
     member this.GetSubscriptions() =
-        let url = sprintf "%s/subscriptions/%s/%s/%s" baseurl name channel deviceTokenOrSubscriptionId
+        let url = sprintf "%s/devices/%s/%s" baseurl deviceTokenOrSubscriptionId name 
         let service =  async {
             let! result = createRequest HttpMethod.Get url  
                             |> withHeader (Authorization this.identity.rawToken) 
@@ -47,7 +55,7 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
                 match result.StatusCode with
                     | 200 | 201 -> 
                         match result.EntityBody with
-                            | Some v -> JsonConvert.DeserializeObject<IEnumerable<obj>> (v)
+                            | Some v -> JsonConvert.DeserializeObject<IEnumerable<SubscriptionDetails>> (v)
                             | None -> raise( new Exception ("Invalid response") )
                     | _ -> raise ( new Exception (result.EntityBody.Value))                
             }
@@ -68,12 +76,17 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
 
     member this.Subscribe(parameters) =
         let message = JSONSerializer.toString parameters
-        let url = sprintf "%s/subscriptions/%s/%s/%s" baseurl name channel deviceTokenOrSubscriptionId
+        System.Diagnostics.Debug.WriteLine("Push -> Post message: {0}" , message)
+        let url = sprintf "%s/subscriptions/%s/%s" baseurl name channel
+        System.Diagnostics.Debug.WriteLine("Push -> to url: {0}" , url)        
         let service =  async {
             let! result = createRequest HttpMethod.Post url  
+                            |> withHeader (ContentType "application/json")  |> withHeader (Accept "application/json") 
                             |> withHeader (Authorization this.identity.rawToken) 
                             |> withBody message
-                            |> getResponseAsync                             
+                            |> getResponseAsync        
+            System.Diagnostics.Debug.WriteLine("Push -> Result Status: {0}" , result.StatusCode)                                                 
+            System.Diagnostics.Debug.WriteLine("Push -> Result Body: {0}" , result.EntityBody.Value)
             return 
                 match result.StatusCode with
                     | 200 | 201 -> true
