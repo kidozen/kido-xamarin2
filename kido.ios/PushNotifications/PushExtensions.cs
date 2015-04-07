@@ -64,10 +64,10 @@ namespace Kidozen.iOS
             return n.UnSubscribe();
         }
 
-        public static Task<IEnumerable<SubscriptionDetails>> GetSubscriptions(this Kidozen.KidoApplication app, string deviceToken)
+        public static Task<List<SubscriptionDetails>> GetSubscriptions(this Kidozen.KidoApplication app, string deviceToken)
         {
             var cleanToken = sanitizeToken(deviceToken);
-            var n = new Notifications(app.application, string.Empty, cleanToken, app.GetIdentity);
+            var n = new Notifications(app.application, string.Empty, UniqueIdentification, app.GetIdentity);
             return n.GetSubscriptions();
         }
 
