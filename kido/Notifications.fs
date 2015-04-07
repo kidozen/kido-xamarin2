@@ -47,16 +47,21 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
         service |> Async.StartAsTask
 
     member this.GetSubscriptions() =
+        let processResponse value = 
+            let token = JObject.Parse(value)    
+            if (((token = null) = false) || (token.Type = JTokenType.Array && token.HasValues)) then JsonConvert.DeserializeObject<IEnumerable<SubscriptionDetails>> (value) else null       
+                   
         let url = sprintf "%s/devices/%s/%s" baseurl deviceTokenOrSubscriptionId name 
         let service =  async {
             let! result = createRequest HttpMethod.Get url  
                             |> withHeader (Authorization this.identity.rawToken) 
-                            |> getResponseAsync                             
+                            |> getResponseAsync
+                                            
             return 
                 match result.StatusCode with
                     | 200 | 201 -> 
                         match result.EntityBody with
-                            | Some v -> JsonConvert.DeserializeObject<IEnumerable<SubscriptionDetails>> (v)
+                            | Some v -> processResponse v
                             | None -> raise( new Exception ("Invalid response") )
                     | _ -> raise ( new Exception (result.EntityBody.Value))                
             }

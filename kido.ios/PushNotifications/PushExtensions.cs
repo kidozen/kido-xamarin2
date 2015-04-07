@@ -38,12 +38,13 @@ namespace Kidozen.iOS
 
         public static Task<Boolean> SubscribeToChannel(this Kidozen.KidoApplication app, string name, string deviceToken)
         {
+            var cleanToken = sanitizeToken(deviceToken);
             var n = new Notifications(app.application, name, deviceToken, app.GetIdentity);
             return n.Subscribe(
                     new 
                     { 
                         platform = "apns",
-                        subscriptionId = deviceToken,
+                        subscriptionId = cleanToken,
                         deviceId = UniqueIdentification
                     }
                 );
@@ -51,20 +52,30 @@ namespace Kidozen.iOS
 
         public static Task<Boolean> PushToChannel(this Kidozen.KidoApplication app, string channel, string deviceToken, PushNotification message)
         {
-            var n = new Notifications(app.application, channel, deviceToken, app.GetIdentity);
+            var cleanToken = sanitizeToken(deviceToken);
+            var n = new Notifications(app.application, channel,cleanToken, app.GetIdentity);
             return n.Push<PushNotification>(message);
         }
 
         public static Task<Boolean> Unsubscribe(this Kidozen.KidoApplication app, string channel, string deviceToken)
         {
-            var n = new Notifications(app.application, channel, deviceToken, app.GetIdentity);
+            var cleanToken = sanitizeToken(deviceToken);
+            var n = new Notifications(app.application, channel,cleanToken, app.GetIdentity);
             return n.UnSubscribe();
         }
 
         public static Task<IEnumerable<SubscriptionDetails>> GetSubscriptions(this Kidozen.KidoApplication app, string deviceToken)
         {
-            var n = new Notifications(app.application, string.Empty, deviceToken, app.GetIdentity);
+            var cleanToken = sanitizeToken(deviceToken);
+            var n = new Notifications(app.application, string.Empty, cleanToken, app.GetIdentity);
             return n.GetSubscriptions();
+        }
+
+        internal static string sanitizeToken(string devicetoken)
+        {
+            return devicetoken.Replace("<", string.Empty)
+                .Replace(">", string.Empty)
+                .Replace(" ", string.Empty);
         }
     }
 }
