@@ -65,24 +65,6 @@ namespace Kidozen.iOS
             return n.UnSubscribe();
         }
 
-        public static Task<List<SubscriptionDetails>> GetApplicationSubscriptions(this Kidozen.KidoApplication app)
-        {
-            var n = new Notifications(app.application, string.Empty, UniqueIdentification, app.GetIdentity);
-            return n.GetSubscriptions().ContinueWith(t =>
-            {
-                var list = t.Result;
-                var subscriptionsAsList = new List<SubscriptionDetails>();
-                if (!string.Equals(list, "[]"))
-                {
-                    subscriptionsAsList = JsonConvert
-                        .DeserializeObject<IEnumerable<SubscriptionDetails>>(list)
-                        .ToList<SubscriptionDetails>();
-                }
-
-                return subscriptionsAsList;
-            });
-        }
-
         internal static string sanitizeToken(string devicetoken)
         {
             return devicetoken.Replace("<", string.Empty)
