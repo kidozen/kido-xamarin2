@@ -15,12 +15,6 @@ open System.Linq
 open System.Collections.Generic
 
 
-[<NoEquality;NoComparison>]
-type SubscriptionDetails = {
-    mutable applicationName : string;
-    mutable channelName : string;
-    mutable subscriptionId : string;
-    }
 
 type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) = 
     let name = appName
@@ -59,10 +53,7 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
                 match result.StatusCode with
                     | 200 | 201 -> 
                         match result.EntityBody with
-                            | Some(v) -> 
-                                match result.EntityBody.Value.StartsWith("[]") with
-                                    | true -> new List<SubscriptionDetails>()
-                                    | _ ->  JsonConvert.DeserializeObject<List<SubscriptionDetails>>(result.EntityBody.Value)       
+                            | Some(v) -> result.EntityBody.Value
                             | None -> raise( new Exception ("Invalid response") )
                     | _ -> raise ( new Exception (result.EntityBody.Value))                
             }

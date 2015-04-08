@@ -8,6 +8,7 @@ using UIKit;
 
 using Kidozen;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Kidozen.iOS
 {
@@ -64,11 +65,22 @@ namespace Kidozen.iOS
             return n.UnSubscribe();
         }
 
-        public static Task<List<SubscriptionDetails>> GetSubscriptions(this Kidozen.KidoApplication app, string deviceToken)
+        public static Task<List<SubscriptionDetails>> GetApplicationSubscriptions(this Kidozen.KidoApplication app)
         {
-            var cleanToken = sanitizeToken(deviceToken);
             var n = new Notifications(app.application, string.Empty, UniqueIdentification, app.GetIdentity);
-            return n.GetSubscriptions();
+            return n.GetSubscriptions().ContinueWith(t =>
+            {
+                var list = t.Result;
+                var subscriptionsAsList = new List<SubscriptionDetails>();
+                if (!string.Equals(list, "[]"))
+                {
+                    subscriptionsAsList = JsonConvert
+                        .DeserializeObject<IEnumerable<SubscriptionDetails>>(list)
+                        .ToList<SubscriptionDetails>();
+                }
+
+                return subscriptionsAsList;
+            });
         }
 
         internal static string sanitizeToken(string devicetoken)

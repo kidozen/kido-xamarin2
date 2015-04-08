@@ -36,8 +36,8 @@ type JSONSerializer =
             match entityAsString.Chars(0) with
             | '[' -> JsonConvert.DeserializeObject<List<NameValue>>(entityAsString)
             | _ -> 
-                let items = JsonConvert.DeserializeObject<Dictionary<string, Object>>(entityAsString).ToList()
-                items.Select(fun itm -> {name=itm.Key;value=itm.Value.ToString()}).ToList()
+                let items = JsonConvert.DeserializeObject<Dictionary<string, string>>(entityAsString).ToList()
+                items.Select(fun itm -> {name=itm.Key;value=itm.Value}).ToList()
         list  |>  List.ofSeq    
 
         

@@ -24,6 +24,13 @@ namespace Kidozen.iOS
         public int badge { get; set; }
     }
 
+    public class SubscriptionDetails {
+        public SubscriptionDetails() { }
+        public String applicationName { get; set; }
+        public String channelName { get; set; }
+        public String subscriptionId { get; set; }
+    }
+
     internal class InternalPushNotification
     {
         public InternalPushNotification(PushNotification baseNotification)
