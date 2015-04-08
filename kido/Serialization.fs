@@ -25,9 +25,6 @@ type JSONSerializer =
     static member deserializeJson<'a> (json : string) =
         let value = JsonConvert.DeserializeObject<'a>(json)
         value
-        //let jsonSerializer = new DataContractJsonSerializer(typedefof<'a>) 
-        //use stream = new MemoryStream(toBytes json)
-        //jsonSerializer.ReadObject(stream) :?> 'a
 
     // TODO: find a better way to do this
     static member toNameValueList entity = 
