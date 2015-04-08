@@ -37,7 +37,7 @@ namespace Kidozen.Android
             return n.UnSubscribe();
         }
 
-        public static Task<IEnumerable<SubscriptionDetails>> GetSubscriptions(this Kidozen.KidoApplication app, string deviceId)
+        public static Task<List<SubscriptionDetails>> GetSubscriptions(this Kidozen.KidoApplication app, string deviceId)
         {
             var n = new Notifications(app.application, string.Empty, deviceId, app.GetIdentity);
             return n.GetSubscriptions();
