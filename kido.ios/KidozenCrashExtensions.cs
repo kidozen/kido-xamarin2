@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Diagnostics;
-
+using System.IO;
+using System.Linq;
 #if __UNIFIED__
-using MonoTouch;
 using UIKit;
 using Foundation;
 #else
@@ -12,12 +11,6 @@ using MonoTouch;
 using MonoTouch.UIKit;
 using MonoTouch.Foundation;
 #endif
-
-using System.IO;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-
 using K = Kidozen;
 using U = Utilities;
 using A = KzApplication;
@@ -27,10 +20,10 @@ namespace Kidozen.iOS
 {
 	public static partial class KidozenExtensions
 	{
-		public static void EnableCrash(this Kidozen.KidoApplication app) {
+		public static void EnableCrash(this KidoApplication app) {
 			AppDomain.CurrentDomain.UnhandledException+= delegate(object sender, UnhandledExceptionEventArgs e) {
 				var ex = e.ExceptionObject as Exception;
-				var stack = new System.Diagnostics.StackTrace(ex,true);
+				var stack = new StackTrace(ex,true);
 				var frame = stack.GetFrame(0);
 				var filename = frame.GetFileName();
 				var linenumber = frame.GetFileLineNumber();
@@ -40,7 +33,7 @@ namespace Kidozen.iOS
 				var reason = ex.GetType().Name;
 				var appVersionCode = NSBundle.MainBundle.InfoDictionary["CFBundleShortVersionString"].ToString();
 
-				var message = C.Crash.CreateCrashMessage("monotouch",
+				var message = Crash.Crash.CreateCrashMessage("monotouch",
 					UIDevice.CurrentDevice.Name ,
 					UIDevice.CurrentDevice.SystemName ,
 					UIDevice.CurrentDevice.SystemVersion, 
@@ -64,7 +57,7 @@ namespace Kidozen.iOS
 		}
 
 		private static void storeCrash (string crash) {
-			var filename = String.Format ("{0}.crash", System.Guid.NewGuid ().ToString ());
+			var filename = String.Format ("{0}.crash", Guid.NewGuid ().ToString ());
 			var documents = FileUtilities.GetDocumentsFolder ();
 			System.IO.File.WriteAllText (Path.Combine (documents, filename), crash);
 		}
@@ -75,7 +68,7 @@ namespace Kidozen.iOS
 
 		private static void send (string crashpath, string marketplace, string application, string key) {
 			var crash = System.IO.File.ReadAllText (crashpath);
-			C.Crash.Create (crash, marketplace, application, key).ContinueWith(
+			Crash.Crash.Create (crash, marketplace, application, key).ContinueWith(
 				t=> {
 					if (t.Result) System.IO.File.Delete (crashpath);						
 				}

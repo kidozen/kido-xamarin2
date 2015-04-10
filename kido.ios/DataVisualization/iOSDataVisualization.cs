@@ -1,9 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Diagnostics;
-
+using System.IO;
+using ICSharpCode.SharpZipLib.Zip;
 #if __UNIFIED__
-using MonoTouch;
 using UIKit;
 using Foundation;
 #else
@@ -11,9 +10,6 @@ using MonoTouch;
 using MonoTouch.UIKit;
 using MonoTouch.Foundation;
 #endif
-
-using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 
 namespace Kidozen.iOS

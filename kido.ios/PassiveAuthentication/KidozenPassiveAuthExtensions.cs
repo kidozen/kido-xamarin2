@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Diagnostics;
-
+using System.Net;
+using System.Threading.Tasks;
 #if __UNIFIED__
-using MonoTouch;
 using UIKit;
-using Foundation;
 #else
 using MonoTouch;
 using MonoTouch.UIKit;
@@ -25,12 +22,12 @@ namespace Kidozen.iOS
 		private static string authErrorMessage = "One or more errors occurred in Passive Authentication";
 		private static Task dummyPassiveFailTask = new Task(()=> {throw new Exception(authErrorMessage);});
 
-		private static Kidozen.KidoApplication currentApplication;
+		private static KidoApplication currentApplication;
 		
-		public static Task Authenticate(this Kidozen.KidoApplication app) {
+		public static Task Authenticate(this KidoApplication app) {
             try
             {
-                System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+                ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
                 currentApplication = app;
                 var url = A.fetchConfigValue("signInUrl", app.marketplace, app.application, app.key);
                 var authController = new PassiveAuthViewController(url.Result.Replace("\"", string.Empty));

@@ -1,12 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 #if __UNIFIED__
-using MonoTouch;
-using UIKit;
-using Foundation;
+
 #else
 using MonoTouch;
 using MonoTouch.UIKit;

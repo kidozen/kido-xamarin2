@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
-
 #if __UNIFIED__
-using MonoTouch;
 using UIKit;
 using Foundation;
 #else

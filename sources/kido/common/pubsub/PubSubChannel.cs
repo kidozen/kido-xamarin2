@@ -1,34 +1,27 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-
-
-using WebSocket4Net;
+using System.Diagnostics;
+using System.Net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
+using SuperSocket.ClientEngine;
+using WebSocket4Net;
 #if __ANDROID__
 
 namespace Kidozen.Android
 
 #else
-using Foundation;
-using UIKit;
 
 namespace Kidozen.iOS
 
 #endif
 {
 
-    public class PubSubChannelEventArgs : System.EventArgs
+    public class PubSubChannelEventArgs : EventArgs
     {
         public Boolean Success { get; set; }
         public Object Value { get; set; }
     }
 
-    public class PubSubChannel<T> : Kidozen.ISubscriber
+    public class PubSubChannel<T> : ISubscriber
     {
         private WebSocket websocket;
         public event PubSubMessageArrivedDelegate OnMessageEvent;
@@ -50,8 +43,8 @@ namespace Kidozen.iOS
 
                 websocket.Error += OnError;
                 // TODO: Check why there is an error with this lib
-                System.Net.ServicePointManager.ServerCertificateValidationCallback +=
-                    (sender, certificate, chain, sslPolicyErrors) => true; System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+                ServicePointManager.ServerCertificateValidationCallback +=
+                    (sender, certificate, chain, sslPolicyErrors) => true; ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
                 websocket.Open();
             }
@@ -64,11 +57,11 @@ namespace Kidozen.iOS
         }
 
 
-        private void OnError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e)
+        private void OnError(object sender, ErrorEventArgs e)
         {
             if (e.Exception != null)
             {
-                System.Diagnostics.Debug.WriteLine(e.Exception.Message);
+                Debug.WriteLine(e.Exception.Message);
             }
             /*
             if (this.OnMessageEvent != null) {
@@ -93,7 +86,7 @@ namespace Kidozen.iOS
             {
                 var eom = args.Message.IndexOf("::") + 2;
                 var jsonmessage = args.Message.Substring(eom, args.Message.Length - eom);
-                if (typeof(T)!= typeof( System.String ) )
+                if (typeof(T)!= typeof( String ) )
                 {
                     var message = JsonConvert.DeserializeObject<T>(jsonmessage);
                     this.OnMessageEvent.Invoke(this, new PubSubChannelEventArgs { Value = message, Success = true } );

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
-
 using Newtonsoft.Json;
-
 #if __ANDROID__
 using Android.Content;
 using Kidozen.Android.Analytics;

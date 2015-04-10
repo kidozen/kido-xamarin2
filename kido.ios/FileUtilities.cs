@@ -1,11 +1,6 @@
-﻿
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Diagnostics;
-
+﻿using System;
+using System.IO;
 #if __UNIFIED__
-using MonoTouch;
 using UIKit;
 using Foundation;
 #else
@@ -14,14 +9,6 @@ using MonoTouch.UIKit;
 using MonoTouch.Foundation;
 #endif
 
-using System.IO;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-
-
-using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace Kidozen.iOS
 {
