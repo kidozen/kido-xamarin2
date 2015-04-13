@@ -12,7 +12,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
-    <NuGetPackageImportStamp>a2450803</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>59911713</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,21 +39,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Couchbase.Lite, Version=1.0.4.33426, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Couchbase.Lite.1.0.4.1\lib\xamarinios10\Couchbase.Lite.dll</HintPath>
+      <HintPath>..\packages\Couchbase.Lite.1.0.4.1\lib\xamarinios10\Couchbase.Lite.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib.Portable">
+    <Reference Include="ICSharpCode.SharpZipLib.Portable, Version=0.86.0.51802, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0002\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SQLitePCL.raw, Version=0.7.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\SQLitePCL.raw_basic.0.7.1\lib\Xamarin.iOS10\SQLitePCL.raw.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SQLitePCL.ugly, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\SQLitePCL.ugly.0.7.1\lib\portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCL.ugly.dll</HintPath>
+      <HintPath>..\packages\SQLitePCL.ugly.0.8.0\lib\portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCL.ugly.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SuperSocket.ClientEngine.Common, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -179,12 +177,10 @@
     <Compile Include="..\sources\kido\common\ServiceExtensions.cs">
       <Link>ServiceExtensions.cs</Link>
     </Compile>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\kido\kido.fsproj">
@@ -199,9 +195,17 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\SQLitePCL.raw_basic.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw_basic.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\SQLitePCL.raw_basic.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw_basic.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\SQLitePCL.raw.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\SQLitePCL.raw.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw.targets'))" />
+    <Error Condition="!Exists('..\packages\SQLitePCL.raw_basic.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw_basic.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCL.raw_basic.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw_basic.targets'))" />
+    <Error Condition="!Exists('..\packages\SQLitePCL.raw.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCL.raw.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw.targets'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\..\..\packages\SQLitePCL.raw_basic.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw_basic.targets" Condition="Exists('..\..\..\packages\SQLitePCL.raw_basic.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw_basic.targets')" />
+  <Import Project="..\..\..\packages\SQLitePCL.raw.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw.targets" Condition="Exists('..\..\..\packages\SQLitePCL.raw.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw.targets')" />
+  <Import Project="..\packages\SQLitePCL.raw_basic.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw_basic.targets" Condition="Exists('..\packages\SQLitePCL.raw_basic.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw_basic.targets')" />
+  <Import Project="..\packages\SQLitePCL.raw.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw.targets" Condition="Exists('..\packages\SQLitePCL.raw.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw.targets')" />
 </Project>
