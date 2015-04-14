@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System;
 
 namespace Kidozen.iOS
 {
@@ -28,6 +30,41 @@ namespace Kidozen.iOS
             var rev = dbDocument.PutProperties(document);
          
             return rev.Id;
+        }
+        /// <summary>
+        /// Updates an existing document using underlying putProperties method
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <returns>Couch revision id</returns>
+        public string Update(T instance)
+        {
+            var document = new SyncDocument<T> { Document = instance }.ToCouchDictionary();
+
+            var id = (instance as DataSyncDocument)._id;
+            var retrieved = Database.GetDocument(id);
+            
+            var properties = new Dictionary<string,object>(retrieved.Properties);
+            properties[DocumentConstants.DOCUMENT_KEY] = document[DocumentConstants.DOCUMENT_KEY];
+            var rev = retrieved.PutProperties(properties);
+
+            return rev.Id;
+        }
+        /// <summary>
+        /// Upserts a document
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <returns></returns>
+        public string Save(T instance)
+        {
+            var id = (instance as DataSyncDocument)._id;
+            if (id!=null)
+            {
+                return this.Update(instance);   
+            }
+            else
+            {
+                return this.Create(instance);
+            }
         }
 
         //TODO: Check how to delete. Seems that 'deletelocaldocument' does not work (?)
