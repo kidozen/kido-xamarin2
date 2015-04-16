@@ -6,7 +6,7 @@ using System.Text;
 using Foundation;
 using UIKit;
 
-namespace Kidozen.iOS.DataSynchronization
+namespace Kidozen.iOS
 {
     class DataSyncReplication
     {

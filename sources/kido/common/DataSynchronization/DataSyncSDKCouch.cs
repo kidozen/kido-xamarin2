@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Couchbase.Lite;
-using Kidozen.iOS.DataSynchronization;
 
 namespace Kidozen.iOS
 {
@@ -43,9 +42,20 @@ namespace Kidozen.iOS
 
         void replication_Changed(object sender, ReplicationChangeEventArgs e)
         {
-            if (OnSynchronizationComplete!=null)
+            var message = "======>Replicacion: {0}\nCompletedChangesCount: {1}\nChangesCount: {2}\n";
+            System.Diagnostics.Debug.WriteLine(
+                message,
+                e.Source.IsPull ? "pull" : "push",
+                e.Source.CompletedChangesCount,
+                e.Source.ChangesCount
+                );
+
+            if (OnSynchronizationComplete!=null && e.Source.ChangesCount > 0)
             {
-                OnSynchronizationComplete.Invoke(this, new SynchronizationEventArgs());
+                if (e.Source.CompletedChangesCount == e.Source.ChangesCount)
+                {
+                    OnSynchronizationComplete.Invoke(this, new SynchronizationEventArgs());
+                }
             }
         }
 
@@ -71,7 +81,8 @@ namespace Kidozen.iOS
             return this.Query().ToList<T>().Where(where);
         }
 
-        public void Synchronize(SynchronizationType synchronizationType= SynchronizationType.Pull) {
+        public void Synchronize(bool Continuous = false, SynchronizationType synchronizationType = SynchronizationType.Pull)
+        {
             var url = new Uri(GetReplicationUrl());
             var headers = new Dictionary<string, string>();
             headers.Add("PUSH-HEADER", GetAuthHeaderValue());
@@ -79,25 +90,49 @@ namespace Kidozen.iOS
             switch (synchronizationType)
             {
                 case SynchronizationType.Push:
-                    this.pushReplication = Database.CreatePullReplication(url);
-                    this.pushReplication.Start();
-                    this.pushReplication.Changed += replication_Changed;
-                    this.pushReplication.Headers = headers;
+                    setupAndStartPushReplication(url, headers, Continuous);
                     break;
                 case SynchronizationType.Pull:
-                    this.pullReplication = Database.CreatePushReplication(url);
-                    this.pullReplication.Start();
-                    this.pullReplication.Changed += replication_Changed;
-                    this.pullReplication.Headers = headers;
+                    setupAndStartPullReplication(url, headers, Continuous);
                     break;
                 case SynchronizationType.TwoWay:
+                    setupAndStartPushReplication(url,headers, Continuous);
+                    setupAndStartPullReplication(url,headers, Continuous);
                     break;
                 default:
                     break;
             }
 
-
         }
+        private void setupAndStartPushReplication(Uri url, IDictionary<string, string> headers, bool Continuous)
+        {
+            this.pushReplication = Database.CreatePushReplication(url);
+            this.pushReplication.Continuous = Continuous;
+            this.pushReplication.Headers = headers;
+            this.pushReplication.Start();
+            this.pushReplication.Changed += replication_Changed;
+            //this.pullReplication.TransformationFunction = pushReplicationTransform;
+        }
+        private void setupAndStartPullReplication(Uri url, IDictionary<string, string> headers, bool Continuous)
+        {
+            this.pullReplication = Database.CreatePullReplication(url);
+            this.pullReplication.Continuous = Continuous;
+            this.pullReplication.Headers = headers;
+            this.pullReplication.Start();
+            this.pullReplication.Changed += replication_Changed;
+            //this.pullReplication.TransformationFunction = pullReplicationTransform;
+        }
+        private IDictionary<string, object> pushReplicationTransform(IDictionary<string, object> propertyBag)
+        {
+            //TODO: Ensure document format To server is ok
+            return propertyBag;
+        }
+        private IDictionary<string, object> pullReplicationTransform(IDictionary<string, object> propertyBag)
+        {
+            //TODO: Ensure document format from server is ok
+            return propertyBag;
+        }
+
 
     }
 }
