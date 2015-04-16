@@ -6,6 +6,7 @@ namespace Kidozen.iOS
 {
     public partial class DataSync<T>
     {
+        KidoApplication _kidoapp;
         string _name;
         public string Name { 
             get {return  _name;} 
@@ -16,6 +17,13 @@ namespace Kidozen.iOS
         {
             this.Name = name;
             this.SetupDatabase();
+        }
+
+        public DataSync(string name, KidoApplication app) :this(name)
+        {
+            // TODO: Complete member initialization
+            
+            this._kidoapp = app;
         }
 
         /// <summary>
@@ -76,11 +84,6 @@ namespace Kidozen.iOS
             
             localdocument.Delete();
             return true;
-        }
-
-        public void Synchronize()
-        {
-            throw new NotImplementedException();
         }
 
         public void Drop()

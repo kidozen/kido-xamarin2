@@ -14,7 +14,7 @@ namespace Kidozen.iOS
     {
         public static DataSync<T> DataSync<T>(this KidoApplication app, string name)
         {
-            return new DataSync<T>(name);
+            return new DataSync<T>(name, app);
         }
     }
 }
