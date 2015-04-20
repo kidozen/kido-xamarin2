@@ -37,6 +37,22 @@ namespace kido.tests
             Assert.IsTrue(user.AllClaims.Count > 0);
         }
 
+        [Test()]
+        public async void Authenticate_ShouldCreateValidUser2()
+        {
+            /*
+            var app = new KidoApplication("https://bellhowelldev.kidocloud.com", 
+                "sda2", "WLasDb3gRhTzzgpD4iQo82H1NIwQB7n7yxDk/d88PqE=");
+
+            var user = app.Authenticate("bellhowelldev@kidozen.com", "3b7a3d4cb41c", "Kidozen").Result;
+            */
+
+            var app = new KidoApplication("https://bellhowell.kidocloud.com", "poc", "htZrzUAG3WaJnmj98uoLtpXrstqbfomL8/otR1HBSVE=");
+
+            var user = app.Authenticate("bellhowell@kidozen.com", "83c0423dec94", "Kidozen").Result;
+
+            Assert.IsNotNull(user);
+        }
 	}
 }
 

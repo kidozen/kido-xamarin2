@@ -6,7 +6,6 @@ using C = Crash;
 #if __ANDROID__
 namespace Kidozen.Android
 #else
-
 namespace Kidozen.iOS
 #endif
 {

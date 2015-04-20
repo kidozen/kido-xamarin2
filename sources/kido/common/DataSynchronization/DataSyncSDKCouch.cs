@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Couchbase.Lite;
 
+#if __ANDROID__
+namespace Kidozen.Android
+#else
 namespace Kidozen.iOS
+#endif
 {
     public partial class DataSync<T>
     {

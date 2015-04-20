@@ -16,7 +16,7 @@
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <NuGetPackageImportStamp>51f21b1b</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>bc522dd2</NuGetPackageImportStamp>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
@@ -44,8 +44,16 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Couchbase.Lite, Version=1.0.4.33413, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Couchbase.Lite.1.0.4.1\lib\MonoAndroid\Couchbase.Lite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SQLitePCL.ugly, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\SQLitePCL.ugly.0.8.0\lib\portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCL.ugly.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -67,6 +75,42 @@
     </Compile>
     <Compile Include="..\sources\kido\common\AnalyticsSession.cs">
       <Link>Analytics\AnalyticsSession.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSync.cs">
+      <Link>DataSynchronization\DataSync.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncDocument.cs">
+      <Link>DataSynchronization\DataSyncDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncException.cs">
+      <Link>DataSynchronization\DataSyncException.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncExtensions.cs">
+      <Link>DataSynchronization\DataSyncExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncKeyField.cs">
+      <Link>DataSynchronization\DataSyncKeyField.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncReplication.cs">
+      <Link>DataSynchronization\DataSyncReplication.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncSDKCouch.cs">
+      <Link>DataSynchronization\DataSyncSDKCouch.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DocumentKey.cs">
+      <Link>DataSynchronization\DocumentKey.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\StringExtensions.cs">
+      <Link>DataSynchronization\StringExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SyncDocument.cs">
+      <Link>DataSynchronization\SyncDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationEventArgs.cs">
+      <Link>DataSynchronization\SynchronizationEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationType.cs">
+      <Link>DataSynchronization\SynchronizationType.cs</Link>
     </Compile>
     <Compile Include="..\sources\kido\common\IDeviceInformation.cs">
       <Link>Analytics\IDeviceInformation.cs</Link>
@@ -148,8 +192,13 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\SQLitePCL.raw_basic.0.8.0\build\MonoAndroid\SQLitePCL.raw_basic.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\SQLitePCL.raw_basic.0.8.0\build\MonoAndroid\SQLitePCL.raw_basic.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\SQLitePCL.raw.0.8.0\build\MonoAndroid\SQLitePCL.raw.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\SQLitePCL.raw.0.8.0\build\MonoAndroid\SQLitePCL.raw.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)release\android\$(TargetFileName)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\..\..\packages\SQLitePCL.raw_basic.0.8.0\build\MonoAndroid\SQLitePCL.raw_basic.targets" Condition="Exists('..\..\..\packages\SQLitePCL.raw_basic.0.8.0\build\MonoAndroid\SQLitePCL.raw_basic.targets')" />
+  <Import Project="..\..\..\packages\SQLitePCL.raw.0.8.0\build\MonoAndroid\SQLitePCL.raw.targets" Condition="Exists('..\..\..\packages\SQLitePCL.raw.0.8.0\build\MonoAndroid\SQLitePCL.raw.targets')" />
 </Project>

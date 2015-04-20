@@ -1,6 +1,10 @@
 ﻿using System;
 
+#if __ANDROID__
+namespace Kidozen.Android
+#else
 namespace Kidozen.iOS
+#endif
 {
     class DataSyncException : Exception
     {
