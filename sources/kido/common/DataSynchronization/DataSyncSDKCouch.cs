@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Couchbase.Lite;
 
+using A = KzApplication;
+
 #if __ANDROID__
 namespace Kidozen.Android
 #else
@@ -19,6 +21,36 @@ namespace Kidozen.iOS
         protected Replication pullReplication = null;
         protected Replication pushReplication = null;
 
+        public const string sufix = "master";
+
+        private string _baseUrl = string.Empty;
+        private string _tenant = string.Empty;
+
+        public string BaseUrl
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_baseUrl))
+                {
+                    _baseUrl = A.fetchConfigValue("datasync", _kidoapp.marketplace, _kidoapp.application, _kidoapp.key).Result;
+                }
+
+                return _baseUrl;
+            }
+        }
+
+        public string Tenant
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_baseUrl))
+                {
+                    _tenant = A.fetchConfigValue("tenant", _kidoapp.marketplace, _kidoapp.application, _kidoapp.key).Result;
+                }
+                return _tenant;
+            }
+        }
+
         private void SetupDatabase()
         {
             if (Database==null)
@@ -28,12 +60,15 @@ namespace Kidozen.iOS
         }
 
         /// <summary>
-        /// TODO: Gets the url from the datasync configuration
+        /// Gets replication url using the /publicapi endpoint. To replicate you must be logged in
+        /// he replication endpoint is: datasync service url + 'rp' + tenant name + 'master' suffix
         /// </summary>
         /// <returns></returns>
         private string GetReplicationUrl()
         {
-            return "http://10.0.1.111:3000/" + Name;
+            var url = string.Format("{0}/{1}", BaseUrl, Name);
+            System.Diagnostics.Debug.WriteLine(url);
+            return url;
         }
         /// <summary>
         /// 
@@ -86,11 +121,13 @@ namespace Kidozen.iOS
         }
 
         public void Synchronize(bool Continuous = false, SynchronizationType synchronizationType = SynchronizationType.Pull)
+        
         {
-            var url = new Uri(GetReplicationUrl());
+            var urlasstring = GetReplicationUrl();
+            var url = new Uri(urlasstring);
             var headers = new Dictionary<string, string>();
-            headers.Add("PUSH-HEADER", GetAuthHeaderValue());
-
+            headers.Add("authorization", GetAuthHeaderValue());
+            System.Net.ServicePointManager.ServerCertificateValidationCallback += (a, b, c, d) => true;
             switch (synchronizationType)
             {
                 case SynchronizationType.Push:
