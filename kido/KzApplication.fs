@@ -150,7 +150,8 @@ let asyncGetKeyToken marketplace application key =
 let validateToken authRequest = 
     async {
         let authrequest = authRequest.authenticationRequest
-        match System.DateTime.Compare(authRequest.expiration,System.DateTime.Now) with
+        let now = new System.DateTime(System.DateTime.Now.ToFileTimeUtc());
+        match System.DateTime.Compare(authRequest.expiration, now) with
             | -1 | 0 -> // expired or near to expire
                 let! identity = 
                     match authrequest.ProviderRequest  with
