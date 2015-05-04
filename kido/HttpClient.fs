@@ -16,7 +16,7 @@ let private UTF_8 = "utf-8"
 let private XKidoSDK = "X-Kido-SDK"
 let private XKidoSDKValue = "Xamarin"
 let private XKidoSDKVersion = "X-Kido-SDK-Version"
-let private XKidoSDKVersionValue = "2.0.3.5-Alpha"
+let private XKidoSDKVersionValue = "2.0.3.5"
 
 type HttpMethod = Options | Get | Head | Post | Put | Delete | Trace // Connect
 
@@ -476,7 +476,7 @@ let private getResponseNoException (request:Request) = async {
                 | None -> failwith "Header 'x-file-name' must exists" 
             requestMsg.Content <- fileContent
         | None -> ()
-    
+
     return httpClient.SendAsync(requestMsg)
 }
 
