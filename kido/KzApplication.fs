@@ -147,16 +147,35 @@ let asyncGetKeyToken marketplace application key =
         | InvalidApplicationError e -> return InvalidApplication e
     }
 
+let asyncGetKidoRefreshToken authRequest =
+    async {
+        let kidoEndpoint = getJsonStringValue authRequest.config "oauthTokenEndpoint"
+        let domain = getJsonStringValue authRequest.config "domain"
+        let refresh = getKidoRefreshToken kidoEndpoint.Value authRequest.token.Value.refresh.Value domain.Value authRequest.authenticationRequest.Key
+        match refresh.raw with
+            | Some t -> 
+                match keyValueStringToDictionary t with
+                    | Some kvd -> 
+                        match kvd.["http://schemas.kidozen.com/usersource"] with
+                            | null -> return InvalidCredentials (new System.ArgumentException("You dont have access to this resource"))
+                            | _ -> 
+                                let userid = kvd.["http://schemas.kidozen.com/userid"]
+                                return Token( { id =userid; config = authRequest.config ; token = Some ( refresh ); rawToken = t;expiration = getExpiration t;  authenticationRequest = authRequest.authenticationRequest} )
+                        | _ -> return InvalidCredentials( new System.ArgumentException("Could not get user tokens"))
+                | _ -> return InvalidCredentials (new System.ArgumentException("invalid application key"))
+    }    
+
 let validateToken authRequest = 
     async {
         let authrequest = authRequest.authenticationRequest
+        let x = authRequest.token.Value.refresh
         let now = new System.DateTime(System.DateTime.Now.ToFileTimeUtc());
         match System.DateTime.Compare(authRequest.expiration, now) with
             | -1 | 0 -> // expired or near to expire
                 let! identity = 
                     match authrequest.ProviderRequest  with
                     | Some pr -> asyncGetFederatedToken authrequest.Marketplace authrequest.Application authrequest.ProviderRequest.Value.User authrequest.ProviderRequest.Value.Password authrequest.ProviderRequest.Value.Key
-                    | _ -> asyncGetKeyToken authrequest.Marketplace authrequest.Application authrequest.Key
+                    | _ -> asyncGetKidoRefreshToken authRequest
                 match identity with
                     | Token t -> return t
                     | InvalidApplication e -> return raise e
