@@ -38,7 +38,8 @@ let withConfigurationOperation operation configRequest = {
 
 let getResult request = 
     async {
-        let url =(getJsonStringValue (request.Identity.config) "config" ).Value + "/" + request.Name 
+        let! validAuthToken = validateToken request.Identity
+        let url =(getJsonStringValue (validAuthToken.config) "config" ).Value + "/" + request.Name 
 
         let requestType = 
             match request.Operation with
@@ -46,7 +47,7 @@ let getResult request =
             | Some DeleteConfiguration -> HttpMethod.Delete
             | Some CreateConfiguration -> HttpMethod.Post
         
-        let dsrequest = createRequest requestType url |> withHeader (Authorization request.Identity.rawToken)
+        let dsrequest = createRequest requestType url |> withHeader (Authorization validAuthToken.rawToken)
 
         let result 
             = match request.Parameters with
@@ -56,6 +57,6 @@ let getResult request =
                     | ConfigurationQueryParams l -> 
                         let qslist = Some l
                         dsrequest |> withQueryStringItems qslist 
-                | None -> createRequest requestType url |> withHeader (Authorization request.Identity.rawToken)
+                | None -> createRequest requestType url |> withHeader (Authorization validAuthToken.rawToken)
         return result  |> getResponse
     }

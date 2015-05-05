@@ -36,8 +36,9 @@ type CustomApi (name, identity:Identity) =
     member this.Execute<'a>() =
         let url = sprintf "%s/%s" baseurl name
         let service =  async {
+            let! validAuthToken = validateToken this.identity
             let! result = createRequest HttpMethod.Post url  
-                            |> withHeader (Authorization this.identity.rawToken) 
+                            |> withHeader (Authorization validAuthToken.rawToken) 
                             |> getResponseAsync                             
             return  JsonConvert.DeserializeObject<'a>( this.ProcessResponse result )                
             }
@@ -46,8 +47,9 @@ type CustomApi (name, identity:Identity) =
     member this.Execute() =
         let url = sprintf "%s/%s" baseurl name
         let service =  async {
+            let! validAuthToken = validateToken this.identity
             let! result = createRequest HttpMethod.Post url  
-                            |> withHeader (Authorization this.identity.rawToken) 
+                            |> withHeader (Authorization validAuthToken.rawToken) 
                             |> getResponseAsync                             
             return this.ProcessResponse result                
             }
@@ -58,8 +60,10 @@ type CustomApi (name, identity:Identity) =
         let paramsAsString = JSONSerializer.toString parameters
         let url = sprintf "%s/%s" baseurl name
         let service =  async {
+            let! validAuthToken = validateToken this.identity
+        
             let! result = createRequest HttpMethod.Post url  
-                            |> withHeader (Authorization this.identity.rawToken) 
+                            |> withHeader (Authorization validAuthToken.rawToken) 
                             |> withHeader (ContentType "application/json")
                             |> withBody paramsAsString
                             |> getResponseAsync                             
@@ -71,8 +75,10 @@ type CustomApi (name, identity:Identity) =
         let paramsAsString = JSONSerializer.toString parameters
         let url = sprintf "%s/%s" baseurl name
         let service =  async {
+            let! validAuthToken = validateToken this.identity
+        
             let! result = createRequest HttpMethod.Post url  
-                            |> withHeader (Authorization this.identity.rawToken) 
+                            |> withHeader (Authorization validAuthToken.rawToken) 
                             |> withHeader (ContentType "application/json")
                             |> withBody paramsAsString
                             |> getResponseAsync                             

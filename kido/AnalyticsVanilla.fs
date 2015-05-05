@@ -19,8 +19,9 @@ type Analytics (identity:Identity) =
         let logep = baseurl + "api/v3/logging/events?level=1"
         let body = JSONSerializer.toString (session)
         let service =  async {
+            let! validAuthToken = validateToken this.identity
             let! result = createRequest HttpMethod.Post logep  
-                            |> withHeader (Authorization this.identity.rawToken) 
+                            |> withHeader (Authorization validAuthToken.rawToken) 
                             |> withHeader (ContentType "application/json")  
                             |> withHeader (Accept "application/json") 
                             |> withBody body
@@ -36,8 +37,9 @@ type Analytics (identity:Identity) =
         let baseurl =(getJsonStringValue (identity.config) "url" ).Value 
         let logep = baseurl + "api/v3/logging/events?level=1"
         let service =  async {
+            let! validAuthToken = validateToken this.identity
             let! result = createRequest HttpMethod.Post logep  
-                            |> withHeader (Authorization this.identity.rawToken) 
+                            |> withHeader (Authorization validAuthToken.rawToken) 
                             |> withHeader (ContentType "application/json")  
                             |> withHeader (Accept "application/json") 
                             |> withBody session

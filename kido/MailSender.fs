@@ -20,8 +20,9 @@ type MailSender (identity:Identity) =
     member this.Send (mail) =
         let body = JSONSerializer.toString (mail)
         let service =  async {
+            let! validAuthToken = validateToken this.identity
             let! result = createRequest HttpMethod.Post baseurl  
-                            |> withHeader (Authorization this.identity.rawToken) 
+                            |> withHeader (Authorization validAuthToken.rawToken) 
                             |> withHeader (ContentType "application/json")  
                             |> withHeader (Accept "application/json") 
                             |> withBody body
@@ -30,7 +31,6 @@ type MailSender (identity:Identity) =
                 match result.StatusCode with
                     | 201 -> true
                     | _ -> raise (new Exception (result.EntityBody.Value))
-
             }
         service |> Async.StartAsTask
    
