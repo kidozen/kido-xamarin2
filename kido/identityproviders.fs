@@ -36,8 +36,8 @@ let getKidoKeyToken ipEndpoint scope domain applicationKey =
     let rawToken = getJsonStringValue content "access_token"
     { raw = rawToken; expiration = None; refresh = None }
 
-let getKidoRefreshToken ipEndpoint refreshToken domain applicationKey =
-    let body = sprintf "{\"client_id\":\"%s\",\"client_secret\":\"%s\",\"grant_type\":\"refresh_token\",\"refresh_token\":\"%s\"}" domain applicationKey refreshToken
+let getKidoRefreshToken ipEndpoint refreshToken domain applicationKey scope =
+    let body = sprintf "{\"client_id\":\"%s\",\"client_secret\":\"%s\",\"scope\":\"%s\",\"grant_type\":\"refresh_token\",\"refresh_token\":\"%s\"}" domain applicationKey scope refreshToken
     let content = createRequest Post ipEndpoint |> withHeader (ContentType "application/json") |> withHeader (Accept "application/json") |> withBody body |> getResponseBody   
     let rawToken = getJsonStringValue content "access_token"
     { raw = rawToken; expiration = None; refresh = None }

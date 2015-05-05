@@ -151,7 +151,7 @@ let asyncGetKidoRefreshToken authRequest =
     async {
         let kidoEndpoint = getJsonStringValue authRequest.config "oauthTokenEndpoint"
         let domain = getJsonStringValue authRequest.config "domain"
-        let refresh = getKidoRefreshToken kidoEndpoint.Value authRequest.token.Value.refresh.Value domain.Value authRequest.authenticationRequest.Key
+        let refresh = getKidoRefreshToken kidoEndpoint.Value authRequest.token.Value.refresh.Value domain.Value authRequest.authenticationRequest.Key authRequest.authenticationRequest.Application
         match refresh.raw with
             | Some t -> 
                 match keyValueStringToDictionary t with
@@ -168,7 +168,6 @@ let asyncGetKidoRefreshToken authRequest =
 let validateToken authRequest = 
     async {
         let authrequest = authRequest.authenticationRequest
-        let x = authRequest.token.Value.refresh
         let now = new System.DateTime(System.DateTime.Now.ToFileTimeUtc());
         match System.DateTime.Compare(authRequest.expiration, now) with
             | -1 | 0 -> // expired or near to expire

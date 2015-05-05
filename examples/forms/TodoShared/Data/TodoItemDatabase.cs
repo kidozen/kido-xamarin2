@@ -56,6 +56,8 @@ namespace Todo
 			lock (locker) {
                 try
                 {
+                    var x = kidozenApplication.DataSource("getTellagoVacations");
+                    var r = x.Query();
                     return database.Query<TodoItem>(@"{}").Result;
                 }
                 catch (Exception w)
