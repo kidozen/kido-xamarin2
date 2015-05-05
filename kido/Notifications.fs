@@ -28,10 +28,10 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
         let url = sprintf "%s/push/%s/%s" baseurl name channel
         let message = JSONSerializer.toString parameters
         let service =  async {
-            let! validAuthToken = validateToken this.identity
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Post url  
                             |> withHeader (ContentType "application/json")  |> withHeader (Accept "application/json") 
-                            |> withHeader (Authorization validAuthToken.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> withBody message
                             |> getResponseAsync                             
             return 
@@ -44,9 +44,9 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
     member this.GetApplicationChannels() =
         let url = sprintf "%s/channels/%s" baseurl name 
         let service =  async {
-            let! validAuthToken = validateToken this.identity
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Get url  
-                            |> withHeader (Authorization validAuthToken.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> getResponseAsync
             return 
                 match result.StatusCode with
@@ -61,9 +61,9 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
     member this.GetSubscriptions() =
         let url = sprintf "%s/devices/%s/%s" baseurl deviceTokenOrSubscriptionId name 
         let service =  async {
-            let! validAuthToken = validateToken this.identity
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Get url  
-                            |> withHeader (Authorization validAuthToken.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> getResponseAsync
             return 
                 match result.StatusCode with
@@ -78,9 +78,9 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
     member this.UnSubscribe() =
         let url = sprintf "%s/subscriptions/%s/%s/%s" baseurl name channel deviceTokenOrSubscriptionId
         let service =  async {
-            let! validAuthToken = validateToken this.identity
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Delete url  
-                            |> withHeader (Authorization validAuthToken.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> getResponseAsync                             
             return 
                 match result.StatusCode with
@@ -93,10 +93,10 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
         let message = JSONSerializer.toString parameters
         let url = sprintf "%s/subscriptions/%s/%s" baseurl name channel
         let service =  async {
-            let! validAuthToken = validateToken this.identity
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Post url  
                             |> withHeader (ContentType "application/json")  |> withHeader (Accept "application/json") 
-                            |> withHeader (Authorization validAuthToken.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> withBody message
                             |> getResponseAsync        
             return 

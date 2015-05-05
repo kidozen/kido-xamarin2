@@ -38,8 +38,8 @@ let withQueueOperation operation queueRequest = {
 
 let getResult request = 
     async {
-        let! validAuthToken = validateToken request.Identity
-        let baseurl =(getJsonStringValue (validAuthToken.config) "queue" ).Value + "/" + request.Name 
+        let! validIdentity = validateToken request.Identity
+        let baseurl =(getJsonStringValue (validIdentity.config) "queue" ).Value + "/" + request.Name 
         let url = 
             match request.Operation with
             | Some DequeueEntity ->  sprintf "%s/%s" baseurl "next"
@@ -50,7 +50,7 @@ let getResult request =
             | Some DequeueEntity -> HttpMethod.Delete
             | None | Some EnqueueEntity -> HttpMethod.Post
         
-        let dsrequest = createRequest requestType url |> withHeader (Authorization validAuthToken.rawToken)
+        let dsrequest = createRequest requestType url |> withHeader (Authorization validIdentity.rawToken)
 
         let result 
             = match request.Parameters with
@@ -60,6 +60,6 @@ let getResult request =
                     | QueueQueryListParams l -> 
                         let qslist = Some l
                         dsrequest |> withQueryStringItems qslist 
-                | None -> createRequest requestType url |> withHeader (Authorization validAuthToken.rawToken)
+                | None -> createRequest requestType url |> withHeader (Authorization validIdentity.rawToken)
         return result  |> getResponse
     }

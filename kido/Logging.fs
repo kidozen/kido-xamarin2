@@ -47,8 +47,8 @@ let withLogOperation operation logRequest = {
 
 let getResult request = 
     async {
-        let! validAuthToken = validateToken request.Identity
-        let baseurl =(getJsonStringValue (validAuthToken.config) "logging-v3" ).Value 
+        let! validIdentity = validateToken request.Identity
+        let baseurl =(getJsonStringValue (validIdentity.config) "logging-v3" ).Value 
 
         let requestType = 
             match request.Operation with
@@ -60,9 +60,9 @@ let getResult request =
             match request.Level with
                     | Some level ->  
                         match request.Message with
-                        | Some message -> createRequest requestType baseurl |> withHeader (Authorization validAuthToken.rawToken) |> withQueryStringItem {name="level"; value=level.ToString()} |> withQueryStringItem {name="message"; value=message}
-                        | None ->  createRequest requestType baseurl |> withHeader (Authorization validAuthToken.rawToken) |> withQueryStringItem {name="level"; value=level.ToString()}
-                    | None -> createRequest requestType baseurl |> withHeader (Authorization validAuthToken.rawToken)
+                        | Some message -> createRequest requestType baseurl |> withHeader (Authorization validIdentity.rawToken) |> withQueryStringItem {name="level"; value=level.ToString()} |> withQueryStringItem {name="message"; value=message}
+                        | None ->  createRequest requestType baseurl |> withHeader (Authorization validIdentity.rawToken) |> withQueryStringItem {name="level"; value=level.ToString()}
+                    | None -> createRequest requestType baseurl |> withHeader (Authorization validIdentity.rawToken)
         let result 
             = match request.Parameters with
                 | Some p -> 
@@ -71,6 +71,6 @@ let getResult request =
                     | LogQueryParams l -> 
                         let qslist = Some l
                         dsrequest |> withQueryStringItems qslist 
-                | None -> createRequest requestType baseurl |> withHeader (Authorization validAuthToken.rawToken)
+                | None -> createRequest requestType baseurl |> withHeader (Authorization validIdentity.rawToken)
         return result  |> getResponse
     }

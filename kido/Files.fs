@@ -39,9 +39,9 @@ type Files (identity:Identity) =
         let url = sprintf "%s/%s/" baseurl path
 
         let service =  async {
-            let! validAuthToken = validateToken this.identity
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Post url  
-                            |> withHeader (Authorization validAuthToken.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> withHeader (Custom {name="x-file-name";value=filename}) 
                             |> withBodyAsBytes bytes
                             |> getResponseAsync 
@@ -58,9 +58,9 @@ type Files (identity:Identity) =
         let url = sprintf "%s/%s/" baseurl cleanFullpath
 
         let service =  async {
-            let! validAuthToken = validateToken this.identity
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Get url  
-                            |> withHeader (Authorization validAuthToken.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> getResponseAsync
             return 
                 match result.StatusCode with
@@ -75,9 +75,9 @@ type Files (identity:Identity) =
         let url = sprintf "%s/%s" baseurl cleanFullpath
 
         let service =  async {
-            let! validAuthToken = validateToken this.identity
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Delete url  
-                            |> withHeader (Authorization validAuthToken.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> getResponseAsync
             return 
                 match result.StatusCode with
@@ -91,9 +91,9 @@ type Files (identity:Identity) =
         let url = sprintf "%s/%s" baseurl cleanFullpath
 
         let service =  async {
-            let! validAuthToken = validateToken this.identity
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Get url  
-                            |> withHeader (Authorization validAuthToken.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> getResponseBytesAsync 
             return 
                 match result.StatusCode with
@@ -109,9 +109,9 @@ type Files (identity:Identity) =
     //Helper method for other services such as DataVisualizations API
     member this.DownloadFromUrl(url:string) =
         let service =  async {
-            let! validAuthToken = validateToken this.identity
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Get url  
-                            |> withHeader (Authorization validAuthToken.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> getResponseBytesAsync 
             return 
                 match result.StatusCode with

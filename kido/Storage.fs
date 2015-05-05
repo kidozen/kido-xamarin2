@@ -44,8 +44,8 @@ let withStorageOperation operation storageRequest = {
 
 let getResult request = 
     async {
-        let! validAuthToken = validateToken request.Identity
-        let baseurl =(getJsonStringValue (validAuthToken.config) "storage" ).Value + "/" + request.Name 
+        let! validIdentity = validateToken request.Identity
+        let baseurl =(getJsonStringValue (validIdentity.config) "storage" ).Value + "/" + request.Name 
         let url = 
             match request.EntityId with
             | Some id ->  sprintf "%s/%s" baseurl id
@@ -58,7 +58,7 @@ let getResult request =
             | Some CreateStorageEntity -> HttpMethod.Post
             | Some UpdateStorageEntity -> HttpMethod.Put
         
-        let dsrequest = createRequest requestType url |> withHeader (Authorization validAuthToken.rawToken)
+        let dsrequest = createRequest requestType url |> withHeader (Authorization validIdentity.rawToken)
 
         let result 
             = match request.Parameters with
@@ -68,6 +68,6 @@ let getResult request =
                     | StorageQueryParams l -> 
                         let qslist = Some l
                         dsrequest |> withQueryStringItems qslist 
-                | None -> createRequest requestType url |> withHeader (Authorization validAuthToken.rawToken)
+                | None -> createRequest requestType url |> withHeader (Authorization validIdentity.rawToken)
         return result  |> getResponse
     }

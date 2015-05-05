@@ -37,9 +37,9 @@ type PubSub (name, identity:Identity) =
         let paramsAsString = JSONSerializer.toString parameters
         let url = sprintf "%s/%s" publishUrl name
         let service =  async {
-            let! validAuthToken = validateToken this.identity
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Post url  
-                            |> withHeader (Authorization validAuthToken.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> withHeader (ContentType "application/json")
                             |> withBody paramsAsString
                             |> getResponseAsync                             

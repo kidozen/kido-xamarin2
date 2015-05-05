@@ -20,9 +20,9 @@ type MailSender (identity:Identity) =
     member this.Send (mail) =
         let body = JSONSerializer.toString (mail)
         let service =  async {
-            let! validAuthToken = validateToken this.identity
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Post baseurl  
-                            |> withHeader (Authorization validAuthToken.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> withHeader (ContentType "application/json")  
                             |> withHeader (Accept "application/json") 
                             |> withBody body
