@@ -63,7 +63,9 @@ namespace Todo
                 catch (Exception w)
                 {
                     
-                    throw;
+                    Console.WriteLine(w.Message);
+
+                    return null;
                 }
 			}
 		}

@@ -168,8 +168,9 @@ let asyncGetKidoRefreshToken authRequest =
 let validateToken authRequest = 
     async {
         let authrequest = authRequest.authenticationRequest
-        let now = new System.DateTime(System.DateTime.Now.ToFileTimeUtc());
-        match System.DateTime.Compare(authRequest.expiration, now) with
+        let now = System.DateTime.Now
+        let compareResult = System.DateTime.Compare(authRequest.expiration.ToUniversalTime(), now.ToUniversalTime())
+        match compareResult with
             | -1 | 0 -> // expired or near to expire
                 let! identity = 
                     match authrequest.ProviderRequest  with
