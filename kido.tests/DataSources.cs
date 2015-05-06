@@ -60,6 +60,22 @@ namespace kido.tests
             Assert.IsTrue(results.IndexOf("Gustavo") > -1);
         }
         //
+        [Test()]
+        public async void ShouldInvokeAsType()
+        {
+            var Marketplace = "iffdev.kidocloud.com";
+            var Application = "approvals";
+            var Key = "MqmtCNQQWKymbRcJtfFRWWyU+rcOjR+r8/AMsh+agBs=";
+
+            this.kidozenApplication = new KidoApplication(Marketplace, Application, Key);
+            System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+
+            await this.kidozenApplication.Authenticate("iff@kidozen.com", "sup3r+", Settings.Provider);
+
+            var results = kidozenApplication.DataSource("updateapprovalrequest").Invoke(new { RefId = "A" }).Result;
+
+            Assert.IsTrue(results.IndexOf("Gustavo") > -1);
+        }
     }
 
 }

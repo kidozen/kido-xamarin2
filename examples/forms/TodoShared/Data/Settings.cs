@@ -2,9 +2,9 @@ namespace Kidozen.Examples
 {
 	public class Settings
 	{
-        public static string Marketplace = "kidodemo.kidocloud.com";
-        public static string Application = "testexpiration";
-        public static string Key = "ERclo2LJUzWvf72YKAqpHWf+oPQ/JV6O/LZlisJo/Ms=";
+        public static string Marketplace = "iffdev.kidocloud.com";
+        public static string Application = "approvals";
+        public static string Key = "MqmtCNQQWKymbRcJtfFRWWyU+rcOjR+r8/AMsh+agBs=";
 
         public static string User = "user@kidozen.com";
         public static string Provider = "Kidozen";

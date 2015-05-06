@@ -56,9 +56,9 @@ namespace Todo
 			lock (locker) {
                 try
                 {
-                    var x = kidozenApplication.DataSource("getTellagoVacations");
-                    var r = x.Query();
-                    return database.Query<TodoItem>(@"{}").Result;
+                    var results = kidozenApplication.DataSource("updateapprovalrequest").Invoke(new { RefId = "A" }).Result;
+                    Console.WriteLine(results);
+                    return null;
                 }
                 catch (Exception w)
                 {
