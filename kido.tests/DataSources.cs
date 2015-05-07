@@ -59,7 +59,15 @@ namespace kido.tests
             var results = await ds.Query();
             Assert.IsTrue(results.IndexOf("Gustavo") > -1);
         }
+
         //
+        public async void ShouldInvokeAsType()
+        {
+            await this.kidozenApplication.Authenticate(Settings.User, Settings.Pass, Settings.Provider);
+            var results = kidozenApplication.DataSource("updateapprovalrequest").Invoke(new { RefId = "A" }).Result;
+
+            Assert.IsTrue(results.IndexOf("Gustavo") > -1);
+        }
     }
 
 }

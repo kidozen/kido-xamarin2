@@ -128,6 +128,12 @@ type KidoApplication(marketplace, application, key )  =
     member this.ClearLog =
         this.Log.Clear()
 
+    member this.SignOut =
+        this.CurrentUser <- User()
+        identity <- zeroIdentity
+        authenticated <- false
+        
+
     //helpers to JS injection
     member internal this.getPassiveAuthInformation =
         let d = new Dictionary<_, _>()
@@ -164,3 +170,5 @@ type KidoApplication(marketplace, application, key )  =
                     | _ -> raise ( new Exception (result.EntityBody.Value))                
             }
         service |> Async.StartAsTask
+
+    
