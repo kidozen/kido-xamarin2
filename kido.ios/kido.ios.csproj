@@ -122,6 +122,12 @@
     <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationEventArgs.cs">
       <Link>DataSynchronization\SynchronizationEventArgs.cs</Link>
     </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationProgressEventArgs.cs">
+      <Link>DataSynchronization\SynchronizationProgressEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationTracker.cs">
+      <Link>DataSynchronization\SynchronizationTracker.cs</Link>
+    </Compile>
     <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationType.cs">
       <Link>DataSynchronization\SynchronizationType.cs</Link>
     </Compile>
@@ -141,6 +147,7 @@
     <Compile Include="Analytics\DeviceStorage.cs" />
     <Compile Include="Analytics\NetworkStatus.cs" />
     <Compile Include="Analytics\Reachability.cs" />
+    <Compile Include="DataSynchronization\SynchronizationLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PassiveAuthentication\PassiveAuthViewController.cs" />
     <Compile Include="PassiveAuthentication\KidozenPassiveAuthExtensions.cs" />

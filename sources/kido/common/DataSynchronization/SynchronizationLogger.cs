@@ -11,6 +11,5 @@ namespace Kidozen.iOS
 {
     public class SynchronizationEventArgs : EventArgs
     {
-        public SynchronizationType SynchronizationType { get; set; }
     }
 }

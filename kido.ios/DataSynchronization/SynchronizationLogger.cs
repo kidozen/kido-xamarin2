@@ -9,8 +9,8 @@ namespace Kidozen.Android
 namespace Kidozen.iOS
 #endif
 {
-    public class SynchronizationEventArgs : EventArgs
+    public class SynchronizationLogger
     {
-        public SynchronizationType SynchronizationType { get; set; }
+
     }
 }
