@@ -148,6 +148,7 @@ let asyncGetKeyToken marketplace application key =
     }
 
 let asyncGetKidoRefreshToken authRequest =
+    System.Diagnostics.Debug.WriteLine("refresh auth token")
     async {
         let kidoEndpoint = getJsonStringValue authRequest.config "oauthTokenEndpoint"
         let domain = getJsonStringValue authRequest.config "domain"
