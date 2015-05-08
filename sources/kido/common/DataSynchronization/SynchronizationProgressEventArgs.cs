@@ -14,6 +14,7 @@ namespace Kidozen.iOS
         public int News { get; set; }
         public int Deleted { get; set; }
         public int Updated { get; set; }
+		public int Conflicts { get; set; }
     }
 
     public class SynchronizationProgressEventArgs : EventArgs
