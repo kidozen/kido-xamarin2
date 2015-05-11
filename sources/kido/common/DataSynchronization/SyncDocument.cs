@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Couchbase.Lite;
 using Newtonsoft.Json;
+using Couchbase.Lite;
 
 #if __ANDROID__
 namespace Kidozen.Android

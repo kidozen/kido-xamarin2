@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Couchbase.Lite;
 
 using A = KzApplication;
 using System.Diagnostics;
+using Couchbase.Lite;
 
 #if __ANDROID__
 namespace Kidozen.Android
@@ -95,7 +95,6 @@ namespace Kidozen.iOS
 		void DebugSourceData (ReplicationChangeEventArgs e)
 		{
 			try {
-				Debugger.Break ();
 				Debug.WriteLine ("e.Source.DocIds:" + e.Source.DocIds.ToList ().Count);
 
 				e.Source.DocIds.ToList ().ForEach (id => {
@@ -129,9 +128,10 @@ namespace Kidozen.iOS
 			*/
 			//DebugSourceData (e);
 
-			FireOnSynchronizationProgress (e);
+            FireOnSynchronizationComplete(e);
 
-			FireOnSynchronizationComplete (e);
+            FireOnSynchronizationProgress (e);
+
 		}
 
 		private void FireOnSynchronizationProgress (ReplicationChangeEventArgs e)
@@ -150,10 +150,14 @@ namespace Kidozen.iOS
 
 		private void FireOnSynchronizationComplete (ReplicationChangeEventArgs e)
 		{
+            var message = "==****Fire Status: {0}\nfired: {1}\n";
+            Debug.WriteLine(message, e.Source.Status, _onSynchronizationStartFired);
+
 			if (OnSynchronizationComplete != null && e.Source.Status == ReplicationStatus.Stopped) {
 				_onSynchronizationStartFired = false;
 
 				var details = CreateReplicationDetails ();
+
 				OnSynchronizationComplete.Invoke (this,
 					new SynchronizationCompleteEventArgs {
 						SynchronizationType = e.Source.IsPull ? SynchronizationType.Pull : SynchronizationType.Push,
@@ -168,20 +172,32 @@ namespace Kidozen.iOS
 		{
 			/*
 			var conflict = Database.CreateAllDocumentsQuery ();
-			conflict.AllDocsMode = Couchbase.Lite.AllDocsMode.OnlyConflicts;
+			conflict.AllDocsMode = Kidozen.Couchbase.Lite.AllDocsMode.OnlyConflicts;
 			totalConflicts = conflict.Run ().ToList ().Count;
 			*/
 
-			var documentsAfterSync = _tracker.MapDocuments ();
-			var beforeSyncDocs = _documentsBeforeSync.Where (r => r.current).Count ();
-			var afterSyncDocs = documentsAfterSync.Where (r => r.current).Count ();
-			var deleted = beforeSyncDocs - afterSyncDocs;
-			return new ReplicationDetails {
-				News = afterSyncDocs - beforeSyncDocs,
-				Deleted = deleted < 0 ? 0 : deleted,
-				Updated = 0,
-				Conflicts = 0
-			};
+            try
+            {
+                var documentsAfterSync = _tracker.MapDocuments();
+                var beforeSyncDocs = _documentsBeforeSync.Where(r => r.current).Count();
+                var afterSyncDocs = documentsAfterSync.Where(r => r.current).Count();
+                var deleted = beforeSyncDocs - afterSyncDocs;
+                return new ReplicationDetails
+                {
+                    News = afterSyncDocs - beforeSyncDocs,
+                    Deleted = deleted < 0 ? 0 : deleted,
+                    Updated = 0,
+                    Conflicts = 0
+                };
+            }
+            catch (SQLitePCL.Ugly.ugly.sqlite3_exception e)
+            {
+                Debug.WriteLine("CreateReplicationDetails: " + e.errmsg);
+                Debug.WriteLine("CreateReplicationDetails: " + e.errcode);
+                Debug.WriteLine("CreateReplicationDetails: " + e.Message);
+                return null;
+            }
+
 		}
 
 		//Para simplificar la Beta, uso solo ' all-docs query'
