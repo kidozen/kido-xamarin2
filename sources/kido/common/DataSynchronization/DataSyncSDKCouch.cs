@@ -178,9 +178,8 @@ namespace Kidozen.iOS
 
             try
             {
-                var documentsAfterSync = _tracker.MapDocuments();
-                var beforeSyncDocs = _documentsBeforeSync.Where(r => r.current).Count();
-                var afterSyncDocs = documentsAfterSync.Where(r => r.current).Count();
+                var beforeSyncDocs = _documentsBeforeSync.Count();
+				var afterSyncDocs =  _tracker.MapDocuments().Where(r => r.current).Count();
                 var deleted = beforeSyncDocs - afterSyncDocs;
                 return new ReplicationDetails
                 {
@@ -264,7 +263,7 @@ namespace Kidozen.iOS
 		{
 			if (OnSynchronizationStart != null && _onSynchronizationStartFired == false) {
 				//TODO: Aca? o cuando la transacciones estan en 0 ????
-				_documentsBeforeSync = _tracker.MapDocuments();
+				_documentsBeforeSync = _tracker.MapDocuments().Where(r => r.current).ToList();
 				//TODO: Aca? o cuando la transacciones estan en 0 ????
 
 				_onSynchronizationStartFired = true;

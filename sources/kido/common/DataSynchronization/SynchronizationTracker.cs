@@ -19,8 +19,18 @@ namespace Kidozen.iOS
 {
 	internal class SynchronizationTracker
 	{
+		private const int SQLITE_OPEN_FILEPROTECTION_COMPLETEUNLESSOPEN = 0x00200000;
+		private const int SQLITE_OPEN_READONLY = 0x00000001;
+		private const int SQLITE_OPEN_READWRITE = 0x00000002;
+		private const int SQLITE_OPEN_CREATE = 0x00000004;
+		private const int SQLITE_OPEN_FULLMUTEX = 0x00010000;
+		private const int SQLITE_OPEN_NOMUTEX = 0x00008000;
+		private const int SQLITE_OPEN_PRIVATECACHE = 0x00040000;
+		private const int SQLITE_OPEN_SHAREDCACHE = 0x00020000;
+
 		String _dbPath;
 		Database _db;
+		sqlite3 _readConnection;
 
 		internal SynchronizationTracker (Database database)
 		{
@@ -30,18 +40,20 @@ namespace Kidozen.iOS
 
 		internal IEnumerable<Revision> MapDocuments ()
 		{
-			IEnumerable<Revision> results = null;
-			try {
-                using (var db = ugly.open(_dbPath))
-                {
-					raw.sqlite3_create_collation (db, "JSON", null, CouchbaseSqliteJsonUnicodeCollationFunction.Compare);
-					raw.sqlite3_create_collation (db, "JSON_ASCII", null, CouchbaseSqliteJsonAsciiCollationFunction.Compare);
-					raw.sqlite3_create_collation (db, "JSON_RAW", null, CouchbaseSqliteJsonRawCollationFunction.Compare);
-					raw.sqlite3_create_collation (db, "CURRENT", null, CouchbaseSqliteRevIdCollationFunction.Compare);
-					raw.sqlite3_create_collation (db, "REVID", null, CouchbaseSqliteRevIdCollationFunction.Compare);
+			var results = new List<Revision>();
+			const int reader_flags = SQLITE_OPEN_FILEPROTECTION_COMPLETEUNLESSOPEN | SQLITE_OPEN_READONLY | SQLITE_OPEN_FULLMUTEX;
 
-					results = db.query<Revision> ("SELECT * FROM revs");
+			try {
+				var opened=raw.sqlite3_open (_dbPath, out _readConnection);
+				if (opened==0) {
+					raw.sqlite3_create_collation (_readConnection, "JSON", null, CouchbaseSqliteJsonUnicodeCollationFunction.Compare);
+					raw.sqlite3_create_collation (_readConnection, "JSON_ASCII", null, CouchbaseSqliteJsonAsciiCollationFunction.Compare);
+					raw.sqlite3_create_collation (_readConnection, "JSON_RAW", null, CouchbaseSqliteJsonRawCollationFunction.Compare);
+					raw.sqlite3_create_collation (_readConnection, "CURRENT", null, CouchbaseSqliteRevIdCollationFunction.Compare);
+					raw.sqlite3_create_collation (_readConnection, "REVID", null, CouchbaseSqliteRevIdCollationFunction.Compare);
+					results = _readConnection.query<Revision> ("SELECT sequence, doc_id, revid, parent, current, deleted, no_attachments FROM revs").ToList();
 				}
+
 			} catch (Exception ex) {
 				Debug.WriteLine (ex.Message);
 			}
