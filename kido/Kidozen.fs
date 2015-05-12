@@ -128,11 +128,13 @@ type KidoApplication(marketplace, application, key )  =
     member this.ClearLog =
         this.Log.Clear()
 
-    member this.SignOut =
+    member internal this.logOut isauth =
         this.CurrentUser <- User()
-        identity <- zeroIdentity
-        authenticated <- false
-        
+        authenticated <- isauth
+
+    member this.LogOut = 
+        this.logOut false
+        authenticated = false
 
     //helpers to JS injection
     member internal this.getPassiveAuthInformation =

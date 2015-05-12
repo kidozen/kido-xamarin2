@@ -88,12 +88,12 @@
     <Compile Include="Analytics\LocationHelper.cs" />
     <Compile Include="PushNotifications\PushExtensions.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
-    <Compile Include="PassiveAuthActivity.cs" />
+    <Compile Include="PassiveAuthentication\PassiveAuthActivity.cs" />
     <Compile Include="..\sources\kido\common\FileExtensions.cs">
       <Link>FileExtensions.cs</Link>
     </Compile>
     <Compile Include="CrashExtensions.cs" />
-    <Compile Include="PassiveAuthExtensions.cs" />
+    <Compile Include="PassiveAuthentication\PassiveAuthExtensions.cs" />
     <Compile Include="DataVisualization\DataVisualizationActivity.cs" />
     <Compile Include="DataVisualization\DataVisualizationActivityConstants.cs" />
     <Compile Include="..\sources\kido\common\DataVisualization\AndroidDataVisualization.cs">
@@ -139,6 +139,7 @@
       <Name>kido</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

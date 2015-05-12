@@ -30,7 +30,14 @@ namespace Kidozen.iOS
 		public static Task Authenticate(this Kidozen.KidoApplication app) {
             try
             {
-                System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+                if (dummyPassiveAuthenticationTask.Status== TaskStatus.RanToCompletion)
+                {
+                    dummyPassiveAuthenticationTask = new Task(() => Console.WriteLine("task"));
+                }
+                if (dummyPassiveFailTask.Status == TaskStatus.RanToCompletion)
+                {
+                    dummyPassiveFailTask = new Task(()=> {throw new Exception(authErrorMessage);});
+                }
                 currentApplication = app;
                 var url = A.fetchConfigValue("signInUrl", app.marketplace, app.application, app.key);
                 var authController = new PassiveAuthViewController(url.Result.Replace("\"", string.Empty));
@@ -57,6 +64,22 @@ namespace Kidozen.iOS
 			return Task.WhenAny( new Task[] {dummyPassiveAuthenticationTask, dummyPassiveFailTask} );
 		}
 
+        public static void SignOut (this Kidozen.KidoApplication app) {
+            try
+            {
+                Debug.WriteLine("SignOut extension is being called");
+                NSUrlCache.SharedCache.RemoveAllCachedResponses();
+                var storage = NSHttpCookieStorage.SharedStorage;
+                foreach (var item in storage.Cookies) storage.DeleteCookie(item);
+                NSUserDefaults.StandardUserDefaults.Synchronize();
+                currentApplication.logOut(false);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Could not clear cookies for passive authentication. Please restart the application and try again");                //throw;
+            }
+        }
+        
 		static void HandleAuthenticationResponseArrived (object sender, AuthenticationResponseEventArgs e)
 		{
 			Debug.WriteLine ("response from passive view arrived");
