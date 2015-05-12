@@ -9,13 +9,19 @@ namespace Kidozen.Android
 namespace Kidozen.iOS
 #endif
 {
-    public class ReplicationDetails
+    public class ReplicationDetails<T>
     {
-        public int News { get; set; }
-        public int Deleted { get; set; }
-        public int Updated { get; set; }
-		public int Conflicts { get; set; }
-    }
+        public int NewCount { get; set; }
+        public int RemoveCount { get; set; }
+        public int UpdateCount { get; set; }
+		public int ConflictCount { get; set; }
+
+		public IEnumerable<T> News { get; set; }
+		public IEnumerable<T> Deleted { get; set; }
+		public IEnumerable<T> Updated { get; set; }
+		public IEnumerable<T> Conflicts { get; set; }
+
+	}
 
     public class SynchronizationProgressEventArgs : EventArgs
     {
@@ -24,9 +30,9 @@ namespace Kidozen.iOS
         public int ChangesCount { get; set; }
     }
 
-    public class SynchronizationCompleteEventArgs : EventArgs
+    public class SynchronizationCompleteEventArgs<T> : EventArgs
     {
         public SynchronizationType SynchronizationType { get; set; }
-        public ReplicationDetails Details { get; set; }
+        public ReplicationDetails<T> Details { get; set; }
     }
 }

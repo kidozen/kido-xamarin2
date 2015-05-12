@@ -14,12 +14,9 @@ namespace Kidozen.Android
 namespace Kidozen.iOS
 #endif
 {
-
-
-
 	public partial class DataSync<T>
 	{
-		public delegate void SynchronizationCompleteEventHandler (object sender, SynchronizationCompleteEventArgs e);
+		public delegate void SynchronizationCompleteEventHandler (object sender, SynchronizationCompleteEventArgs<T> e);
 
 		public event SynchronizationCompleteEventHandler OnSynchronizationComplete;
 
@@ -162,7 +159,7 @@ namespace Kidozen.iOS
 				var details = CreateReplicationDetails ();
 
 				OnSynchronizationComplete.Invoke (this,
-					new SynchronizationCompleteEventArgs {
+					new SynchronizationCompleteEventArgs<T> {
 						SynchronizationType = e.Source.IsPull ? SynchronizationType.Pull : SynchronizationType.Push,
 						Details = details
 					});
@@ -269,13 +266,14 @@ namespace Kidozen.iOS
 
 		//TODO: Only For Server2client????
 		//TODO: Should we resolve conflicts automatically? Does the Server has priority over local??
-		private ReplicationDetails CreateReplicationDetails ()
+		private ReplicationDetails<T> CreateReplicationDetails ()
 		{
-			/*
-			var conflict = Database.CreateAllDocumentsQuery ();
-			conflict.AllDocsMode = Kidozen.Couchbase.Lite.AllDocsMode.OnlyConflicts;
-			totalConflicts = conflict.Run ().ToList ().Count;
-			*/
+			var onlyConflictsQuery = Database.CreateAllDocumentsQuery ();
+			onlyConflictsQuery.AllDocsMode = AllDocsMode.OnlyConflicts;
+			var onlyConflictsResults = onlyConflictsQuery.Run ();
+
+			var conflictsCount = onlyConflictsResults.ToList ().Count;
+		
 			var documents = new Func<Revision, bool>(r=>r.current);
 			var updates = new Func<Revision, bool>(r=>!r.current);
 
@@ -288,9 +286,6 @@ namespace Kidozen.iOS
 				var totalDeleted = countBeforeSync - countAfterSync;
 				var totalNews = countAfterSync - countBeforeSync;
 
-				//_documentsBeforeSync.ToList().Where(filter).ToList().ForEach(d=>Debug.WriteLine("bs: " + d.doc_id));
-				//documentsAfterSync.ToList().Where(filter).ToList().ForEach(d=>Debug.WriteLine("as: " + d.doc_id));
-
 				var updatedDocuments = documentsAfterSync
 					.Where(updates).Except
 					(
@@ -302,18 +297,14 @@ namespace Kidozen.iOS
 
 				updatedDocuments.ToList().ForEach(d=>Debug.WriteLine("diff: " + d.doc_id));
 
-				//_documentsBeforeSync = documentsAfterSync;
-				return new ReplicationDetails
+				return new ReplicationDetails<T>
 				{
-					News = totalNews < 0 ? 0 : totalNews,
-					Deleted = totalDeleted < 0 ? 0 : totalDeleted,
-					Updated = updatedDocuments.Count(),
-					Conflicts = 0
+					NewCount = totalNews < 0 ? 0 : totalNews,
+					RemoveCount = totalDeleted < 0 ? 0 : totalDeleted,
+					UpdateCount = updatedDocuments.Count(),
+					ConflictCount = conflictsCount
 				};
 			}
-
-
-
 			catch (SQLitePCL.Ugly.ugly.sqlite3_exception e)
 			{
 				Debug.WriteLine("CreateReplicationDetails: " + e.errmsg);
