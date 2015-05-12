@@ -14,6 +14,9 @@ namespace Kidozen.Android
 namespace Kidozen.iOS
 #endif
 {
+
+
+
 	public partial class DataSync<T>
 	{
 		public delegate void SynchronizationCompleteEventHandler (object sender, SynchronizationCompleteEventArgs e);
@@ -166,38 +169,6 @@ namespace Kidozen.iOS
 			}
 		}
     
-		//TODO: Only For Server2client????
-		//TODO: Should we resolve conflicts automatically? Does the Server has priority over local??
-		private ReplicationDetails CreateReplicationDetails ()
-		{
-			/*
-			var conflict = Database.CreateAllDocumentsQuery ();
-			conflict.AllDocsMode = Kidozen.Couchbase.Lite.AllDocsMode.OnlyConflicts;
-			totalConflicts = conflict.Run ().ToList ().Count;
-			*/
-
-            try
-            {
-                var beforeSyncDocs = _documentsBeforeSync.Count();
-				var afterSyncDocs =  _tracker.MapDocuments().Where(r => r.current).Count();
-                var deleted = beforeSyncDocs - afterSyncDocs;
-                return new ReplicationDetails
-                {
-                    News = afterSyncDocs - beforeSyncDocs,
-                    Deleted = deleted < 0 ? 0 : deleted,
-                    Updated = 0,
-                    Conflicts = 0
-                };
-            }
-            catch (SQLitePCL.Ugly.ugly.sqlite3_exception e)
-            {
-                Debug.WriteLine("CreateReplicationDetails: " + e.errmsg);
-                Debug.WriteLine("CreateReplicationDetails: " + e.errcode);
-                Debug.WriteLine("CreateReplicationDetails: " + e.Message);
-                return null;
-            }
-
-		}
 
 		//Para simplificar la Beta, uso solo ' all-docs query'
 		//hay que agregar en futuras versiones soportar customs views
@@ -263,7 +234,9 @@ namespace Kidozen.iOS
 		{
 			if (OnSynchronizationStart != null && _onSynchronizationStartFired == false) {
 				//TODO: Aca? o cuando la transacciones estan en 0 ????
-				_documentsBeforeSync = _tracker.MapDocuments().Where(r => r.current).ToList();
+				Debug.WriteLine("FireOnSynchronizationStart: ");
+
+				_documentsBeforeSync = _tracker.MapDocuments().ToList();
 				//TODO: Aca? o cuando la transacciones estan en 0 ????
 
 				_onSynchronizationStartFired = true;
@@ -293,6 +266,76 @@ namespace Kidozen.iOS
 			//TODO: Ensure document format from server is ok
 			return propertyBag;
 		}
+
+		//TODO: Only For Server2client????
+		//TODO: Should we resolve conflicts automatically? Does the Server has priority over local??
+		private ReplicationDetails CreateReplicationDetails ()
+		{
+			/*
+			var conflict = Database.CreateAllDocumentsQuery ();
+			conflict.AllDocsMode = Kidozen.Couchbase.Lite.AllDocsMode.OnlyConflicts;
+			totalConflicts = conflict.Run ().ToList ().Count;
+			*/
+			var documents = new Func<Revision, bool>(r=>r.current);
+			var updates = new Func<Revision, bool>(r=>!r.current);
+
+			try
+			{
+				var documentsAfterSync = _tracker.MapDocuments().ToList();
+				var countBeforeSync = _documentsBeforeSync.Where(documents).ToList().Count();
+
+				var countAfterSync =  documentsAfterSync.Where(documents).Count();
+				var totalDeleted = countBeforeSync - countAfterSync;
+				var totalNews = countAfterSync - countBeforeSync;
+
+				//_documentsBeforeSync.ToList().Where(filter).ToList().ForEach(d=>Debug.WriteLine("bs: " + d.doc_id));
+				//documentsAfterSync.ToList().Where(filter).ToList().ForEach(d=>Debug.WriteLine("as: " + d.doc_id));
+
+				var updatedDocuments = documentsAfterSync
+					.Where(updates).Except
+					(
+						_documentsBeforeSync.Where(updates).ToList()
+						,new RevisionComparer()
+					)
+					.GroupBy(rev => rev.doc_id)
+					.Select(grp => grp.First());
+
+				updatedDocuments.ToList().ForEach(d=>Debug.WriteLine("diff: " + d.doc_id));
+
+				//_documentsBeforeSync = documentsAfterSync;
+				return new ReplicationDetails
+				{
+					News = totalNews < 0 ? 0 : totalNews,
+					Deleted = totalDeleted < 0 ? 0 : totalDeleted,
+					Updated = updatedDocuments.Count(),
+					Conflicts = 0
+				};
+			}
+
+
+
+			catch (SQLitePCL.Ugly.ugly.sqlite3_exception e)
+			{
+				Debug.WriteLine("CreateReplicationDetails: " + e.errmsg);
+				Debug.WriteLine("CreateReplicationDetails: " + e.errcode);
+				Debug.WriteLine("CreateReplicationDetails: " + e.Message);
+				return null;
+			}
+
+		}
 	}
 
+	internal class RevisionComparer :IEqualityComparer<Revision>	{
+		#region IEqualityComparer implementation
+		public bool Equals (Revision x, Revision y)
+		{
+			return x.doc_id == y.doc_id;
+		}
+		public int GetHashCode (Revision obj)
+		{
+			return String.Format("{0}|{1}",obj.doc_id, obj.revid).GetHashCode();
+		}
+		#endregion
+		
+	}
 }
