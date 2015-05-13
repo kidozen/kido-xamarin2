@@ -264,13 +264,30 @@ namespace Kidozen.iOS
 			return propertyBag;
 		}
 
-		//TODO: Only For Server2client????
-		//TODO: Should we resolve conflicts automatically? Does the Server has priority over local??
-		private ReplicationDetails<T> CreateReplicationDetails ()
+		QueryEnumerator GetConflicts ()
 		{
 			var onlyConflictsQuery = Database.CreateAllDocumentsQuery ();
 			onlyConflictsQuery.AllDocsMode = AllDocsMode.OnlyConflicts;
 			var onlyConflictsResults = onlyConflictsQuery.Run ();
+			return onlyConflictsResults;
+		}
+		//http://developer.couchbase.com/mobile/develop/guides/couchbase-lite/native-api/document/index.html
+		internal void DefaultConflictResolver() {
+			var rows = GetConflicts ();
+			foreach (var row in rows) 
+			{
+				if (row.GetConflictingRevisions().Any())
+				{
+					
+				}
+			}
+		}
+
+		//TODO: Only For Server2client????
+		//TODO: Should we resolve conflicts automatically? Does the Server has priority over local??
+		private ReplicationDetails<T> CreateReplicationDetails ()
+		{
+			var onlyConflictsResults = GetConflicts ();
 
 			var conflictsCount = onlyConflictsResults.ToList ().Count;
 		
@@ -333,8 +350,9 @@ namespace Kidozen.iOS
 			var allDocsQuery = Database.CreateAllDocumentsQuery ();
 			allDocsQuery.AllDocsMode = AllDocsMode.AllDocs;
 			allDocsQuery.Keys = revisions.Select (r => r.docid);
-			var queryResults = allDocsQuery.Run ().Select (r => new SyncDocument<T> ().DeSerialize<T> (r));
-			return queryResults;
+			var queryResults = allDocsQuery.Run ();
+				
+			return queryResults.Select (r => new SyncDocument<T> ().DeSerialize<T> (r));
 		}
 	}
 
