@@ -51,7 +51,7 @@ namespace Kidozen.iOS
 					raw.sqlite3_create_collation (_readConnection, "JSON_RAW", null, CouchbaseSqliteJsonRawCollationFunction.Compare);
 					raw.sqlite3_create_collation (_readConnection, "CURRENT", null, CouchbaseSqliteRevIdCollationFunction.Compare);
 					raw.sqlite3_create_collation (_readConnection, "REVID", null, CouchbaseSqliteRevIdCollationFunction.Compare);
-					results = _readConnection.query<Revision> ("SELECT sequence, doc_id, revid, parent, current, deleted, no_attachments FROM revs").ToList();
+					results = _readConnection.query<Revision> ("SELECT D.docid, R.sequence, R.doc_id, R.revid, R.parent, R.current, R.deleted, R.no_attachments FROM revs AS R JOIN docs AS D ON R.doc_id = D.doc_ID;").ToList();
 				}
 
 			} catch (Exception ex) {
@@ -64,6 +64,8 @@ namespace Kidozen.iOS
 
 	internal class Revision
 	{
+		public string docid	{ get; set; }
+
 		public int sequence { get; set; }
 
 		public int doc_id { get; set; }

@@ -286,6 +286,13 @@ namespace Kidozen.iOS
 				var totalDeleted = countBeforeSync - countAfterSync;
 				var totalNews = countAfterSync - countBeforeSync;
 
+				var newsAsRevision = documentsAfterSync
+					.Where(documents).Except
+					(
+						_documentsBeforeSync.Where(documents).ToList()
+						, new RevisionComparer()
+					);
+
 				var updatedDocuments = documentsAfterSync
 					.Where(updates).Except
 					(
@@ -295,24 +302,39 @@ namespace Kidozen.iOS
 					.GroupBy(rev => rev.doc_id)
 					.Select(grp => grp.First());
 
-				updatedDocuments.ToList().ForEach(d=>Debug.WriteLine("diff: " + d.doc_id));
+				var deletedAsRevision = _documentsBeforeSync
+					.Where(documents).Except
+					(
+						documentsAfterSync.Where(documents).ToList()
+						, new RevisionComparer()
+					);
+				
+				//updatedDocuments.ToList().ForEach(d=>Debug.WriteLine("diff: " + d.doc_id));
 
 				return new ReplicationDetails<T>
 				{
 					NewCount = totalNews < 0 ? 0 : totalNews,
 					RemoveCount = totalDeleted < 0 ? 0 : totalDeleted,
 					UpdateCount = updatedDocuments.Count(),
-					ConflictCount = conflictsCount
+					ConflictCount = conflictsCount,
+					Conflicts = onlyConflictsResults.Select (r => new SyncDocument<T> ().DeSerialize<T> (r)),
+					News = QueryDocuments(newsAsRevision),
+					Deleted = QueryDocuments(deletedAsRevision),
+					Updated = QueryDocuments(updatedDocuments)
 				};
 			}
 			catch (SQLitePCL.Ugly.ugly.sqlite3_exception e)
 			{
-				Debug.WriteLine("CreateReplicationDetails: " + e.errmsg);
-				Debug.WriteLine("CreateReplicationDetails: " + e.errcode);
-				Debug.WriteLine("CreateReplicationDetails: " + e.Message);
 				return null;
 			}
+		}
 
+		internal IEnumerable<T> QueryDocuments(IEnumerable<Revision> revisions) {
+			var allDocsQuery = Database.CreateAllDocumentsQuery ();
+			allDocsQuery.AllDocsMode = AllDocsMode.AllDocs;
+			allDocsQuery.Keys = revisions.Select (r => r.docid);
+			var queryResults = allDocsQuery.Run ().Select (r => new SyncDocument<T> ().DeSerialize<T> (r));
+			return queryResults;
 		}
 	}
 
