@@ -271,14 +271,33 @@ namespace Kidozen.iOS
 			var onlyConflictsResults = onlyConflictsQuery.Run ();
 			return onlyConflictsResults;
 		}
-		//http://developer.couchbase.com/mobile/develop/guides/couchbase-lite/native-api/document/index.html
+
+		//Default Conflict resolver:
+		//Create a new revision with the properties of the latest current revision (285) and deletes all other revisions.
 		internal void DefaultConflictResolver() {
-			var rows = GetConflicts ();
-			foreach (var row in rows) 
+			var documents = GetConflicts ();
+			foreach (var doc in documents) 
 			{
-				if (row.GetConflictingRevisions().Any())
+				var conflictingRevisions = doc.GetConflictingRevisions ().ToList();
+				if (conflictingRevisions.Any())
 				{
-					
+					conflictingRevisions.ForEach ( revision => {
+						var userProperties = doc.Document.CurrentRevision.UserProperties; // revision.UserProperties;
+						Database.RunInTransaction (()=>
+							{
+								var currentRevision = doc.Document.CurrentRevision;
+								conflictingRevisions.ForEach(cr => {
+									var newRevision = revision.CreateRevision();
+									if (revision==currentRevision) {
+										newRevision.SetUserProperties(userProperties);
+									}
+									else {
+										newRevision.IsDeletion=true;
+									}
+								} );
+								return true;
+							});
+					});
 				}
 			}
 		}
@@ -334,6 +353,7 @@ namespace Kidozen.iOS
 					RemoveCount = totalDeleted < 0 ? 0 : totalDeleted,
 					UpdateCount = updatedDocuments.Count(),
 					ConflictCount = conflictsCount,
+
 					Conflicts = onlyConflictsResults.Select (r => new SyncDocument<T> ().DeSerialize<T> (r)),
 					News = QueryDocuments(newsAsRevision),
 					Deleted = QueryDocuments(deletedAsRevision),
@@ -350,8 +370,17 @@ namespace Kidozen.iOS
 			var allDocsQuery = Database.CreateAllDocumentsQuery ();
 			allDocsQuery.AllDocsMode = AllDocsMode.AllDocs;
 			allDocsQuery.Keys = revisions.Select (r => r.docid);
-			var queryResults = allDocsQuery.Run ();
-				
+
+			List<QueryRow> queryResults = new List<QueryRow>();
+			try {
+				queryResults = allDocsQuery.Run ().ToList();
+			} 
+			//uncaught error in CouchBaseLite-net
+			catch (ArgumentNullException ex) {
+				if (!ex.StackTrace.ToLower().Contains("Couchbase.Lite.QueryEnumerator.get_Count")) {
+					throw ex;
+				}
+			}
 			return queryResults.Select (r => new SyncDocument<T> ().DeSerialize<T> (r));
 		}
 	}
