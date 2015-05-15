@@ -62,7 +62,6 @@ namespace Kidozen.iOS
 
         const int kViewTag = 1;
 
-
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
@@ -100,7 +99,6 @@ namespace Kidozen.iOS
                 this.View.UserInteractionEnabled = true;
             });
             var payload = webview.EvaluateJavascript ("document.title");
-			Console.WriteLine (payload);
 			if (payload.Contains ("Success payload=")) {
 				payload = Encoding.UTF8.GetString (Convert.FromBase64String (payload.Replace ("Success payload=", String.Empty)));
 				var rawToken = JsonConvert.DeserializeObject<Dictionary<string, string>> (payload);
