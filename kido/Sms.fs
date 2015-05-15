@@ -21,8 +21,9 @@ type Sms (number, identity:Identity) =
 
     member this.Send (message) =
         let service =  async {
+            let! validIdentity = validateToken this.identity
             let! result = createRequest HttpMethod.Post baseurl  
-                            |> withHeader (Authorization this.identity.rawToken) 
+                            |> withHeader (Authorization validIdentity.rawToken) 
                             |> withHeader (ContentType "application/json")  
                             |> withHeader (Accept "application/json") 
                             |> withQueryStringItem { name = "to"; value = number}
@@ -39,7 +40,8 @@ type Sms (number, identity:Identity) =
     member this.GetStatus (id) =
         let url = sprintf "%s/%s" baseurl id
         let service =  async {
-            let! result = createRequest HttpMethod.Get url |> withHeader (Authorization this.identity.rawToken)  |> getResponseAsync 
+            let! validIdentity = validateToken this.identity
+            let! result = createRequest HttpMethod.Get url |> withHeader (Authorization validIdentity.rawToken)  |> getResponseAsync 
             return 
                 match result.StatusCode with
                     | 200 -> result.EntityBody.Value

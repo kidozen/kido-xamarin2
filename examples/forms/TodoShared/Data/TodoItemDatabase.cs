@@ -56,12 +56,16 @@ namespace Todo
 			lock (locker) {
                 try
                 {
-                    return database.Query<TodoItem>(@"{}").Result;
+                    var results = kidozenApplication.DataSource("updateapprovalrequest").Invoke(new { RefId = "A" }).Result;
+                    Console.WriteLine(results);
+                    return null;
                 }
                 catch (Exception w)
                 {
                     
-                    throw;
+                    Console.WriteLine(w.Message);
+
+                    return null;
                 }
 			}
 		}

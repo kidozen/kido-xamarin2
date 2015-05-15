@@ -86,8 +86,9 @@ type DataSource (name, identity:Identity) =
         query |> Async.StartAsTask
 
     member this.Invoke (parameters) =
+        let dsParams = DSInvokeParams ( JSONSerializer.toString (parameters) )
         let invoke = async {
-            let! result = createDs this.dsname this.identity |> withDSType DSInvoke|> getResult
+            let! result = createDs this.dsname this.identity |> withDSType DSInvoke  |> withParameters dsParams |> getResult
             return this.ProcessResponse result              
         }
         invoke |> Async.StartAsTask
