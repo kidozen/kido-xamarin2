@@ -38,6 +38,8 @@ namespace Kidozen.iOS
         /// <returns>Couch revision id</returns>
         public string Create(T instance)
         {
+			throw new NotImplementedException ();
+
             var document = new SyncDocument<T> { Document = instance }.ToCouchDictionary();
             var dbDocument = Database.CreateDocument();
             var rev = dbDocument.PutProperties(document);
@@ -51,6 +53,8 @@ namespace Kidozen.iOS
         /// <returns>Couch revision id</returns>
         public string Update(T instance)
         {
+			throw new NotImplementedException ();
+
             var document = new SyncDocument<T> { Document = instance }.ToCouchDictionary();
 
             var id = (instance as DataSyncDocument)._id;
@@ -69,6 +73,8 @@ namespace Kidozen.iOS
         /// <returns></returns>
         public string Save(T instance)
         {
+			throw new NotImplementedException ();
+
             var id = (instance as DataSyncDocument)._id;
             if (id!=null)
             {
@@ -83,6 +89,8 @@ namespace Kidozen.iOS
         //TODO: Check how to delete. Seems that 'deletelocaldocument' does not work (?)
         public bool Delete(T instance)
         {
+			throw new NotImplementedException ();
+
             var document = instance as DataSyncDocument;
             var localdocument = Database.GetDocument(document._id);
             if (localdocument.UserProperties == null) return false;

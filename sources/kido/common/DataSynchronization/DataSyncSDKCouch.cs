@@ -278,23 +278,27 @@ namespace Kidozen.iOS
 			var documents = GetConflicts ();
 			foreach (var doc in documents) 
 			{
+				doc.GetConflictingRevisions ().ToList()
+					.ForEach((r)=>{
+						Debug.WriteLine(r.UserProperties);
+					});
+					
 				var conflictingRevisions = doc.GetConflictingRevisions ().ToList();
 				if (conflictingRevisions.Any())
 				{
 					conflictingRevisions.ForEach ( revision => {
-						var userProperties = doc.Document.CurrentRevision.UserProperties; // revision.UserProperties;
+						var sequence = doc.SequenceNumber;
+						var userProperties =  revision.UserProperties;
 						Database.RunInTransaction (()=>
 							{
 								var currentRevision = doc.Document.CurrentRevision;
-								conflictingRevisions.ForEach(cr => {
-									var newRevision = revision.CreateRevision();
-									if (revision==currentRevision) {
-										newRevision.SetUserProperties(userProperties);
-									}
-									else {
-										newRevision.IsDeletion=true;
-									}
-								} );
+								var newRevision = revision.CreateRevision();
+								if (revision==currentRevision) {
+									newRevision.SetUserProperties(userProperties);
+								}
+								else {
+									newRevision.IsDeletion=true;
+								}
 								return true;
 							});
 					});
@@ -364,6 +368,23 @@ namespace Kidozen.iOS
 			{
 				return null;
 			}
+			catch (Exception ex) {
+				return null;
+			}
+		}
+
+		/// <summary>
+		/// Resolves the conflicts.
+		/// </summary>
+		/// <param name="discardLocal">If set to <c>true</c> discard local changes.</param>
+		public void ResolveLastConflicts(Boolean discardLocal = true) {
+			throw new NotImplementedException ();
+			DefaultConflictResolver ();
+		}
+
+		public void ResolveLastConflicts(Func<IEnumerable<T>> winners) {
+			throw new NotImplementedException ();
+			DefaultConflictResolver ();
 		}
 
 		internal IEnumerable<T> QueryDocuments(IEnumerable<Revision> revisions) {
@@ -377,7 +398,7 @@ namespace Kidozen.iOS
 			} 
 			//uncaught error in CouchBaseLite-net
 			catch (ArgumentNullException ex) {
-				if (!ex.StackTrace.ToLower().Contains("Couchbase.Lite.QueryEnumerator.get_Count")) {
+				if (!ex.StackTrace.ToLower().Contains("couchbase.lite.queryenumerator.get_count")) {
 					throw ex;
 				}
 			}
