@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using Couchbase.Lite;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 #if __ANDROID__
 namespace Kidozen.Android
@@ -45,26 +47,32 @@ namespace Kidozen.iOS
 
         internal T DeSerialize<T>(QueryRow r)
         {
-            var doc = r.Document.Properties[DocumentConstants.DOCUMENT_KEY];
-            var instance = JsonConvert.DeserializeObject<T>(doc.ToString());
+			var doqui = r.Document.Properties[DocumentConstants.DOCUMENT_KEY];
+
+			var instance = JsonConvert.DeserializeObject<T>( 
+				JsonConvert.SerializeObject(doqui)
+			);
+
             var id = r.Document.Properties[DocumentConstants.ID_KEY].ToString();
             var revision = r.Document.Properties[DocumentConstants.REVISION_KEY].ToString();
 
-            var dsd = instance as DataSyncDocument;
-            dsd._id = id;
-            dsd._rev = revision;
-
-            return instance;
+			try {
+				// !!!! ¿¿¿¿¿????? porque tengo que hacer esto para que funcione ?!!!
+				var dsd = instance as DataSyncDocument;
+				dsd._id = id;
+				dsd._rev = revision;
+			} catch (System.Exception ex) {
+				Debug.WriteLine (ex.Message);
+			}
+			return instance;
         }
 
 
         internal IDictionary<string, object> ToCouchDictionary()
         {
             var dict = new Dictionary<string, object>();
-            //dict.Add(DocumentConstants.ID_KEY, _id.ValueOrEmpty());
-            //dict.Add(DocumentConstants.REF_KEY, _ref.ValueOrEmpty());
             dict.Add(DocumentConstants.PRIMARYKEY_KEY, key.ValueOrEmpty());
-            dict.Add(DocumentConstants.DOCUMENT_KEY, doc.ValueOrEmpty());
+			dict.Add(DocumentConstants.DOCUMENT_KEY,Document);
             return dict ;
         }
     }

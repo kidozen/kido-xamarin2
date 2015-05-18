@@ -38,9 +38,6 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="kido">
-      <HintPath>..\..\..\..\kido-xamarin2\release\core\kido.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -71,6 +68,9 @@
     </Reference>
     <Reference Include="SQLitePCL.ugly, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\..\packages\SQLitePCL.ugly.0.8.0\lib\portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCL.ugly.dll</HintPath>
+    </Reference>
+    <Reference Include="kido">
+      <HintPath>..\..\..\..\kido-xamarin2\release\core\kido.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

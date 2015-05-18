@@ -278,11 +278,23 @@ namespace Kidozen.iOS
 			var documents = GetConflicts ();
 			foreach (var doc in documents) 
 			{
-				doc.GetConflictingRevisions ().ToList()
-					.ForEach((r)=>{
-						Debug.WriteLine(r.UserProperties);
-					});
-					
+				doc.GetConflictingRevisions ().ToList().ForEach(r =>
+					{
+						Debug.WriteLine( "User Properties " );
+						r.UserProperties.ToList() .ForEach ( i =>
+							Debug.WriteLine(String.Format("Key: {0} ;Value={1}", i.Key, i.Value))
+						);
+						Debug.WriteLine( "Doc Id: " + r.Document.Id  );
+						Debug.WriteLine( r.Document.CurrentRevisionId ?? "CurrentRevisionId is NULL");
+						Debug.WriteLine( "Deleted: " + r.Document.Deleted );
+						Debug.WriteLine( "Deleted: " + r.Document.GetRevision(r.Document.Id)  ?? "GetRevision() is NULL" );
+						Debug.WriteLine( "Doc Properties " );
+						r.Properties.ToList() .ForEach ( i =>
+							Debug.WriteLine(String.Format("Key: {0} ;Value={1}", i.Key, i.Value))
+						);
+					}
+				);
+				/*	
 				var conflictingRevisions = doc.GetConflictingRevisions ().ToList();
 				if (conflictingRevisions.Any())
 				{
@@ -303,6 +315,7 @@ namespace Kidozen.iOS
 							});
 					});
 				}
+				*/
 			}
 		}
 
@@ -378,12 +391,10 @@ namespace Kidozen.iOS
 		/// </summary>
 		/// <param name="discardLocal">If set to <c>true</c> discard local changes.</param>
 		public void ResolveLastConflicts(Boolean discardLocal = true) {
-			throw new NotImplementedException ();
 			DefaultConflictResolver ();
 		}
 
 		public void ResolveLastConflicts(Func<IEnumerable<T>> winners) {
-			throw new NotImplementedException ();
 			DefaultConflictResolver ();
 		}
 
