@@ -276,8 +276,29 @@ namespace Kidozen.iOS
 		//Create a new revision with the properties of the latest current revision (285) and deletes all other revisions.
 		internal void DefaultConflictResolver() {
 			var documents = GetConflicts ();
-			foreach (var doc in documents) 
-			{
+			foreach (var doc in documents){
+				var maxid = doc.GetConflictingRevisions ()
+					.Select(savedr => int.Parse( savedr.Id.Split('-')[0] ))
+					.Max ();
+				var highests = doc.GetConflictingRevisions()
+					.Where(cr=>cr.Id.StartsWith(maxid.ToString()));
+						
+				if (highests.Count() > 1) {
+					
+				} else {
+					var toDelete = doc.GetConflictingRevisions ()
+						.Except (highests);
+					toDelete.ToList ().ForEach (
+						td => {
+							Debug.WriteLine( ">>>>>>>:>>>>>>:>>>>> to delete: " + td.Id );	
+							td.UserProperties.ToList().ForEach ( i =>
+								Debug.WriteLine(String.Format("Key: {0} ;Value={1}", i.Key, i.Value))
+							);	
+							td.Document.Delete();
+						}
+					);
+				}
+				/*	
 				doc.GetConflictingRevisions ().ToList().ForEach(r =>
 					{
 						Debug.WriteLine( "User Properties " );
@@ -294,7 +315,7 @@ namespace Kidozen.iOS
 						);
 					}
 				);
-				/*	
+
 				var conflictingRevisions = doc.GetConflictingRevisions ().ToList();
 				if (conflictingRevisions.Any())
 				{
