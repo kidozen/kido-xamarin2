@@ -13,4 +13,8 @@ namespace Kidozen.iOS
     {
         Push,Pull,TwoWay
     }
+
+	public enum PullConflictResolutionType {
+		Default, ResolveWithRemote, ResolveWithLocal
+	}
 }

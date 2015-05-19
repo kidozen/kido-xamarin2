@@ -43,6 +43,7 @@ namespace Kidozen.iOS
 
 		private SynchronizationTracker _tracker;
 		private IEnumerable<Revision> _documentsBeforeSync;
+		private PullConflictResolutionType _pullConflictResolutionType;
 
 		public string BaseUrl {
 			get {
@@ -116,22 +117,8 @@ namespace Kidozen.iOS
 
 		void replication_Changed (object sender, ReplicationChangeEventArgs e)
 		{
-			/*
-			var message = "======>Replicacion: {0}\nCompletedChangesCount: {1}\nChangesCount: {2}\n Status: {3}\n";
-			System.Diagnostics.Debug.WriteLine (
-				message,
-				e.Source.IsPull ? "pull" : "push",
-				e.Source.CompletedChangesCount,
-				e.Source.ChangesCount,
-				e.Source.Status
-			);
-			*/
-			//DebugSourceData (e);
-
             FireOnSynchronizationComplete(e);
-
             FireOnSynchronizationProgress (e);
-
 		}
 
 		private void FireOnSynchronizationProgress (ReplicationChangeEventArgs e)
@@ -150,13 +137,16 @@ namespace Kidozen.iOS
 
 		private void FireOnSynchronizationComplete (ReplicationChangeEventArgs e)
 		{
-            var message = "==****Fire Status: {0}\nfired: {1}\n";
-            Debug.WriteLine(message, e.Source.Status, _onSynchronizationStartFired);
+            //var message = "==****Fire Status: {0}\nfired: {1}\n";
+            //Debug.WriteLine(message, e.Source.Status, _onSynchronizationStartFired);
 
 			if (OnSynchronizationComplete != null && e.Source.Status == ReplicationStatus.Stopped) {
 				_onSynchronizationStartFired = false;
 
 				var details = CreateReplicationDetails ();
+				if (_pullConflictResolutionType != PullConflictResolutionType.Default) {
+					DefaultConflictResolver ();
+				}
 
 				OnSynchronizationComplete.Invoke (this,
 					new SynchronizationCompleteEventArgs<T> {
@@ -190,11 +180,13 @@ namespace Kidozen.iOS
 			return this.Query ().ToList<T> ().Where (where);
 		}
 
-		public void Synchronize (SynchronizationType synchronizationType = SynchronizationType.Pull)
+
+		public void Synchronize ( SynchronizationType synchronizationType = SynchronizationType.Pull, PullConflictResolutionType pullResolutiontype = PullConflictResolutionType.Default)
 		{
 			var Continuous = false;
-            
+
 			_tracker = new SynchronizationTracker (this.Database);
+			_pullConflictResolutionType = pullResolutiontype;
 
 			var url = new Uri (GetReplicationUrl ());
 			var headers = new Dictionary<string, string> ();
@@ -272,71 +264,26 @@ namespace Kidozen.iOS
 			return onlyConflictsResults;
 		}
 
-		//Default Conflict resolver:
-		//Create a new revision with the properties of the latest current revision (285) and deletes all other revisions.
+		//Default Conflict resolver: based on this https://gist.github.com/jhs/1577159
 		internal void DefaultConflictResolver() {
 			var documents = GetConflicts ();
-			foreach (var doc in documents){
-				var maxid = doc.GetConflictingRevisions ()
-					.Select(savedr => int.Parse( savedr.Id.Split('-')[0] ))
-					.Max ();
-				var highests = doc.GetConflictingRevisions()
-					.Where(cr=>cr.Id.StartsWith(maxid.ToString()));
-						
-				if (highests.Count() > 1) {
-					
-				} else {
-					var toDelete = doc.GetConflictingRevisions ()
-						.Except (highests);
-					toDelete.ToList ().ForEach (
-						td => {
-							Debug.WriteLine( ">>>>>>>:>>>>>>:>>>>> to delete: " + td.Id );	
-							td.UserProperties.ToList().ForEach ( i =>
-								Debug.WriteLine(String.Format("Key: {0} ;Value={1}", i.Key, i.Value))
-							);	
-							td.Document.Delete();
-						}
-					);
-				}
-				/*	
-				doc.GetConflictingRevisions ().ToList().ForEach(r =>
-					{
-						Debug.WriteLine( "User Properties " );
-						r.UserProperties.ToList() .ForEach ( i =>
-							Debug.WriteLine(String.Format("Key: {0} ;Value={1}", i.Key, i.Value))
-						);
-						Debug.WriteLine( "Doc Id: " + r.Document.Id  );
-						Debug.WriteLine( r.Document.CurrentRevisionId ?? "CurrentRevisionId is NULL");
-						Debug.WriteLine( "Deleted: " + r.Document.Deleted );
-						Debug.WriteLine( "Deleted: " + r.Document.GetRevision(r.Document.Id)  ?? "GetRevision() is NULL" );
-						Debug.WriteLine( "Doc Properties " );
-						r.Properties.ToList() .ForEach ( i =>
-							Debug.WriteLine(String.Format("Key: {0} ;Value={1}", i.Key, i.Value))
-						);
-					}
-				);
+			foreach (var doc in documents) {
+				var coflictingRevisionsForDocument = doc.GetConflictingRevisions ();
 
-				var conflictingRevisions = doc.GetConflictingRevisions ().ToList();
-				if (conflictingRevisions.Any())
-				{
-					conflictingRevisions.ForEach ( revision => {
-						var sequence = doc.SequenceNumber;
-						var userProperties =  revision.UserProperties;
-						Database.RunInTransaction (()=>
-							{
-								var currentRevision = doc.Document.CurrentRevision;
-								var newRevision = revision.CreateRevision();
-								if (revision==currentRevision) {
-									newRevision.SetUserProperties(userProperties);
-								}
-								else {
-									newRevision.IsDeletion=true;
-								}
-								return true;
-							});
-					});
+				var maxid = coflictingRevisionsForDocument
+					.Select (savedr => int.Parse (savedr.Id.Split ('-') [0]))
+					.Max ();
+				var highests = coflictingRevisionsForDocument.Where (cr => cr.Id.StartsWith (maxid.ToString ()));
+
+				if (highests.Count () > 1) {
+					var itemToDelete = coflictingRevisionsForDocument
+						.Where (savedr => savedr.Id.StartsWith (maxid.ToString () + "-"))
+						.OrderBy (sr => sr.Id)
+						.FirstOrDefault ();
+					highests = doc.GetConflictingRevisions ().Where (cr => cr.Id == itemToDelete.Id);
 				}
-				*/
+				var toDelete = coflictingRevisionsForDocument.Except (highests);
+				toDelete.ToList ().ForEach (td => td.Document.Delete ());
 			}
 		}
 
@@ -345,12 +292,9 @@ namespace Kidozen.iOS
 		private ReplicationDetails<T> CreateReplicationDetails ()
 		{
 			var onlyConflictsResults = GetConflicts ();
-
 			var conflictsCount = onlyConflictsResults.ToList ().Count;
-		
 			var documents = new Func<Revision, bool>(r=>r.current);
 			var updates = new Func<Revision, bool>(r=>!r.current);
-
 			try
 			{
 				var documentsAfterSync = _tracker.MapDocuments().ToList();
@@ -383,7 +327,6 @@ namespace Kidozen.iOS
 						, new RevisionComparer()
 					);
 				
-				//updatedDocuments.ToList().ForEach(d=>Debug.WriteLine("diff: " + d.doc_id));
 
 				return new ReplicationDetails<T>
 				{
@@ -407,15 +350,8 @@ namespace Kidozen.iOS
 			}
 		}
 
-		/// <summary>
-		/// Resolves the conflicts.
-		/// </summary>
-		/// <param name="discardLocal">If set to <c>true</c> discard local changes.</param>
-		public void ResolveLastConflicts(Boolean discardLocal = true) {
-			DefaultConflictResolver ();
-		}
-
 		public void ResolveLastConflicts(Func<IEnumerable<T>> winners) {
+			throw new NotImplementedException ();
 			DefaultConflictResolver ();
 		}
 
