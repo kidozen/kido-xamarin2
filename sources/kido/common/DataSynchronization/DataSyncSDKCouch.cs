@@ -79,7 +79,7 @@ namespace Kidozen.iOS
 		/// <returns></returns>
 		private string GetReplicationUrl ()
 		{
-			var url = string.Format ("{0}/{1}", "http://Christians-MacBook-Pro.local:5984", Name);
+			var url = string.Format ("{0}/{1}", BaseUrl, Name);
 			System.Diagnostics.Debug.WriteLine (url);
 			return url;
 		}
@@ -145,7 +145,7 @@ namespace Kidozen.iOS
 
 				var details = CreateReplicationDetails ();
 				if (_pullConflictResolutionType != PullConflictResolutionType.Default) {
-					DefaultConflictResolver ();
+					MaxRevisionConflictResolver ();
 				}
 
 				OnSynchronizationComplete.Invoke (this,
@@ -157,8 +157,7 @@ namespace Kidozen.iOS
 		}
     
 
-		//Para simplificar la Beta, uso solo ' all-docs query'
-		//hay que agregar en futuras versiones soportar customs views
+		//to simplify we are using ' all-docs query'
 		protected void SetupDefaultQueryView ()
 		{
 			if (DefaultQuery == null) {
@@ -180,13 +179,17 @@ namespace Kidozen.iOS
 			return this.Query ().ToList<T> ().Where (where);
 		}
 
-
-		public void Synchronize ( SynchronizationType synchronizationType = SynchronizationType.Pull, PullConflictResolutionType pullResolutiontype = PullConflictResolutionType.Default)
+		public void Synchronize ( SynchronizationType synchronizationType = SynchronizationType.Pull)
 		{
+			if (synchronizationType!=SynchronizationType.Pull) {
+				throw new NotSupportedException ("Current version only supports pull synchronizations.");
+			}
+			//For future use
 			var Continuous = false;
+			_pullConflictResolutionType =  PullConflictResolutionType.Default;
+			//For future use
 
 			_tracker = new SynchronizationTracker (this.Database);
-			_pullConflictResolutionType = pullResolutiontype;
 
 			var url = new Uri (GetReplicationUrl ());
 			var headers = new Dictionary<string, string> ();
@@ -222,11 +225,7 @@ namespace Kidozen.iOS
 		private void FireOnSynchronizationStart ()
 		{
 			if (OnSynchronizationStart != null && _onSynchronizationStartFired == false) {
-				//TODO: Aca? o cuando la transacciones estan en 0 ????
-				Debug.WriteLine("FireOnSynchronizationStart: ");
-
 				_documentsBeforeSync = _tracker.MapDocuments().ToList();
-				//TODO: Aca? o cuando la transacciones estan en 0 ????
 
 				_onSynchronizationStartFired = true;
 				OnSynchronizationStart.Invoke (this, new SynchronizationEventArgs { SynchronizationType = SynchronizationType.TwoWay });
@@ -265,7 +264,7 @@ namespace Kidozen.iOS
 		}
 
 		//Default Conflict resolver: based on this https://gist.github.com/jhs/1577159
-		internal void DefaultConflictResolver() {
+		internal void MaxRevisionConflictResolver() {
 			var documents = GetConflicts ();
 			foreach (var doc in documents) {
 				var coflictingRevisionsForDocument = doc.GetConflictingRevisions ();
@@ -343,16 +342,20 @@ namespace Kidozen.iOS
 			}
 			catch (SQLitePCL.Ugly.ugly.sqlite3_exception e)
 			{
-				return null;
+				return null; //TODO: What should I do?
 			}
 			catch (Exception ex) {
-				return null;
+				return null; //TODO: What should I do?
 			}
 		}
 
+		/// <summary>
+		/// Resolves the last conflicts.
+		/// </summary>
+		/// <param name="winners">Winners.</param>
 		public void ResolveLastConflicts(Func<IEnumerable<T>> winners) {
 			throw new NotImplementedException ();
-			DefaultConflictResolver ();
+			MaxRevisionConflictResolver ();
 		}
 
 		internal IEnumerable<T> QueryDocuments(IEnumerable<Revision> revisions) {
@@ -386,5 +389,19 @@ namespace Kidozen.iOS
 		}
 		#endregion
 		
+	}
+
+	public class ReplicationDetails<T>
+	{
+		public int NewCount { get; set; }
+		public int RemoveCount { get; set; }
+		public int UpdateCount { get; set; }
+		public int ConflictCount { get; set; }
+
+		public IEnumerable<T> News { get; set; }
+		public IEnumerable<T> Deleted { get; set; }
+		public IEnumerable<T> Updated { get; set; }
+		public IEnumerable<T> Conflicts { get; set; }
+
 	}
 }

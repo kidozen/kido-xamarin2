@@ -50,9 +50,20 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Data" />
-    <Reference Include="WebSocket4Net, Version=0.12.0.0, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebSocket4Net.0.12\lib\monoandroid22\WebSocket4Net.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="kido">
+      <HintPath>..\release\core\kido.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCL.ugly">
+      <HintPath>..\..\..\packages\SQLitePCL.ugly.0.8.0\lib\portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCL.ugly.dll</HintPath>
+    </Reference>
+    <Reference Include="Couchbase.Lite">
+      <HintPath>..\..\..\packages\Couchbase.Lite.1.0.4.1\lib\MonoAndroid\Couchbase.Lite.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSocket4Net">
+      <HintPath>..\..\..\packages\WebSocket4Net.0.12\lib\monoandroid22\WebSocket4Net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -120,12 +131,10 @@
     <Compile Include="Analytics\LocationHelper.cs" />
     <Compile Include="PushNotifications\PushExtensions.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
-    <Compile Include="PassiveAuthActivity.cs" />
     <Compile Include="..\sources\kido\common\FileExtensions.cs">
       <Link>FileExtensions.cs</Link>
     </Compile>
     <Compile Include="CrashExtensions.cs" />
-    <Compile Include="PassiveAuthExtensions.cs" />
     <Compile Include="DataVisualization\DataVisualizationActivity.cs" />
     <Compile Include="DataVisualization\DataVisualizationActivityConstants.cs" />
     <Compile Include="..\sources\kido\common\DataVisualization\AndroidDataVisualization.cs">
@@ -156,6 +165,14 @@
     <Compile Include="..\sources\kido\common\ServiceExtensions.cs">
       <Link>ServiceExtensions.cs</Link>
     </Compile>
+    <Compile Include="PassiveAuthentication\PassiveAuthActivity.cs" />
+    <Compile Include="PassiveAuthentication\PassiveAuthExtensions.cs" />
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationTracker.cs">
+      <Link>DataSynchronization\SynchronizationTracker.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationProgressEventArgs.cs">
+      <Link>DataSynchronization\SynchronizationProgressEventArgs.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -167,6 +184,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\..\..\packages\SQLitePCL.raw_basic.0.8.0\build\MonoAndroid\SQLitePCL.raw_basic.targets" Condition="Exists('..\..\..\packages\SQLitePCL.raw_basic.0.8.0\build\MonoAndroid\SQLitePCL.raw_basic.targets')" />
+  <Import Project="..\..\..\packages\SQLitePCL.raw.0.8.0\build\MonoAndroid\SQLitePCL.raw.targets" Condition="Exists('..\..\..\packages\SQLitePCL.raw.0.8.0\build\MonoAndroid\SQLitePCL.raw.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
@@ -177,4 +196,7 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="PassiveAuthentication\" />
+  </ItemGroup>
 </Project>
