@@ -2,8 +2,10 @@
 
 #if __ANDROID__
 namespace Kidozen.Android
-#else
+#elif __IOS__
 namespace Kidozen.iOS
+#else
+namespace Kidozen.DataSync
 #endif
 {
     class DataSyncKeyFieldAttribute : Attribute

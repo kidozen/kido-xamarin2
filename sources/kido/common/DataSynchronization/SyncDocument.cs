@@ -6,8 +6,10 @@ using System.Diagnostics;
 
 #if __ANDROID__
 namespace Kidozen.Android
-#else
+#elif __IOS__
 namespace Kidozen.iOS
+#else
+namespace Kidozen.DataSync
 #endif
 {
     public class DocumentConstants
@@ -45,6 +47,13 @@ namespace Kidozen.iOS
         /// </summary>
         protected string _ref { get; set; }
 
+		public SyncDocument() {
+		}
+
+		public SyncDocument(T document) {
+			Document = document;
+		}
+
         internal T DeSerialize<T>(QueryRow r)
         {
 			var doqui = r.Document.Properties[DocumentConstants.DOCUMENT_KEY];
@@ -66,7 +75,6 @@ namespace Kidozen.iOS
 			}
 			return instance;
         }
-
 
         internal IDictionary<string, object> ToCouchDictionary()
         {

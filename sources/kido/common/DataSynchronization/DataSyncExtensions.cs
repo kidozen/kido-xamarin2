@@ -5,8 +5,10 @@ using C = Crash;
 
 #if __ANDROID__
 namespace Kidozen.Android
-#else
+#elif __IOS__
 namespace Kidozen.iOS
+#else
+namespace Kidozen.DataSync
 #endif
 {
     public static class DataSynchronizationExtensions

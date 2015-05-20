@@ -8,10 +8,10 @@ using Couchbase.Lite;
 
 #if __ANDROID__
 namespace Kidozen.Android
-
-
-#else
+#elif __IOS__
 namespace Kidozen.iOS
+#else
+namespace Kidozen.DataSync
 #endif
 {
 	public partial class DataSync<T>
