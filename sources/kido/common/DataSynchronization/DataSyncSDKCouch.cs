@@ -137,11 +137,17 @@ namespace Kidozen.DataSync
 
 		private void FireOnSynchronizationComplete (ReplicationChangeEventArgs e)
 		{
-            //var message = "==****Fire Status: {0}\nfired: {1}\n";
-            //Debug.WriteLine(message, e.Source.Status, _onSynchronizationStartFired);
-
 			if (OnSynchronizationComplete != null && e.Source.Status == ReplicationStatus.Stopped) {
 				_onSynchronizationStartFired = false;
+
+				//TODO: waiting for couchbase version 1.1
+				//https://github.com/couchbase/couchbase-lite-net/issues/372
+				if (e.Source.LastError!=null && e.Source.IsPull) {
+					if (e.Source.LastError.InnerException.StackTrace.ToLower().Contains("at couchbase.lite.util.cookiestore.serializetodisk")) {
+						this.Synchronize (SynchronizationType.Pull);
+						return;
+					}
+				}
 
 				var details = CreateReplicationDetails ();
 				if (_pullConflictResolutionType != PullConflictResolutionType.Default) {
@@ -156,7 +162,6 @@ namespace Kidozen.DataSync
 			}
 		}
     
-
 		//to simplify we are using ' all-docs query'
 		protected void SetupDefaultQueryView ()
 		{
@@ -171,7 +176,7 @@ namespace Kidozen.DataSync
 		{
 			this.SetupDefaultQueryView ();
 			var results = DefaultQuery.Run ();
-			return results.Select (r => new SyncDocument<T> ().DeSerialize<T> (r));
+			return DefaultQueryFilter (results.ToList());
 		}
 
 		public IEnumerable<T> Query (Func<T,bool> where)
@@ -292,8 +297,8 @@ namespace Kidozen.DataSync
 		{
 			var onlyConflictsResults = GetConflicts ();
 			var conflictsCount = onlyConflictsResults.ToList ().Count;
-			var documents = new Func<Revision, bool>(r=>r.current);
-			var updates = new Func<Revision, bool>(r=>!r.current);
+			var documents = new Func<Revision, bool>(r=>r.current && !r.deleted && !r.docid.Contains("_design"));
+			var updates = new Func<Revision, bool>(r=>!r.current  && !r.docid.Contains("_design"));
 			try
 			{
 				var documentsAfterSync = _tracker.MapDocuments().ToList();
@@ -326,18 +331,22 @@ namespace Kidozen.DataSync
 						, new RevisionComparer()
 					);
 				
+				var docsConflicts = onlyConflictsResults.Select (r => new SyncDocument<T> ().DeSerialize<T> (r));
+				var docsNews = QueryDocuments(newsAsRevision);
+				var docsDeleted = QueryDocuments(deletedAsRevision);
+				var docsUpdated = QueryDocuments(updatedDocuments);
 
 				return new ReplicationDetails<T>
 				{
-					NewCount = totalNews < 0 ? 0 : totalNews,
-					RemoveCount = totalDeleted < 0 ? 0 : totalDeleted,
-					UpdateCount = updatedDocuments.Count(),
-					ConflictCount = conflictsCount,
+					NewCount = docsNews.Count(),
+					RemoveCount = docsDeleted.Count() < 0 ? 0 : docsDeleted.Count(),
+					UpdateCount = docsUpdated.Count(),
+					ConflictCount = docsConflicts.Count(),
 
-					Conflicts = onlyConflictsResults.Select (r => new SyncDocument<T> ().DeSerialize<T> (r)),
-					News = QueryDocuments(newsAsRevision),
-					Deleted = QueryDocuments(deletedAsRevision),
-					Updated = QueryDocuments(updatedDocuments)
+					Conflicts = docsConflicts,
+					News = docsNews,
+					Deleted = docsDeleted,
+					Updated = docsUpdated
 				};
 			}
 			catch (SQLitePCL.Ugly.ugly.sqlite3_exception e)
@@ -373,7 +382,14 @@ namespace Kidozen.DataSync
 					throw ex;
 				}
 			}
-			return queryResults.Select (r => new SyncDocument<T> ().DeSerialize<T> (r));
+			return DefaultQueryFilter (queryResults);
+		}
+
+		internal IEnumerable<T> DefaultQueryFilter(List<QueryRow> rows) {
+			return 
+				rows.Where(d=>d.Document.UserProperties!=null)
+				.Where(d=>d.Document.UserProperties.ContainsKey("doc"))
+				.Select (r => new SyncDocument<T> ().DeSerialize<T> (r));			
 		}
 	}
 
@@ -381,7 +397,7 @@ namespace Kidozen.DataSync
 		#region IEqualityComparer implementation
 		public bool Equals (Revision x, Revision y)
 		{
-			return x.doc_id == y.doc_id;
+			return x.doc_id == y.doc_id && x.docid == y.docid;
 		}
 		public int GetHashCode (Revision obj)
 		{
