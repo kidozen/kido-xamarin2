@@ -28,7 +28,6 @@ namespace Kidozen.DataSync
         public DataSync(string name, KidoApplication app) :this(name)
         {
             // TODO: Complete member initialization
-            
             this._kidoapp = app;
         }
 
@@ -53,7 +52,6 @@ namespace Kidozen.DataSync
         public string Update(T instance)
         {
             var document = new SyncDocument<T> { Document = instance }.ToCouchDictionary();
-
             var id = (instance as DataSyncDocument)._id;
             var retrieved = Database.GetDocument(id);
             
