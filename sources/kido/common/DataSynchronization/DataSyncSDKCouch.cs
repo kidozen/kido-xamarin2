@@ -292,54 +292,35 @@ namespace Kidozen.DataSync
 		}
 
 		//TODO: Only For Server2client????
-		//TODO: Should we resolve conflicts automatically? Does the Server has priority over local??
-		private ReplicationDetails<T> CreateReplicationDetails ()
-		{
-			var onlyConflictsResults = GetConflicts ();
-			var conflictsCount = onlyConflictsResults.ToList ().Count;
-			var documents = new Func<Revision, bool>(r=>r.current && !r.deleted && !r.docid.Contains("_design"));
-			var updates = new Func<Revision, bool>(r=>!r.current  && !r.docid.Contains("_design"));
-			try
-			{
+		ReplicationDetails<T> CreateReplicationDetails () {
+			var documents = new Func<Revision, bool>(r=>r.current && !r.docid.Contains("_design") && r.deleted==false);
+			var updates = new Func<Revision, bool>(r=>!r.current  && !r.docid.Contains("_design") && r.deleted==false);
+			try {
 				var documentsAfterSync = _tracker.MapDocuments().ToList();
-				var countBeforeSync = _documentsBeforeSync.Where(documents).ToList().Count();
+				var newRevisions = documentsAfterSync.Where(documents).Where(d=> d.parent==null);
+				var existing = _documentsBeforeSync.Where(documents).Where(d=> d.parent==null);
+				newRevisions=newRevisions.Except(existing, new RevisionComparer());
 
-				var countAfterSync =  documentsAfterSync.Where(documents).Count();
-				var totalDeleted = countBeforeSync - countAfterSync;
-				var totalNews = countAfterSync - countBeforeSync;
-
-				var newsAsRevision = documentsAfterSync
-					.Where(documents).Except
-					(
-						_documentsBeforeSync.Where(documents).ToList()
-						, new RevisionComparer()
-					);
-
-				var updatedDocuments = documentsAfterSync
-					.Where(updates).Except
-					(
+				var updatedRevisions = documentsAfterSync.Where(updates);
+				updatedRevisions = updatedRevisions.Except (
 						_documentsBeforeSync.Where(updates).ToList()
 						,new RevisionComparer()
-					)
-					.GroupBy(rev => rev.doc_id)
-					.Select(grp => grp.First());
-
-				var deletedAsRevision = _documentsBeforeSync
-					.Where(documents).Except
-					(
+					).GroupBy(rev => rev.doc_id).Select(grp => grp.First()
+				);
+				var deletedRevisions = _documentsBeforeSync.Where(documents);
+				deletedRevisions= deletedRevisions.Except(
 						documentsAfterSync.Where(documents).ToList()
 						, new RevisionComparer()
-					);
-				
-				var docsConflicts = onlyConflictsResults.Select (r => new SyncDocument<T> ().DeSerialize<T> (r));
-				var docsNews = QueryDocuments(newsAsRevision);
-				var docsDeleted = QueryDocuments(deletedAsRevision);
-				var docsUpdated = QueryDocuments(updatedDocuments);
+				);
 
-				return new ReplicationDetails<T>
-				{
+				var docsConflicts = GetConflicts ().Select (r => new SyncDocument<T> ().DeSerialize<T> (r));
+				var docsNews = QueryDocuments(newRevisions);
+				var docsDeleted = QueryDocuments(deletedRevisions);
+				var docsUpdated = QueryDocuments(updatedRevisions);
+
+				return new ReplicationDetails<T> {
 					NewCount = docsNews.Count(),
-					RemoveCount = docsDeleted.Count() < 0 ? 0 : docsDeleted.Count(),
+					RemoveCount = docsDeleted.Count(),
 					UpdateCount = docsUpdated.Count(),
 					ConflictCount = docsConflicts.Count(),
 
@@ -349,13 +330,23 @@ namespace Kidozen.DataSync
 					Updated = docsUpdated
 				};
 			}
-			catch (SQLitePCL.Ugly.ugly.sqlite3_exception e)
-			{
-				return null; //TODO: What should I do?
+			//TODO: What should I do?
+			catch (SQLitePCL.Ugly.ugly.sqlite3_exception e) { return null; }
+			catch (Exception ex) {return null;}
+		}
+
+		internal IEnumerable<T> QueryDocuments(IEnumerable<Revision> revisions) {
+			var allDocsQuery = Database.CreateAllDocumentsQuery ();
+			allDocsQuery.AllDocsMode = AllDocsMode.AllDocs;
+			allDocsQuery.Keys = revisions.Select (r => r.docid);
+			List<QueryRow> queryResults = new List<QueryRow>();
+			try { queryResults = allDocsQuery.Run ().ToList();} 
+			catch (ArgumentNullException ex) {//uncaught error in CouchBaseLite-net
+				if (!ex.StackTrace.ToLower().Contains("couchbase.lite.queryenumerator.get_count")) {
+					throw ex;
+				}
 			}
-			catch (Exception ex) {
-				return null; //TODO: What should I do?
-			}
+			return DefaultQueryFilter (queryResults);
 		}
 
 		/// <summary>
@@ -366,25 +357,6 @@ namespace Kidozen.DataSync
 			throw new NotImplementedException ();
 			MaxRevisionConflictResolver ();
 		}
-
-		internal IEnumerable<T> QueryDocuments(IEnumerable<Revision> revisions) {
-			var allDocsQuery = Database.CreateAllDocumentsQuery ();
-			allDocsQuery.AllDocsMode = AllDocsMode.AllDocs;
-			allDocsQuery.Keys = revisions.Select (r => r.docid);
-
-			List<QueryRow> queryResults = new List<QueryRow>();
-			try {
-				queryResults = allDocsQuery.Run ().ToList();
-			} 
-			//uncaught error in CouchBaseLite-net
-			catch (ArgumentNullException ex) {
-				if (!ex.StackTrace.ToLower().Contains("couchbase.lite.queryenumerator.get_count")) {
-					throw ex;
-				}
-			}
-			return DefaultQueryFilter (queryResults);
-		}
-
 		internal IEnumerable<T> DefaultQueryFilter(List<QueryRow> rows) {
 			return 
 				rows.Where(d=>d.Document.UserProperties!=null)
@@ -397,11 +369,11 @@ namespace Kidozen.DataSync
 		#region IEqualityComparer implementation
 		public bool Equals (Revision x, Revision y)
 		{
-			return x.doc_id == y.doc_id && x.docid == y.docid;
+			return x.doc_id == y.doc_id;
 		}
 		public int GetHashCode (Revision obj)
 		{
-			return String.Format("{0}|{1}",obj.doc_id, obj.revid).GetHashCode();
+			return obj.docid.GetHashCode();
 		}
 		#endregion
 		
