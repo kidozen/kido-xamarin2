@@ -84,6 +84,7 @@ namespace Kidozen.DataSync
         {
             var document = instance as DataSyncDocument;
             var localdocument = Database.GetDocument(document._id);
+            if (localdocument==null) return false;
             if (localdocument.UserProperties == null) return false;
             
             localdocument.Delete();

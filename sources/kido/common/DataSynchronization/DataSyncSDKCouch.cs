@@ -38,7 +38,6 @@ namespace Kidozen.DataSync
 		public const string sufix = "master";
 
 		private string _baseUrl = string.Empty;
-		private string _tenant = string.Empty;
 		private bool _onSynchronizationStartFired;
 
 		private SynchronizationTracker _tracker;
@@ -55,15 +54,6 @@ namespace Kidozen.DataSync
 			}
 		}
 
-		public string Tenant {
-			get {
-				if (string.IsNullOrEmpty (_baseUrl)) {
-					_tenant = A.fetchConfigValue ("tenant", _kidoapp.marketplace, _kidoapp.application, _kidoapp.key).Result;
-				}
-				return _tenant;
-			}
-		}
-
 		private void SetupDatabase ()
 		{
 			if (Database == null) {
@@ -74,7 +64,6 @@ namespace Kidozen.DataSync
 
 		/// <summary>
 		/// Gets replication url using the /publicapi endpoint. To replicate you must be logged in
-		/// he replication endpoint is: datasync service url + 'rp' + tenant name + 'master' suffix
 		/// </summary>
 		/// <returns></returns>
 		private string GetReplicationUrl ()
@@ -105,10 +94,7 @@ namespace Kidozen.DataSync
 
 					Debug.WriteLine ("LeafRevisions:");
 					Debug.WriteLine (Database.GetExistingDocument (id).LeafRevisions.FirstOrDefault ().ToString ());
-
-				}
-				);
-
+				});
 			} catch (Exception ex) {
 				Debug.WriteLine (ex.Message);				
 			}
@@ -376,7 +362,6 @@ namespace Kidozen.DataSync
 			return obj.docid.GetHashCode();
 		}
 		#endregion
-		
 	}
 
 	public class ReplicationDetails<T>
