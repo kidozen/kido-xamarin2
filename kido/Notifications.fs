@@ -19,8 +19,7 @@ open System.Collections.Generic
 type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) = 
     let name = appName
     let channel = channel
-    let mutable deviceTokenOrSubscriptionId = tokenOrSubscriptionId
-    //let mutable subscriptionId = String.Empty // for Android only
+    let deviceTokenOrSubscriptionId = tokenOrSubscriptionId
     let baseurl =(getJsonStringValue (identity.config) "notification" ).Value
     member this.identity = identity
 
@@ -76,10 +75,11 @@ type Notifications (appName, channel, tokenOrSubscriptionId, identity:Identity) 
         service |> Async.StartAsTask
 
     member this.UnSubscribe() =
-        let url = sprintf "%s/subscriptions/%s/%s/%s" baseurl name channel deviceTokenOrSubscriptionId
+        let url = sprintf "%s/subscriptions/%s/%s" baseurl name channel 
+        let url2 = sprintf "%s/%s" url deviceTokenOrSubscriptionId
         let service =  async {
             let! validIdentity = validateToken this.identity
-            let! result = createRequest HttpMethod.Delete url  
+            let! result = createRequest HttpMethod.Delete url2  
                             |> withHeader (Authorization validIdentity.rawToken) 
                             |> getResponseAsync                             
             return 
