@@ -153,7 +153,7 @@ namespace Kidozen.Analytics
             {
                 sessionUUID = _currentSessionId,
                 eventAttr = _eventAttributes,
-                elapsedTime = lenght.TotalSeconds
+                sessionLength = lenght.TotalSeconds
             };
 
             var message = JsonConvert.DeserializeObject<List<Object>>(content);
@@ -170,7 +170,7 @@ namespace Kidozen.Analytics
             {
                 sessionUUID = _currentSessionId,
                 eventAttr = _eventAttributes,
-                elapsedTime = totalSeconds
+                sessionLength = totalSeconds
             };
 
             var message = _sessionEvents.Select(itm => itm as object).ToList();

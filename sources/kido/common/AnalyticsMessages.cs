@@ -61,7 +61,7 @@ namespace Kidozen.Analytics
         }
 
         public string sessionUUID { get; set; }
-        public double elapsedTime { get; set; }
+        public double sessionLength { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string eventValue { get; set; }
         //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
