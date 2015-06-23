@@ -90,12 +90,11 @@ let asyncGetFederatedToken marketplace application user password provider =
             let domain = getJsonStringValue c "domain"
             let ipScope = getJsonStringValue c "authServiceScope"
             let ipEndpoint = getJsonStringValue providercfg.Value "endpoint"
-            let protocol = getJsonStringValue c "protocol"
+            let protocol = getJsonStringValue providercfg.Value "protocol"
 
-            // todo: use partial application to create differents logins ?
             let ipToken = 
                 match protocol.Value.ToLower() with
-                | "wstrust" -> getWSTrustToken ipEndpoint.Value ipScope.Value user password
+                | "ws-trust" -> getWSTrustToken ipEndpoint.Value ipScope.Value user password
                 | _ -> getWrapv9Token ipEndpoint.Value ipScope.Value user password //default is Wrapv09
 
             match ipToken with
