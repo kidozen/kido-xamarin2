@@ -41,7 +41,7 @@ namespace crashtouch
 
         #endregion
 
-        public KidoApplication kido = new KidoApplication("tenant.kidocloud.com", "tasks", "appkey");
+        public KidoApplication kido = new KidoApplication("kidodemo.kidocloud.com", "tasks", "wb8KTX2/21A6ISM7PncaNozhxxCxcL8+TtB2aKbZyu8=");
 
         public override void ViewDidLoad() {
             base.ViewDidLoad();
@@ -49,7 +49,7 @@ namespace crashtouch
         }
 
         partial void authButton_TouchUpInside(UIButton sender){
-            kido.Authenticate("you@kidozen.com", "password", "Kidozen").Wait();
+            kido.Authenticate("demo@kidozen.com", "pass", "Kidozen").Wait();
             Console.WriteLine(kido.IsAuthenticated);
         }
 
