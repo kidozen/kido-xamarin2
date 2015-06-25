@@ -7,6 +7,8 @@ open identityproviders
 open Serialization
 open KzApplication
 open System.Runtime.InteropServices
+open Newtonsoft
+open Newtonsoft.Json
 
 open Kidozen
 
@@ -27,6 +29,21 @@ type CrashRequest = {
         CrashDetails : string
     }
 
+type CrashInformation = {
+    Platform : string
+    MachineName : string
+    SystemName : string
+    OSVersion : string
+    FileName : string
+    LineNumber : int
+    MethodName : string
+    ClassName : string
+    StackTrace : string
+    Reason : string
+    AppVersionCode : string
+    AppVersionName : string
+}
+
 let createCrashRequest crash marketplace application key =  {
         Marketplace = marketplace
         Application = application
@@ -37,18 +54,16 @@ let createCrashRequest crash marketplace application key =  {
 let getResult request = 
     async {
         let! identity = getKeyToken request.Marketplace request.Application request.AppKey
-        System.Diagnostics.Debug.WriteLine("Posting with token:" + identity.rawToken)
+        //System.Diagnostics.Debug.WriteLine("Posting with token:" + identity.rawToken)
         let url = (getJsonStringValue (identity.config) "url" ).Value + "api/v3/logging/crash/xamarin/dump"
-        System.Diagnostics.Debug.WriteLine("Posting to:" + url)
+        let details =  request.CrashDetails.Replace("\n",String.Empty)
+        //System.Diagnostics.Debug.WriteLine("Posting to:" + url)
         return createRequest HttpMethod.Post url 
                 |> withHeader (Authorization identity.rawToken)
                 |> withHeader (ContentType "application/json")  
-                |> withBody request.CrashDetails
+                |> withBody details
                 |> getResponse
     }
-
-let crashInformation = 
-    sprintf "{\"Platform\":\"%s\",\"MachineName\":\"%s\",\"SystemName\":\"%s\",\"OSVersion\":\"%s\",\"FileName\":\"%s\",\"LineNumber\":\"%d\",\"MethodName\":\"%s\",\"ClassName\":\"%s\",\"StackTrace\":\"%s\",\"Reason\":\"%s\",\"AppVersionCode\":\"%s\",\"AppVersionName\":\"%s\"}"
 
 // Vanilla support
 type Crash () = 
@@ -64,15 +79,6 @@ type Crash () =
         create |> Async.StartAsTask
 
     static member CreateCrashMessage (platform , currentDeviceName , currentDeviceSystemName , currentDeviceSystemVersion , filename , linenumber , methodname , classname , fullstack, reason, appVersionCode, appVersionName) = 
-        crashInformation platform 
-                        currentDeviceName 
-                        currentDeviceSystemName 
-                        currentDeviceSystemVersion 
-                        filename 
-                        linenumber 
-                        methodname 
-                        classname 
-                        fullstack
-                        reason
-                        appVersionCode
-                        appVersionName
+        let c = { Platform = platform; MachineName = currentDeviceName; SystemName = currentDeviceSystemName; OSVersion = currentDeviceSystemVersion; FileName=filename; LineNumber = linenumber; MethodName = methodname; ClassName = classname; StackTrace = fullstack; Reason = reason; AppVersionCode = appVersionCode; AppVersionName = appVersionName}
+        JsonConvert.SerializeObject c
+        

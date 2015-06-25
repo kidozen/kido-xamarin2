@@ -36,7 +36,7 @@ namespace Kidozen.iOS
 				var linenumber = frame.GetFileLineNumber();
 				var methodname = frame.GetMethod().Name;
 				var classname = frame.GetMethod().DeclaringType.FullName;
-				var fullstack = ex.StackTrace.Replace("\n",String.Empty);
+                var fullstack = ex.StackTrace;
 				var reason = ex.GetType().Name;
 				var appVersionCode = NSBundle.MainBundle.InfoDictionary["CFBundleShortVersionString"].ToString();
 
