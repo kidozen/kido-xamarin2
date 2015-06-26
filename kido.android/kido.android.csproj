@@ -86,13 +86,14 @@
     <Compile Include="Analytics\DeviceInformation.cs" />
     <Compile Include="Analytics\DeviceStorage.cs" />
     <Compile Include="Analytics\LocationHelper.cs" />
+    <Compile Include="Crash\BreadCrumbs.cs" />
     <Compile Include="PushNotifications\PushExtensions.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="PassiveAuthentication\PassiveAuthActivity.cs" />
     <Compile Include="..\sources\kido\common\FileExtensions.cs">
-      <Link>FileExtensions.cs</Link>
+      <Link>Files\FileExtensions.cs</Link>
     </Compile>
-    <Compile Include="CrashExtensions.cs" />
+    <Compile Include="Crash\CrashExtensions.cs" />
     <Compile Include="PassiveAuthentication\PassiveAuthExtensions.cs" />
     <Compile Include="DataVisualization\DataVisualizationActivity.cs" />
     <Compile Include="DataVisualization\DataVisualizationActivityConstants.cs" />
@@ -119,10 +120,10 @@
     </Compile>
     <Compile Include="Offline\AndroidOfflineCache.cs" />
     <Compile Include="..\sources\kido\common\DataSourcesExtensions.cs">
-      <Link>DataSourcesExtensions.cs</Link>
+      <Link>DataSources\DataSourcesExtensions.cs</Link>
     </Compile>
     <Compile Include="..\sources\kido\common\ServiceExtensions.cs">
-      <Link>ServiceExtensions.cs</Link>
+      <Link>Services\ServiceExtensions.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

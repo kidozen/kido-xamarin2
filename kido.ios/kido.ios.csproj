@@ -79,6 +79,9 @@
     <Compile Include="..\sources\kido\common\AnalyticsSession.cs">
       <Link>Analytics\AnalyticsSession.cs</Link>
     </Compile>
+    <Compile Include="..\sources\kido\common\Crash\BreadCrumbs.cs">
+      <Link>Crash\BreadCrumbs.cs</Link>
+    </Compile>
     <Compile Include="..\sources\kido\common\IDeviceInformation.cs">
       <Link>Analytics\IDeviceInformation.cs</Link>
     </Compile>
@@ -98,11 +101,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PassiveAuthentication\PassiveAuthViewController.cs" />
     <Compile Include="PassiveAuthentication\KidozenPassiveAuthExtensions.cs" />
-    <Compile Include="KidozenCrashExtensions.cs" />
+    <Compile Include="Crash\KidozenCrashExtensions.cs" />
     <Compile Include="..\sources\kido\common\FileExtensions.cs">
-      <Link>FileExtensions.cs</Link>
+      <Link>Files\FileExtensions.cs</Link>
     </Compile>
-    <Compile Include="FileUtilities.cs" />
+    <Compile Include="Files\FileUtilities.cs" />
     <Compile Include="..\sources\kido\common\DataVisualization\DataVisualizationExtensions.cs">
       <Link>DataVisualization\DataVisualizationExtensions.cs</Link>
     </Compile>
@@ -135,10 +138,10 @@
       <Link>NativeUtilities.cs</Link>
     </Compile>
     <Compile Include="..\sources\kido\common\DataSourcesExtensions.cs">
-      <Link>DataSourcesExtensions.cs</Link>
+      <Link>DataSources\DataSourcesExtensions.cs</Link>
     </Compile>
     <Compile Include="..\sources\kido\common\ServiceExtensions.cs">
-      <Link>ServiceExtensions.cs</Link>
+      <Link>Services\ServiceExtensions.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

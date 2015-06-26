@@ -16,6 +16,12 @@ namespace Kidozen.Android
 {
 	public static partial class KidozenExtensions
 	{
+        static BreadCrumbs breadcrumbs = new BreadCrumbs();
+
+        public static void AddCrashBreadCrumb(this Kidozen.KidoApplication app, string value)
+        {
+            breadcrumbs.Add(value);
+        }
 		public static void EnableCrash(this KidoApplication app,Context context) {
 			AndroidEnvironment.UnhandledExceptionRaiser += delegate(object sender, RaiseThrowableEventArgs e) {
 				var ex = e.Exception;
@@ -41,7 +47,8 @@ namespace Kidozen.Android
 					fullstack ,
 					reason,
 					appVersionName,
-					appVersionCode.ToString());
+                    appVersionCode.ToString(),
+                    breadcrumbs.GetAll().ToArray());
 
 				storeCrash(message);
 				Debug.WriteLine("about to exit application");

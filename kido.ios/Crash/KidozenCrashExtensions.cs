@@ -24,9 +24,14 @@ using A = KzApplication;
 using C = Crash;
 
 namespace Kidozen.iOS
-{
-	public static partial class KidozenExtensions
-	{
+{   
+	public static partial class KidozenExtensions {
+        static BreadCrumbs breadcrumbs = new BreadCrumbs();
+
+        public static void AddCrashBreadCrumb(this Kidozen.KidoApplication app, string value) {
+            breadcrumbs.Add(value);
+        }
+
 		public static void EnableCrash(this Kidozen.KidoApplication app) {
 			AppDomain.CurrentDomain.UnhandledException+= delegate(object sender, UnhandledExceptionEventArgs e) {
 				var ex = e.ExceptionObject as Exception;
@@ -51,13 +56,14 @@ namespace Kidozen.iOS
 					fullstack ,
 					reason,
 					appVersionCode,
-					appVersionCode);
+					appVersionCode,
+                    breadcrumbs.GetAll().ToArray()
+                    );
 
 				storeCrash(message);
 			};
 			processPending (app.marketplace, app.application, app.key);
 		}
-
 
 		private static void processPending(string marketplace, string application, string key) {
 			getCrashPending ().ToList().ForEach(m => send(m,marketplace,application,key));

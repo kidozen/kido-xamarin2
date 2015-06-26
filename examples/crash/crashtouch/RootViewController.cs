@@ -15,7 +15,6 @@ namespace crashtouch
         public override void DidReceiveMemoryWarning() {
             base.DidReceiveMemoryWarning();
         }
-
         
         #region View lifecycle
 
@@ -41,7 +40,7 @@ namespace crashtouch
 
         #endregion
 
-        public KidoApplication kido = new KidoApplication("kidodemo.kidocloud.com", "tasks", "wb8KTX2/21A6ISM7PncaNozhxxCxcL8+TtB2aKbZyu8=");
+        public KidoApplication kido = new KidoApplication("tenant.kidocloud.com", "tasks", "appkey");
 
         public override void ViewDidLoad() {
             base.ViewDidLoad();
@@ -49,7 +48,9 @@ namespace crashtouch
         }
 
         partial void authButton_TouchUpInside(UIButton sender){
+            kido.AddCrashBreadCrumb("Pre-Authenticate");
             kido.Authenticate("demo@kidozen.com", "pass", "Kidozen").Wait();
+            kido.AddCrashBreadCrumb("Authenticated");
             Console.WriteLine(kido.IsAuthenticated);
         }
 

@@ -42,6 +42,7 @@ type CrashInformation = {
     Reason : string
     AppVersionCode : string
     AppVersionName : string
+    BreadCrumbs : array<string>
 }
 
 let createCrashRequest crash marketplace application key =  {
@@ -78,7 +79,7 @@ type Crash () =
             }    
         create |> Async.StartAsTask
 
-    static member CreateCrashMessage (platform , currentDeviceName , currentDeviceSystemName , currentDeviceSystemVersion , filename , linenumber , methodname , classname , fullstack, reason, appVersionCode, appVersionName) = 
-        let c = { Platform = platform; MachineName = currentDeviceName; SystemName = currentDeviceSystemName; OSVersion = currentDeviceSystemVersion; FileName=filename; LineNumber = linenumber; MethodName = methodname; ClassName = classname; StackTrace = fullstack; Reason = reason; AppVersionCode = appVersionCode; AppVersionName = appVersionName}
-        JsonConvert.SerializeObject c
+    static member CreateCrashMessage (platform , currentDeviceName , currentDeviceSystemName , currentDeviceSystemVersion , filename , linenumber , methodname , classname , fullstack, reason, appVersionCode, appVersionName, breadcrumbs) = 
+        let crash = { Platform = platform; MachineName = currentDeviceName; SystemName = currentDeviceSystemName; OSVersion = currentDeviceSystemVersion; FileName=filename; LineNumber = linenumber; MethodName = methodname; ClassName = classname; StackTrace = fullstack; Reason = reason; AppVersionCode = appVersionCode; AppVersionName = appVersionName; BreadCrumbs = breadcrumbs}
+        JsonConvert.SerializeObject crash
         
