@@ -196,7 +196,9 @@ let fetchConfigValue name marketplace application key =
                            let signinurl = getJsonStringValue c name
                            match signinurl with
                                | Some v -> return v
-                               | None -> return raise (System.ArgumentException("value not found 'signInUrl'"))
+                               | None -> 
+                                    let message = sprintf "value not found: %s" name
+                                    return raise (System.ArgumentException(message))
                        | InvalidApplicationError e -> return raise e
             | InvalidApplication e -> return raise e
             | InvalidCredentials e -> return raise e
