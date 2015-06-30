@@ -16,7 +16,7 @@
 	<string>7.0</string>
 	<key>UIDeviceFamily</key>
 	<array>
-		<integer>2</integer>
+		<integer>1</integer>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
@@ -28,5 +28,7 @@
 	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>todo_ios</string>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array/>
 </dict>
 </plist>

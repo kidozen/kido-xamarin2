@@ -11,12 +11,24 @@ open System.Collections.Generic
 do()
 
 // ** Configuration
+let appConfigurationCache = ref Map.empty
+
 type GetConfigurationResult = 
     | Configuration of string
     | InvalidApplicationError of System.ArgumentException
 
+let getCachedResponse f =
+    fun x ->
+        match (!appConfigurationCache).TryFind(x) with
+        | Some res -> res
+        | None ->
+             let res = f x
+             appConfigurationCache := (!appConfigurationCache).Add(x,res)
+             res
+
 let getAppConfig cfgurl = 
-    let response = createRequest Get cfgurl |> getResponse
+    let cachedResponse = getCachedResponse(fun url -> createRequest Get url) 
+    let response = cachedResponse(cfgurl) |> getResponse
     match response.StatusCode  with
         | 200 -> 
             match response.EntityBody.IsSome with
@@ -41,8 +53,6 @@ let asyncGetApplicationConfig fAsyncGetAppConfig =
     }
 
 // ** Authentication & Identity
-let memGetFederatedToken = memoize getWrapv9Token
-
 type ProviderAuthenticationRequest = {
     Key : string 
     User : string

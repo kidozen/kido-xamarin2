@@ -38,16 +38,6 @@ let getEncodingPage contentType =
         let l = List.tail [ for g in m.Groups -> g.Value ] 
         if m.Success then Some ( l.Head) else None
 
-//meomize pattern to cache functions
-let memoize f =
-    let dict = Dictionary<_, _>()
-    fun x ->
-        match dict.TryGetValue(x) with
-        | true, res -> res
-        | false, _ -> 
-            let res = f x
-            dict.Add(x, res)
-            res
 
 let (|Prefix|_|) (p:string) (s:string) =
     if s.StartsWith(p) then
