@@ -1,8 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Diagnostics;
-
 using K = Kidozen;
 using U = Utilities;
 using A = KzApplication;
@@ -22,7 +17,7 @@ namespace Kidozen.iOS
     {
         private static PubSub psInstance;
         
-        public static PubSub SetupChannel<T>(this Kidozen.KidoApplication app, string name, 
+        public static PubSub SetupChannel<T>(this KidoApplication app, string name, 
             PubSubMessageArrivedDelegate onMessageArrive)
         {
             psInstance = app.PubSub(name);

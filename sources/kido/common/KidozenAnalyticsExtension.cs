@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
-
 using Newtonsoft.Json;
 
 #if __ANDROID__
@@ -11,8 +10,8 @@ using Kidozen.Android.Analytics;
 using Kidozen.iOS.Analytics;
 
 #if __UNIFIED__
-    using Foundation;
-    using UIKit;
+using Foundation;
+using UIKit;
 using Kidozen.Analytics;
 #else
 #endif

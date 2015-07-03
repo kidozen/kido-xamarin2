@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
-
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
 #if __UNIFIED__
-using MonoTouch;
 using UIKit;
 using Foundation;
 #else

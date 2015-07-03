@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using Kido;
 using Kidozen;
 using Newtonsoft.Json;
 
@@ -35,7 +36,7 @@ namespace Kidozen.Analytics
 
         static volatile AnalyticsSession _instance;
         static readonly object SyncRoot = new Object();
-        private readonly Kido.AnalyticsEp _kidoAnalyticsEp;
+        private readonly AnalyticsEp _kidoAnalyticsEp;
 
 
         private const double DefaultSessionTimeoutInSeconds = 5;
@@ -54,7 +55,7 @@ namespace Kidozen.Analytics
 
         public AnalyticsSession(KzApplication.Identity identity)
         {
-            this._kidoAnalyticsEp = new Kido.AnalyticsEp(identity);
+            this._kidoAnalyticsEp = new AnalyticsEp(identity);
             _timerUploader.Elapsed += timerUploader_Elapsed;
         }
 

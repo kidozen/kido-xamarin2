@@ -16,9 +16,7 @@
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <NuGetPackageImportStamp>51f21b1b</NuGetPackageImportStamp>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
+    <NuGetPackageImportStamp>8fa2593f</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,9 +42,6 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
@@ -55,8 +50,20 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Data" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCL.ugly">
+      <HintPath>..\..\..\packages\SQLitePCL.ugly.0.8.0\lib\portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCL.ugly.dll</HintPath>
+    </Reference>
+    <Reference Include="Couchbase.Lite">
+      <HintPath>..\..\..\packages\Couchbase.Lite.1.0.4.1\lib\MonoAndroid\Couchbase.Lite.dll</HintPath>
+    </Reference>
     <Reference Include="WebSocket4Net">
-      <HintPath>..\packages\WebSocket4Net.0.11\lib\monoandroid22\WebSocket4Net.dll</HintPath>
+      <HintPath>..\..\..\packages\WebSocket4Net.0.12\lib\monoandroid22\WebSocket4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="kido">
+      <HintPath>..\release\core\kido.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +72,36 @@
     </Compile>
     <Compile Include="..\sources\kido\common\AnalyticsSession.cs">
       <Link>Analytics\AnalyticsSession.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSync.cs">
+      <Link>DataSynchronization\DataSync.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncDocument.cs">
+      <Link>DataSynchronization\DataSyncDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncException.cs">
+      <Link>DataSynchronization\DataSyncException.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncExtensions.cs">
+      <Link>DataSynchronization\DataSyncExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncKeyField.cs">
+      <Link>DataSynchronization\DataSyncKeyField.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncSDKCouch.cs">
+      <Link>DataSynchronization\DataSyncSDKCouch.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\StringExtensions.cs">
+      <Link>DataSynchronization\StringExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SyncDocument.cs">
+      <Link>DataSynchronization\SyncDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationEventArgs.cs">
+      <Link>DataSynchronization\SynchronizationEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationType.cs">
+      <Link>DataSynchronization\SynchronizationType.cs</Link>
     </Compile>
     <Compile Include="..\sources\kido\common\IDeviceInformation.cs">
       <Link>Analytics\IDeviceInformation.cs</Link>
@@ -86,15 +123,12 @@
     <Compile Include="Analytics\DeviceInformation.cs" />
     <Compile Include="Analytics\DeviceStorage.cs" />
     <Compile Include="Analytics\LocationHelper.cs" />
-    <Compile Include="Crash\BreadCrumbs.cs" />
     <Compile Include="PushNotifications\PushExtensions.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
-    <Compile Include="PassiveAuthentication\PassiveAuthActivity.cs" />
     <Compile Include="..\sources\kido\common\FileExtensions.cs">
-      <Link>Files\FileExtensions.cs</Link>
+      <Link>FileExtensions.cs</Link>
     </Compile>
-    <Compile Include="Crash\CrashExtensions.cs" />
-    <Compile Include="PassiveAuthentication\PassiveAuthExtensions.cs" />
+    <Compile Include="CrashExtensions.cs" />
     <Compile Include="DataVisualization\DataVisualizationActivity.cs" />
     <Compile Include="DataVisualization\DataVisualizationActivityConstants.cs" />
     <Compile Include="..\sources\kido\common\DataVisualization\AndroidDataVisualization.cs">
@@ -120,10 +154,18 @@
     </Compile>
     <Compile Include="Offline\AndroidOfflineCache.cs" />
     <Compile Include="..\sources\kido\common\DataSourcesExtensions.cs">
-      <Link>DataSources\DataSourcesExtensions.cs</Link>
+      <Link>DataSourcesExtensions.cs</Link>
     </Compile>
     <Compile Include="..\sources\kido\common\ServiceExtensions.cs">
-      <Link>Services\ServiceExtensions.cs</Link>
+      <Link>ServiceExtensions.cs</Link>
+    </Compile>
+    <Compile Include="PassiveAuthentication\PassiveAuthActivity.cs" />
+    <Compile Include="PassiveAuthentication\PassiveAuthExtensions.cs" />
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationTracker.cs">
+      <Link>DataSynchronization\SynchronizationTracker.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationProgressEventArgs.cs">
+      <Link>DataSynchronization\SynchronizationProgressEventArgs.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -134,15 +176,10 @@
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\kido\kido.fsproj">
-      <Project>{92a04503-19d0-43e1-aeeb-f100a7635d15}</Project>
-      <Name>kido</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\..\..\packages\SQLitePCL.raw_basic.0.8.0\build\MonoAndroid\SQLitePCL.raw_basic.targets" Condition="Exists('..\..\..\packages\SQLitePCL.raw_basic.0.8.0\build\MonoAndroid\SQLitePCL.raw_basic.targets')" />
+  <Import Project="..\..\..\packages\SQLitePCL.raw.0.8.0\build\MonoAndroid\SQLitePCL.raw.targets" Condition="Exists('..\..\..\packages\SQLitePCL.raw.0.8.0\build\MonoAndroid\SQLitePCL.raw.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
@@ -150,6 +187,10 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)release\android\$(TargetFileName)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="PassiveAuthentication\" />
+  </ItemGroup>
 </Project>

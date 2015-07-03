@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
@@ -11,6 +12,27 @@ using Kidozen.iOS.Analytics;
 
 namespace Examples
 {
+
+    public class ScenariosList
+    {
+        public string StatusCode { get; set; }
+        public List<Scenario> Scenarios { get; set; }
+    }
+
+    public class Scenario
+    {
+        public int SharePointId { get; set; }
+        public string Title { get; set; }
+        public string CategoryTitle { get; set; }
+        public string CategoryColor { get; set; }
+        public string ScenarioDescription { get; set; }
+        public string Response { get; set; }
+        public string VideoURL { get; set; }
+        public DateTime Modified { get; set; }
+        public string Status { get; set; }
+        public bool IsBookmarked { get; set; }
+    }
+
 	public class Model
 	{
 		KidoApplication kido;
@@ -25,8 +47,10 @@ namespace Examples
 		/// returns true is success
 		/// </summary>
 		public Task<bool> Authenticate() {
-			return kido.Authenticate (Settings.User, Settings.Pass, Settings.Provider)
-				.ContinueWith(t=> { 
+			return kido.Authenticate ()
+				.ContinueWith(t=> {
+                    var scenarios = kido.DataSource("GetScenarios").Query<ScenariosList>(new { lastUpdated = "2015-04-07T03:11:18" }).Result;
+
 					return !t.IsFaulted;
                 }
 			);

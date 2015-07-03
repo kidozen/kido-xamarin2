@@ -1,13 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using Foundation;
-using UIKit;
-
-using Kidozen;
 using System.Threading.Tasks;
+using Foundation;
 using Newtonsoft.Json;
 
 namespace Kidozen.iOS
@@ -37,7 +32,7 @@ namespace Kidozen.iOS
         }
 
 
-        public static Task<Boolean> SubscribeToChannel(this Kidozen.KidoApplication app, string name, string deviceToken)
+        public static Task<Boolean> SubscribeToChannel(this KidoApplication app, string name, string deviceToken)
         {
             var cleanToken = sanitizeToken(deviceToken);
             var n = new Notifications(app.application, name, deviceToken, app.GetIdentity);
@@ -51,14 +46,14 @@ namespace Kidozen.iOS
                 );
         }
 
-        public static Task<Boolean> PushToChannel(this Kidozen.KidoApplication app, string channel, string deviceToken, PushNotification message)
+        public static Task<Boolean> PushToChannel(this KidoApplication app, string channel, string deviceToken, PushNotification message)
         {
             var cleanToken = sanitizeToken(deviceToken);
             var n = new Notifications(app.application, channel,cleanToken, app.GetIdentity);
             return n.Push<PushNotification>(message);
         }
 
-        public static Task<Boolean> Unsubscribe(this Kidozen.KidoApplication app, string channel, string deviceToken)
+        public static Task<Boolean> Unsubscribe(this KidoApplication app, string channel, string deviceToken)
         {
             var cleanToken = sanitizeToken(deviceToken);
             var n = new Notifications(app.application, channel,cleanToken, app.GetIdentity);
@@ -66,7 +61,7 @@ namespace Kidozen.iOS
         }
 
 
-        public static Task<List<SubscriptionDetails>> GetApplicationSubscriptions(this Kidozen.KidoApplication app)
+        public static Task<List<SubscriptionDetails>> GetApplicationSubscriptions(this KidoApplication app)
         {
             var n = new Notifications(app.application, string.Empty, UniqueIdentification, app.GetIdentity);
             return n.GetSubscriptions().ContinueWith(t =>
@@ -84,7 +79,7 @@ namespace Kidozen.iOS
             });
         }
 
-        public static Task<List<string>> GetApplicationChannels(this Kidozen.KidoApplication app)
+        public static Task<List<string>> GetApplicationChannels(this KidoApplication app)
         {
             var n = new Notifications(app.application, string.Empty, UniqueIdentification, app.GetIdentity);
             return n.GetApplicationChannels().ContinueWith(t =>

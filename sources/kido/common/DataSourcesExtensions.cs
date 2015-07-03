@@ -15,30 +15,22 @@ namespace Kidozen.iOS
 	{
 		public static Task<Stream> Query(this DataSource ds) {
 			var task = ds.QueryFile();
-			return Task.Factory.StartNew<Stream>(()=>{
-				return new MemoryStream(task.Result);
-			});		
+			return Task.Factory.StartNew<Stream>(()=> new MemoryStream(task.Result));		
 		}
 
 		public static Task<Stream> Invoke(this DataSource ds) {
 			var task = ds.InvokeFile();
-			return Task.Factory.StartNew<Stream>(()=>{
-				return new MemoryStream(task.Result);
-			});		
+			return Task.Factory.StartNew<Stream>(()=> new MemoryStream(task.Result));		
 		}
 
 		public static Task<Stream> Query<T>(this DataSource ds, T parameters) {
 			var task = ds.QueryFile(parameters);
-			return Task.Factory.StartNew<Stream>(()=>{
-				return new MemoryStream(task.Result);
-			});		
+			return Task.Factory.StartNew<Stream>(()=> new MemoryStream(task.Result));		
 		}
 
 		public static Task<Stream> Invoke<T>(this DataSource ds, T parameters) {
 			var task = ds.InvokeFile(parameters);
-			return Task.Factory.StartNew<Stream>(()=>{
-				return new MemoryStream(task.Result);
-			});		
+			return Task.Factory.StartNew<Stream>(()=> new MemoryStream(task.Result));		
 		}
 	}
 }

@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 using Kidozen;
 using Newtonsoft.Json;
+using Android.Runtime;
 
 namespace Kidozen.Android
 {
+    [Preserve(AllMembers = true)]
     public static partial class KidozenExtensions
     {
         
