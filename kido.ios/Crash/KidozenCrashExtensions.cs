@@ -17,10 +17,15 @@ using A = KzApplication;
 using C = Crash;
 
 namespace Kidozen.iOS
-{
-	public static partial class KidozenExtensions
-	{
-		public static void EnableCrash(this KidoApplication app) {
+{   
+	public static partial class KidozenExtensions {
+        static BreadCrumbs breadcrumbs = new BreadCrumbs();
+
+        public static void AddCrashBreadCrumb(this Kidozen.KidoApplication app, string value) {
+            breadcrumbs.Add(value);
+        }
+
+		public static void EnableCrash(this Kidozen.KidoApplication app) {
 			AppDomain.CurrentDomain.UnhandledException+= delegate(object sender, UnhandledExceptionEventArgs e) {
 				var ex = e.ExceptionObject as Exception;
 				var stack = new StackTrace(ex,true);
@@ -29,11 +34,12 @@ namespace Kidozen.iOS
 				var linenumber = frame.GetFileLineNumber();
 				var methodname = frame.GetMethod().Name;
 				var classname = frame.GetMethod().DeclaringType.FullName;
-				var fullstack = ex.StackTrace.Replace("\n",String.Empty);
+                var fullstack = ex.StackTrace;
 				var reason = ex.GetType().Name;
 				var appVersionCode = NSBundle.MainBundle.InfoDictionary["CFBundleShortVersionString"].ToString();
 
-				var message = Crash.Crash.CreateCrashMessage("monotouch",
+				var message = Crash.Crash.CreateCrashMessage(
+                    "monotouch",
 					UIDevice.CurrentDevice.Name ,
 					UIDevice.CurrentDevice.SystemName ,
 					UIDevice.CurrentDevice.SystemVersion, 
@@ -44,13 +50,14 @@ namespace Kidozen.iOS
 					fullstack ,
 					reason,
 					appVersionCode,
-					appVersionCode);
+					appVersionCode,
+                    breadcrumbs.GetAll().ToArray()
+                    );
 
 				storeCrash(message);
 			};
 			processPending (app.marketplace, app.application, app.key);
 		}
-
 
 		private static void processPending(string marketplace, string application, string key) {
 			getCrashPending ().ToList().ForEach(m => send(m,marketplace,application,key));

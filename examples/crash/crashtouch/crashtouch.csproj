@@ -117,7 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\kido.ios\kido.ios.csproj">
-      <Project>{aa9ba43a-cad5-4c71-8c94-f0e4aecdc06a}</Project>
+      <Project>{c1ad6657-e605-49ce-9e6f-861e3842edda}</Project>
       <Name>kido.ios</Name>
       <IsAppExtension>false</IsAppExtension>
       <IsWatchApp>false</IsWatchApp>

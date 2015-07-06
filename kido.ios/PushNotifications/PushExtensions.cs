@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 
 namespace Kidozen.iOS
 {
+    [Preserve(AllMembers = true)]
     public static partial class KidozenExtensions
     {
         private static Notifications notificationsIntance;
@@ -56,6 +57,7 @@ namespace Kidozen.iOS
         public static Task<Boolean> Unsubscribe(this KidoApplication app, string channel, string deviceToken)
         {
             var cleanToken = sanitizeToken(deviceToken);
+            System.Diagnostics.Debug.WriteLine("Clean token in kido-ios: " + cleanToken);
             var n = new Notifications(app.application, channel,cleanToken, app.GetIdentity);
             return n.UnSubscribe();
         }
