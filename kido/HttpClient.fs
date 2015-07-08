@@ -434,7 +434,7 @@ let private readBody encoding (response:HttpResponseMessage) = async {
             | None -> Encoding.GetEncoding(ISO_Latin_1)
     
     use responseStream = new StreamReader(response.Content.ReadAsStreamAsync().Result,charset)
-    let body = responseStream.ReadToEnd()
+    let body = response.Content.ReadAsStringAsync().Result
     return body
 }
 
@@ -520,14 +520,15 @@ let getResponseAsync request = async {
             match request.ResponseCharacterEncoding with
                 | Some rce -> Some rce
                 | None -> 
-                    let ctl = List.ofSeq headers.[ContentTypeResponse]
-                    Some ctl.Head
+                    match  headers.TryFind(ContentEncoding) with
+                     | Some cehl -> Some cehl.Head
+                     | None -> Some UTF_8
 
     let! body = response.Result|> readBody  encoding
     
     let entityBody = 
         match body.Length > 0 with
-        | true -> Some(body)
+        | true -> Some(body) 
         | false -> None
 
     return {   
