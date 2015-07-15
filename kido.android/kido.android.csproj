@@ -135,7 +135,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PushNotifications\PushExtensions.cs" />
-    <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="..\sources\kido\common\FileExtensions.cs">
       <Link>Files\FileExtensions.cs</Link>
     </Compile>

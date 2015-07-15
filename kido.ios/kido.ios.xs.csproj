@@ -115,22 +115,6 @@
     <Compile Include="PushNotifications\PushExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Couchbase.Lite, Version=1.1.0.17457, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Couchbase.Lite.1.1.0.1\lib\Xamarin.iOS10\Couchbase.Lite.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib.Portable, Version=0.86.0.51802, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0002\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SQLitePCL.ugly, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCL.ugly.0.8.0\lib\portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCL.ugly.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="SuperSocket.ClientEngine.Common">
       <HintPath>..\release\support\SuperSocket.ClientEngine.Common.dll</HintPath>
     </Reference>
@@ -150,6 +134,18 @@
       <HintPath>..\release\support\WebSocket4Net.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.iOS" />
+    <Reference Include="Couchbase.Lite, Version=1.1.0.17457, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Couchbase.Lite.1.1.0.1\lib\Xamarin.iOS10\Couchbase.Lite.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib.Portable, Version=0.86.0.51802, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0002\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCL.ugly, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\SQLitePCL.ugly.0.8.0\lib\portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCL.ugly.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -165,4 +161,10 @@
     <Error Condition="!Exists('..\packages\SQLitePCL.raw.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCL.raw.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw.targets'))" />
   </Target>
   <Import Project="..\packages\SQLitePCL.raw.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw.targets" Condition="Exists('..\packages\SQLitePCL.raw.0.8.0\build\Xamarin.iOS10\SQLitePCL.raw.targets')" />
+  <ItemGroup>
+    <ProjectReference Include="..\kido\kido.xs.fsproj">
+      <Project>{1B9989FF-645A-4CBD-BA59-DB5C201A6607}</Project>
+      <Name>kido.xs</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
