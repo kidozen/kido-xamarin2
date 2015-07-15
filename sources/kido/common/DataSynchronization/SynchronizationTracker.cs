@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.Globalization;
 using Couchbase.Lite;
+using System.IO;
 
 #if __ANDROID__
 namespace Kidozen.Android
@@ -17,45 +18,39 @@ namespace Kidozen.iOS
 namespace Kidozen.DataSync
 #endif
 {
-	internal class SynchronizationTracker
+    internal class SynchronizationTracker
 	{
-		private const int SQLITE_OPEN_FILEPROTECTION_COMPLETEUNLESSOPEN = 0x00200000;
-		private const int SQLITE_OPEN_READONLY = 0x00000001;
-		private const int SQLITE_OPEN_READWRITE = 0x00000002;
-		private const int SQLITE_OPEN_CREATE = 0x00000004;
-		private const int SQLITE_OPEN_FULLMUTEX = 0x00010000;
-		private const int SQLITE_OPEN_NOMUTEX = 0x00008000;
-		private const int SQLITE_OPEN_PRIVATECACHE = 0x00040000;
-		private const int SQLITE_OPEN_SHAREDCACHE = 0x00020000;
+		string _localDatabasePath;
+        string _kidoDatabaseInfoPath;
 
-		String _dbPath;
-		Database _db;
+		Database _localDatabase;
 		sqlite3 _readConnection;
 
 		internal SynchronizationTracker (Database database)
 		{
-			_db = database;
-			_dbPath = String.Format ("{0}/{1}.cblite", database.Manager.Directory, database.Name);
+			_localDatabase = database;
+			_localDatabasePath = Path.Combine(database.Manager.Directory,  String.Format("{0}.cblite", database.Name));
+            _kidoDatabaseInfoPath = Path.Combine(database.Manager.Directory, String.Format("{0}-info.cblite", database.Name));
 		}
 
 		internal IEnumerable<Revision> MapDocuments ()
 		{
 			var results = new List<Revision>();
-			const int reader_flags = SQLITE_OPEN_FILEPROTECTION_COMPLETEUNLESSOPEN | SQLITE_OPEN_READONLY | SQLITE_OPEN_FULLMUTEX;
+            const int reader_flags = SynchronizationLog.SQLITE_OPEN_FILEPROTECTION_COMPLETEUNLESSOPEN | SynchronizationLog.SQLITE_OPEN_READONLY | SynchronizationLog.SQLITE_OPEN_FULLMUTEX;
 
 			try {
-				var opened=raw.sqlite3_open (_dbPath, out _readConnection);
+				var opened=raw.sqlite3_open_v2 (_localDatabasePath, out _readConnection, raw.SQLITE_OPEN_READONLY, null);
 				if (opened==0) {
 					raw.sqlite3_create_collation (_readConnection, "JSON", null, CouchbaseSqliteJsonUnicodeCollationFunction.Compare);
 					raw.sqlite3_create_collation (_readConnection, "JSON_ASCII", null, CouchbaseSqliteJsonAsciiCollationFunction.Compare);
 					raw.sqlite3_create_collation (_readConnection, "JSON_RAW", null, CouchbaseSqliteJsonRawCollationFunction.Compare);
 					raw.sqlite3_create_collation (_readConnection, "CURRENT", null, CouchbaseSqliteRevIdCollationFunction.Compare);
 					raw.sqlite3_create_collation (_readConnection, "REVID", null, CouchbaseSqliteRevIdCollationFunction.Compare);
-					results = _readConnection.query<Revision> ("SELECT D.docid, R.sequence, R.doc_id, R.revid, R.parent, R.current, R.deleted, R.no_attachments FROM revs AS R JOIN docs AS D ON R.doc_id = D.doc_ID;").ToList();
+					results = _readConnection.query<Revision> ("SELECT D.docid, R.sequence, R.doc_id, R.revid, R.parent, R.current, R.deleted, R.no_attachments, R.json FROM revs AS R JOIN docs AS D ON R.doc_id = D.doc_ID;").ToList();
 				}
 
 			} catch (Exception ex) {
-				Debug.WriteLine (ex.Message);
+                throw ex;
 			}
 			return results;
 		}
@@ -79,8 +74,9 @@ namespace Kidozen.DataSync
 		public bool deleted	{ get; set; }
 
 		public bool no_attachments { get; set; }
-	}
 
+        public byte[] json { get; set; }
+	}
 
     internal enum JsonCollationMode
     {
@@ -480,7 +476,6 @@ namespace Kidozen.DataSync
         }
     }
 
-
     internal static class RevIdCollator
     {
         private static Int32 DefaultCollate(string rev1, string rev2)
@@ -565,7 +560,6 @@ namespace Kidozen.DataSync
             }
         }
     }
-
 
     internal class StringUtils
     {
@@ -837,7 +831,6 @@ namespace Kidozen.DataSync
             return transformedCollection.ToArray();
         }
     }
-
 
 	//[Function(Name = "JSON", FuncType = FunctionType.Collation, Arguments = 2)]
 	internal static class CouchbaseSqliteJsonUnicodeCollationFunction

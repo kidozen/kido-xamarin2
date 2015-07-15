@@ -16,7 +16,7 @@ let private UTF_8 = "utf-8"
 let private XKidoSDK = "X-Kido-SDK"
 let private XKidoSDKValue = "Xamarin"
 let private XKidoSDKVersion = "X-Kido-SDK-Version"
-let private XKidoSDKVersionValue = "3.0.0-Beta-0.1"
+let private XKidoSDKVersionValue = "3.0.0-Alpha-0.6"
 
 type HttpMethod = Options | Get | Head | Post | Put | Delete | Trace // Connect
 

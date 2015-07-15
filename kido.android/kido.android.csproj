@@ -104,6 +104,9 @@
     <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationEventArgs.cs">
       <Link>DataSynchronization\SynchronizationEventArgs.cs</Link>
     </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationLog.cs">
+      <Link>DataSynchronization\SynchronizationLog.cs</Link>
+    </Compile>
     <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationType.cs">
       <Link>DataSynchronization\SynchronizationType.cs</Link>
     </Compile>

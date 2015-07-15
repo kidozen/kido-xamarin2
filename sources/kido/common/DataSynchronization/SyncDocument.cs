@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Couchbase.Lite;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Text;
 
 #if __ANDROID__
 namespace Kidozen.Android
@@ -17,10 +18,9 @@ namespace Kidozen.DataSync
         public static string ID_KEY = "_id";
         public static string REVISION_KEY = "_rev";
         public static string DOCUMENT_KEY = "doc";
-        public static string PRIMARYKEY_KEY = "key";
     }
 
-    public class SyncDocument<T>
+    public class SyncDocument<T> 
     {
         /// <summary>
         /// The Document or Entity defined by the user
@@ -54,6 +54,15 @@ namespace Kidozen.DataSync
 			Document = document;
 		}
 
+        internal T DeSerialize<T>(byte[] doc)
+        {
+            var instance = JsonConvert.DeserializeObject<T>(
+               Encoding.UTF8.GetString(doc)
+            );
+            return instance;
+        }
+
+
         internal T DeSerialize<T>(QueryRow r)
         {
 			var doqui = r.Document.Properties[DocumentConstants.DOCUMENT_KEY];
@@ -79,8 +88,7 @@ namespace Kidozen.DataSync
         internal IDictionary<string, object> ToCouchDictionary()
         {
             var dict = new Dictionary<string, object>();
-            dict.Add(DocumentConstants.PRIMARYKEY_KEY, key.ValueOrEmpty());
-			dict.Add(DocumentConstants.DOCUMENT_KEY,Document);
+            dict.Add(DocumentConstants.DOCUMENT_KEY,Document);
             return dict ;
         }
     }

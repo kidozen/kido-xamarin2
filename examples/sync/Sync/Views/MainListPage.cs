@@ -63,13 +63,6 @@ namespace Sync
 
             if (Device.OS == TargetPlatform.iOS)
             {
-                addNewItemButton = new ToolbarItem("+", null, () =>
-                    {
-                        var todoItem = new TodoItem();
-                        var todoPage = new SyncItemPage { BindingContext = todoItem };
-                        Navigation.PushAsync(todoPage);
-                    });
-
                 synchronizeButton = new ToolbarItem("Sync", null, () =>
                 {
                     App.TodoItemsSource.Current.Synchronize();
@@ -79,7 +72,7 @@ namespace Sync
             if (addNewItemButton != null) ToolbarItems.Add(addNewItemButton);
             if (synchronizeButton != null) ToolbarItems.Add(synchronizeButton);
 
-			App.TodoItemsSource.Current.OnSynchroizationDone += updateList;
+			App.TodoItemsSource.Current.OnSyncDone += updateList;
 
             Content = layout;
 
@@ -104,7 +97,7 @@ namespace Sync
 					args.Details.Updated.ToList()
 						.ForEach (itm => Console.WriteLine(itm.Name));
 
-					this.DisplayAlert("details",message,"cancel");
+					//this.DisplayAlert("details",message,"cancel");
 					ListView.ItemsSource = App.TodoItemsSource.Current.GetAllItems();
 				}
 			);

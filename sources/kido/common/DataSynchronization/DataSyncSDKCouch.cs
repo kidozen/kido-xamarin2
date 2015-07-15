@@ -5,6 +5,12 @@ using System.Linq;
 using A = KzApplication;
 using System.Diagnostics;
 using Couchbase.Lite;
+using Couchbase.Lite.Auth;
+using System.Threading.Tasks;
+using System.Net;
+using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 #if __ANDROID__
 namespace Kidozen.Android
@@ -49,18 +55,51 @@ namespace Kidozen.DataSync
 				if (string.IsNullOrEmpty (_baseUrl)) {
 					_baseUrl = A.fetchConfigValue ("datasync", _kidoapp.marketplace, _kidoapp.application, _kidoapp.key).Result;
 				}
-
 				return _baseUrl;
 			}
+            set {
+                _baseUrl = value;
+            }
 		}
 
 		private void SetupDatabase ()
 		{
 			if (Database == null) {
-				Database = Manager.SharedInstance.GetDatabase (this.Name);
+                try
+                {
+                    Database = Manager.SharedInstance.GetDatabase(this.Name); 
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
 			}
-			;
+
 		}
+        //TODO: Quick and Dirty. Find a better way to code this
+        private void ValidateWatermark()
+        {
+            var log = new SynchronizationLog(Database);
+            var watermark = getWatermark();
+            var x = Task.Factory.StartNew(
+                () => log.WaterMarkHasChanged( _kidoapp.marketplace, _kidoapp.application, this.Name, watermark))
+                .Result;
+            if (x.Result)
+            {
+                this.Drop();
+                Database = Manager.SharedInstance.GetDatabase(this.Name);
+            }
+        }
+
+        private string getWatermark()
+        {
+            var webClient = new WebClient();
+            webClient.Headers.Add("authorization",this._kidoapp.CurrentUser.RawToken);
+            var ep = BaseUrl + "/" + this.Name + "/_design/pk";
+            var response = webClient.DownloadString(ep);
+            var jsonResponse = (JObject)JsonConvert.DeserializeObject(response, typeof(JObject));
+            return jsonResponse["watermark"].Value<string>();
+        }
 
 		/// <summary>
 		/// Gets replication url using the /publicapi endpoint. To replicate you must be logged in
@@ -68,7 +107,7 @@ namespace Kidozen.DataSync
 		/// <returns></returns>
 		private string GetReplicationUrl ()
 		{
-			var url = string.Format ("{0}/{1}", BaseUrl, Name);
+            var url = string.Format("{0}/{1}", BaseUrl, Name);
 			System.Diagnostics.Debug.WriteLine (url);
 			return url;
 		}
@@ -100,8 +139,9 @@ namespace Kidozen.DataSync
 			}
 
 		}
-
-		void replication_Changed (object sender, ReplicationChangeEventArgs e)
+        
+        #region Replication
+        void replication_Changed (object sender, ReplicationChangeEventArgs e)
 		{
             FireOnSynchronizationComplete(e);
             FireOnSynchronizationProgress (e);
@@ -123,22 +163,13 @@ namespace Kidozen.DataSync
 
 		private void FireOnSynchronizationComplete (ReplicationChangeEventArgs e)
 		{
-			if (OnSynchronizationComplete != null && e.Source.Status == ReplicationStatus.Stopped) {
+			if (OnSynchronizationComplete != null && !e.Source.IsRunning ) {
 				_onSynchronizationStartFired = false;
 
-				//TODO: waiting for couchbase version 1.1
-				//https://github.com/couchbase/couchbase-lite-net/issues/372
-				if (e.Source.LastError!=null && e.Source.IsPull) {
-					if (e.Source.LastError.InnerException.StackTrace.ToLower().Contains("at couchbase.lite.util.cookiestore.serializetodisk")) {
-						this.Synchronize (SynchronizationType.Pull);
-						return;
-					}
-				}
-
 				var details = CreateReplicationDetails ();
-				if (_pullConflictResolutionType != PullConflictResolutionType.Default) {
-					MaxRevisionConflictResolver ();
-				}
+				//if (_pullConflictResolutionType != PullConflictResolutionType.Default) {
+				//	MaxRevisionConflictResolver ();
+				//}
 
 				OnSynchronizationComplete.Invoke (this,
 					new SynchronizationCompleteEventArgs<T> {
@@ -157,21 +188,9 @@ namespace Kidozen.DataSync
 			}
 		}
 
-		//Return all
-		public IEnumerable<T> Query ()
-		{
-			this.SetupDefaultQueryView ();
-			var results = DefaultQuery.Run ();
-			return DefaultQueryFilter (results.ToList());
-		}
-
-		public IEnumerable<T> Query (Func<T,bool> where)
-		{
-			return this.Query ().ToList<T> ().Where (where);
-		}
-
 		public void Synchronize ( SynchronizationType synchronizationType = SynchronizationType.Pull)
 		{
+            ValidateWatermark();
 			if (synchronizationType!=SynchronizationType.Pull) {
 				throw new NotSupportedException ("Current version only supports pull synchronizations.");
 			}
@@ -210,14 +229,13 @@ namespace Kidozen.DataSync
 			this.pushReplication.Start ();
 			this.pushReplication.Changed += replication_Changed;
 			FireOnSynchronizationStart ();
-			//this.pullReplication.TransformationFunction = pushReplicationTransform;
 		}
 
 		private void FireOnSynchronizationStart ()
 		{
-			if (OnSynchronizationStart != null && _onSynchronizationStartFired == false) {
-				_documentsBeforeSync = _tracker.MapDocuments().ToList();
+            _documentsBeforeSync = _tracker.MapDocuments().ToList();
 
+			if (OnSynchronizationStart != null && _onSynchronizationStartFired == false) {
 				_onSynchronizationStartFired = true;
 				OnSynchronizationStart.Invoke (this, new SynchronizationEventArgs { SynchronizationType = SynchronizationType.TwoWay });
 			}
@@ -228,22 +246,11 @@ namespace Kidozen.DataSync
 			this.pullReplication = Database.CreatePullReplication (url);
 			this.pullReplication.Continuous = Continuous;
 			this.pullReplication.Headers = headers;
-			this.pullReplication.Start ();
+            this.pullReplication.Filter = PullFilter;
+            this.pullReplication.FilterParams = PullFilterParameters;
+            this.pullReplication.Start ();
 			this.pullReplication.Changed += replication_Changed;
-			FireOnSynchronizationStart ();
-			//this.pullReplication.TransformationFunction = pullReplicationTransform;
-		}
-
-		private IDictionary<string, object> pushReplicationTransform (IDictionary<string, object> propertyBag)
-		{
-			//TODO: Ensure document format To server is ok
-			return propertyBag;
-		}
-
-		private IDictionary<string, object> pullReplicationTransform (IDictionary<string, object> propertyBag)
-		{
-			//TODO: Ensure document format from server is ok
-			return propertyBag;
+            FireOnSynchronizationStart ();
 		}
 
 		QueryEnumerator GetConflicts ()
@@ -279,29 +286,25 @@ namespace Kidozen.DataSync
 
 		//TODO: Only For Server2client????
 		ReplicationDetails<T> CreateReplicationDetails () {
-			var documents = new Func<Revision, bool>(r=>r.current && !r.docid.Contains("_design") && r.deleted==false);
-			var updates = new Func<Revision, bool>(r=>!r.current  && !r.docid.Contains("_design") && r.deleted==false);
-			try {
-				var documentsAfterSync = _tracker.MapDocuments().ToList();
-				var newRevisions = documentsAfterSync.Where(documents).Where(d=> d.parent==null);
-				var existing = _documentsBeforeSync.Where(documents).Where(d=> d.parent==null);
-				newRevisions=newRevisions.Except(existing, new RevisionComparer());
+            var newFn = new Func<Revision, bool>(r => !r.docid.Contains("_design") && r.json!=null);
+            var revisionComparer = new RevisionComparer();
+            var docComparer = new DocumentIdComparer();
+            var docAndrevisionComparer = new DocIdWithRevisionComparer();
+            try {
+                var docsBeforeSync = _documentsBeforeSync.Where(newFn);
+                var documentsAfterSync = _tracker.MapDocuments().Where(newFn);
 
-				var updatedRevisions = documentsAfterSync.Where(updates);
-				updatedRevisions = updatedRevisions.Except (
-						_documentsBeforeSync.Where(updates).ToList()
-						,new RevisionComparer()
-					).GroupBy(rev => rev.doc_id).Select(grp => grp.First()
-				);
-				var deletedRevisions = _documentsBeforeSync.Where(documents);
-				deletedRevisions= deletedRevisions.Except(
-						documentsAfterSync.Where(documents).ToList()
-						, new RevisionComparer()
-				);
+                var newRevisions = documentsAfterSync.Except(docsBeforeSync, docComparer).ToList();
+                var updatedRevisions = documentsAfterSync.Except(docsBeforeSync, docAndrevisionComparer)
+                    .Where(r=> !string.IsNullOrEmpty(r.parent));
 
-				var docsConflicts = GetConflicts ().Select (r => new SyncDocument<T> ().DeSerialize<T> (r));
+                var deletedRevisions = _tracker.MapDocuments()
+                    .Except(_documentsBeforeSync, revisionComparer)
+                    .Where(d=> d.deleted);
+                
+                var docsConflicts = GetConflicts ().Select (r => new SyncDocument<T> ().DeSerialize<T> (r));
 				var docsNews = QueryDocuments(newRevisions);
-				var docsDeleted = QueryDocuments(deletedRevisions);
+                var docsDeleted = QueryDocuments(deletedRevisions,includeDeleted:true);
 				var docsUpdated = QueryDocuments(updatedRevisions);
 
 				return new ReplicationDetails<T> {
@@ -316,15 +319,15 @@ namespace Kidozen.DataSync
 					Updated = docsUpdated
 				};
 			}
-			//TODO: What should I do?
 			catch (SQLitePCL.Ugly.ugly.sqlite3_exception e) { return null; }
 			catch (Exception ex) {return null;}
 		}
 
-		internal IEnumerable<T> QueryDocuments(IEnumerable<Revision> revisions) {
+		internal IEnumerable<T> QueryDocuments(IEnumerable<Revision> revisions, bool includeDeleted=false) {
 			var allDocsQuery = Database.CreateAllDocumentsQuery ();
 			allDocsQuery.AllDocsMode = AllDocsMode.AllDocs;
-			allDocsQuery.Keys = revisions.Select (r => r.docid);
+            allDocsQuery.IncludeDeleted = includeDeleted;
+            allDocsQuery.Keys = revisions.Where(d => !d.docid.Contains("_design")).Select(r => r.docid);
 			List<QueryRow> queryResults = new List<QueryRow>();
 			try { queryResults = allDocsQuery.Run ().ToList();} 
 			catch (ArgumentNullException ex) {//uncaught error in CouchBaseLite-net
@@ -332,8 +335,37 @@ namespace Kidozen.DataSync
 					throw ex;
 				}
 			}
-			return DefaultQueryFilter (queryResults);
+            if (includeDeleted)
+                return QueryDeleted(queryResults).ToList();
+            else
+			    return DefaultQueryFilter (queryResults).ToList();
 		}
+
+        private IEnumerable<T> QueryDeleted(List<QueryRow> queryResults)
+        {
+            var documents =_tracker.MapDocuments();
+            var docids = documents
+                .Where(r => queryResults.Select(qr=>qr.DocumentRevisionId).Contains(r.revid))
+                .Select(d => d.docid);
+            var seqAndJson = documents
+                .Where(r => docids.Contains(r.docid))
+                .Select(d => new { d.docid, d.sequence, d.json, d.revid });
+            var results = seqAndJson
+                //.Where(d=> d.json != null)
+                .GroupBy(i => i.docid)
+                .Select(g => 
+                    g.Aggregate((max, cur) =>
+                            (max == null || cur.sequence > max.sequence) ? cur : max));
+
+            return results.Select(r => 
+                {
+                    var d = (r.json == null) ? (T)Activator.CreateInstance(typeof(T)) : new SyncDocument<T>().DeSerialize<T>(r.json);
+                    (d as DataSyncDocument)._id = r.docid;
+                    (d as DataSyncDocument)._rev = r.revid;
+                    return d;
+                }
+            );
+        }
 
 		/// <summary>
 		/// Resolves the last conflicts.
@@ -349,20 +381,67 @@ namespace Kidozen.DataSync
 				.Where(d=>d.Document.UserProperties.ContainsKey("doc"))
 				.Select (r => new SyncDocument<T> ().DeSerialize<T> (r));			
 		}
-	}
+
+        private const string DefaultPullFilter = "pullreplication/default";
+        private string _pullFilter = string.Empty;
+        public string PullFilter {
+            get {
+                return string.IsNullOrEmpty(_pullFilter) ? DefaultPullFilter : _pullFilter ;
+            }
+            set {
+                _pullFilter = value;
+            } 
+        }
+
+        private Dictionary<string, object> DefaultPullFilterParameters = new Dictionary<string, object>();
+        private Dictionary<string, object> _pullFilterParameters = null;
+        public  Dictionary<string, object> PullFilterParameters
+        {
+            get
+            {
+                DefaultPullFilterParameters = new Dictionary<string, object>();
+                DefaultPullFilterParameters.Add("none", "0");
+
+                return _pullFilterParameters == null ? DefaultPullFilterParameters : _pullFilterParameters;
+            }
+            set
+            {
+                _pullFilterParameters = value;
+            }
+        }
+
+
+#endregion
+
+        #region Query
+        public IEnumerable<T> Query()
+        {
+            this.SetupDefaultQueryView();
+            var results = DefaultQuery.Run();
+            return DefaultQueryFilter(results.ToList());
+        }
+
+        public IEnumerable<T> Query(Func<T, bool> where)
+        {
+            return this.Query().ToList<T>().Where(where);
+        }
+        #endregion
+    }
+
+    internal class DocumentIdComparer : IEqualityComparer<Revision> {
+        public bool Equals(Revision x, Revision y) {return x.doc_id == y.doc_id;}
+        public int GetHashCode(Revision obj) {return obj.docid.GetHashCode();}
+    }
 
 	internal class RevisionComparer :IEqualityComparer<Revision>	{
-		#region IEqualityComparer implementation
-		public bool Equals (Revision x, Revision y)
-		{
-			return x.doc_id == y.doc_id;
-		}
-		public int GetHashCode (Revision obj)
-		{
-			return obj.docid.GetHashCode();
-		}
-		#endregion
+		public bool Equals (Revision x, Revision y) { return x.revid == y.revid;}
+		public int GetHashCode (Revision obj) {return obj.revid.GetHashCode();}
 	}
+
+    internal class DocIdWithRevisionComparer : IEqualityComparer<Revision> {
+        public bool Equals(Revision x, Revision y) { return x.doc_id == y.doc_id && x.revid == y.revid;}
+        public int GetHashCode(Revision obj) { return obj.docid.GetHashCode();}
+    }
 
 	public class ReplicationDetails<T>
 	{

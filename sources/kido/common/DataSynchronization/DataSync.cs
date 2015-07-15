@@ -93,6 +93,8 @@ namespace Kidozen.DataSync
 
         public void Drop()
         {
+            Database.Manager.Close();
+            
             Database.Delete();
         }
     }

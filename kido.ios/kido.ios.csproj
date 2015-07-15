@@ -43,6 +43,45 @@
     <Compile Include="..\sources\kido\common\AnalyticsSession.cs">
       <Link>Analytics\AnalyticsSession.cs</Link>
     </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSync.cs">
+      <Link>DataSync\DataSync.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncDocument.cs">
+      <Link>DataSync\DataSyncDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncException.cs">
+      <Link>DataSync\DataSyncException.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncExtensions.cs">
+      <Link>DataSync\DataSyncExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncKeyField.cs">
+      <Link>DataSync\DataSyncKeyField.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\DataSyncSDKCouch.cs">
+      <Link>DataSync\DataSyncSDKCouch.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\StringExtensions.cs">
+      <Link>DataSync\StringExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SyncDocument.cs">
+      <Link>DataSync\SyncDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationEventArgs.cs">
+      <Link>DataSync\SynchronizationEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationLog.cs">
+      <Link>DataSync\SynchronizationLog.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationProgressEventArgs.cs">
+      <Link>DataSync\SynchronizationProgressEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationTracker.cs">
+      <Link>DataSync\SynchronizationTracker.cs</Link>
+    </Compile>
+    <Compile Include="..\sources\kido\common\DataSynchronization\SynchronizationType.cs">
+      <Link>DataSync\SynchronizationType.cs</Link>
+    </Compile>
     <Compile Include="..\sources\kido\common\DataVisualization\DataVisualizationExtensions.cs">
       <Link>DataVisualization\DataVisualizationExtensions.cs</Link>
     </Compile>

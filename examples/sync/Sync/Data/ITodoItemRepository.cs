@@ -8,7 +8,7 @@ namespace Sync.Data
 {
     public interface ITodoItemRepository
     {
-        event SynchronizationDoneEventHandler OnSynchroizationDone;
+        event SynchronizationDoneEventHandler OnSyncDone;
 
 		Task<bool> AsyncAuthenticate();
         void Authenticate();

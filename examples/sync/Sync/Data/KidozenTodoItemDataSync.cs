@@ -65,9 +65,9 @@ namespace Sync.Data
 			//	e.Details.Conflicts.ToList().Where((itm)=> itm.Done)
 			//);
 			//todoItems.ResolveLastConflicts();
-			if (OnSynchroizationDone != null)
+			if (OnSyncDone != null)
 			{
-				OnSynchroizationDone.Invoke(e);
+				OnSyncDone.Invoke(e);
 			}
 		}
 
@@ -127,7 +127,7 @@ namespace Sync.Data
         }
 
 
-        public event SynchronizationDoneEventHandler OnSynchroizationDone;
+        public event SynchronizationDoneEventHandler OnSyncDone;
 
 		internal Task authTaskFactory() {
 			#if __IOS__

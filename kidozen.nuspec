@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>KidoZen</id>
-		<version>2.0.6.3</version>
+		<version>3.0.0-alpha-0-6</version>
 		<title>KidoZen - SDK Libraries</title>
 		<authors>KidoZen</authors>
 		<owners>KidoZen</owners>
@@ -11,30 +11,25 @@
 		<description>This package contains the KidoZen SDK assemblies.</description>
 		<dependencies>
 		  <group>
-			<dependency id="modernhttpclient" version="2.1.5"/>
-			<dependency id="Newtonsoft.Json" version="6.0.8"/>
-			<dependency id="FSharp.Core" version="3.1.2.1"/>
+			  <dependency id="modernhttpclient" version="2.1.5"/>
+			  <dependency id="Newtonsoft.Json" version="6.0.8"/>
+			  <dependency id="FSharp.Core" version="3.1.2.1"/>
 		  </group>
 		  <group targetFramework="MonoTouch10">
-			<dependency id="modernhttpclient" version="2.1.5"/>
-			<dependency id="Newtonsoft.Json" version="6.0.8"/>
-			<dependency id="FSharp.Core" version="3.1.2.1"/>
-		  	<dependency id="SharpZipLib.Portable" />
-			<dependency id="Couchbase.Lite" version="1.0.4.1" />
+			  <dependency id="modernhttpclient" version="2.1.5"/>
+			  <dependency id="FSharp.Core" version="3.1.2.1"/>
+			  <dependency id="Couchbase.Lite" version="1.1.0.1" />
 		  </group>
 		  <group targetFramework="Xamarin.iOS10">
-			<dependency id="modernhttpclient" version="2.1.5"/>
-			<dependency id="Newtonsoft.Json" version="6.0.8"/>
-			<dependency id="FSharp.Core" version="3.1.2.1"/>
-		  	<dependency id="SharpZipLib.Portable" />
-			<dependency id="Couchbase.Lite" version="1.0.4.1" />
-		</group>		
+			  <dependency id="modernhttpclient" version="2.1.5"/>
+			  <dependency id="FSharp.Core" version="3.1.2.1"/>
+        <dependency id="Couchbase.Lite" version="1.1.0.1" />
+      </group>		
 		  <group targetFramework="MonoAndroid">
-			<dependency id="modernhttpclient" version="2.1.5"/>
-			<dependency id="Newtonsoft.Json" version="6.0.8"/>
-			<dependency id="FSharp.Core" version="3.1.2.1"/>
-		  	<dependency id="WebSocket4Net" version="0.11"/>
-			<dependency id="Couchbase.Lite" version="1.0.4.1" />		
+			  <dependency id="modernhttpclient" version="2.1.5"/>
+			  <dependency id="FSharp.Core" version="3.1.2.1"/>
+		    <dependency id="WebSocket4Net" version="0.11"/>
+        <dependency id="Couchbase.Lite" version="1.1.0.1" />
 		</group>				  
 		</dependencies>
 	</metadata>
@@ -53,19 +48,19 @@
 		<!-- touch classic-->
 		<file src="\release\core\kido.dll" target="lib\MonoTouch10\kido.dll" />
 		<file src="\release\ios-classic\kido.ios.dll" target="lib\MonoTouch10\kido.ios.dll" />
-		<file src="\release\support\WebSocket4Net.dll" target="lib\Xamarin.iOS10\WebSocket4Net.dll" />
-		<file src="\release\support\SuperSocket.ClientEngine.Common.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Common.dll" />
-		<file src="\release\support\SuperSocket.ClientEngine.Core.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Core.dll" />
-		<file src="\release\support\SuperSocket.ClientEngine.Protocol.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Protocol.dll" />
-		<file src="\release\support\SuperSocket.ClientEngine.Proxy.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Proxy.dll" />
+		<file src="\release\support\ios\WebSocket4Net.dll" target="lib\Xamarin.iOS10\WebSocket4Net.dll" />
+		<file src="\release\support\ios\SuperSocket.ClientEngine.Common.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Common.dll" />
+		<file src="\release\support\ios\SuperSocket.ClientEngine.Core.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Core.dll" />
+		<file src="\release\support\ios\SuperSocket.ClientEngine.Protocol.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Protocol.dll" />
+		<file src="\release\support\ios\SuperSocket.ClientEngine.Proxy.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Proxy.dll" />
 		
 		<!-- touch -->
 		<file src="\release\core\kido.dll" target="lib\Xamarin.iOS10\kido.dll" />
 		<file src="\release\ios\kido.ios.dll" target="lib\Xamarin.iOS10\kido.ios.dll" />
-		<file src="\release\support\WebSocket4Net.dll" target="lib\Xamarin.iOS10\WebSocket4Net.dll" />
-		<file src="\release\support\SuperSocket.ClientEngine.Common.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Common.dll" />
-		<file src="\release\support\SuperSocket.ClientEngine.Core.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Core.dll" />
-		<file src="\release\support\SuperSocket.ClientEngine.Protocol.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Protocol.dll" />
-		<file src="\release\support\SuperSocket.ClientEngine.Proxy.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Proxy.dll" />
+		<file src="\release\support\ios\WebSocket4Net.dll" target="lib\Xamarin.iOS10\WebSocket4Net.dll" />
+		<file src="\release\support\ios\SuperSocket.ClientEngine.Common.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Common.dll" />
+		<file src="\release\support\ios\SuperSocket.ClientEngine.Core.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Core.dll" />
+		<file src="\release\support\ios\SuperSocket.ClientEngine.Protocol.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Protocol.dll" />
+		<file src="\release\support\ios\SuperSocket.ClientEngine.Proxy.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Proxy.dll" />
 	</files>
 </package>
