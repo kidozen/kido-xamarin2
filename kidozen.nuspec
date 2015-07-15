@@ -48,19 +48,19 @@
 		<!-- touch classic-->
 		<file src="\release\core\kido.dll" target="lib\MonoTouch10\kido.dll" />
 		<file src="\release\ios-classic\kido.ios.dll" target="lib\MonoTouch10\kido.ios.dll" />
-		<file src="\release\support\ios\WebSocket4Net.dll" target="lib\Xamarin.iOS10\WebSocket4Net.dll" />
-		<file src="\release\support\ios\SuperSocket.ClientEngine.Common.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Common.dll" />
-		<file src="\release\support\ios\SuperSocket.ClientEngine.Core.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Core.dll" />
-		<file src="\release\support\ios\SuperSocket.ClientEngine.Protocol.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Protocol.dll" />
-		<file src="\release\support\ios\SuperSocket.ClientEngine.Proxy.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Proxy.dll" />
+		<file src="\release\support\WebSocket4Net.dll" target="lib\Xamarin.iOS10\WebSocket4Net.dll" />
+		<file src="\release\support\SuperSocket.ClientEngine.Common.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Common.dll" />
+		<file src="\release\support\SuperSocket.ClientEngine.Core.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Core.dll" />
+		<file src="\release\support\SuperSocket.ClientEngine.Protocol.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Protocol.dll" />
+		<file src="\release\support\SuperSocket.ClientEngine.Proxy.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Proxy.dll" />
 		
 		<!-- touch -->
 		<file src="\release\core\kido.dll" target="lib\Xamarin.iOS10\kido.dll" />
 		<file src="\release\ios\kido.ios.dll" target="lib\Xamarin.iOS10\kido.ios.dll" />
-		<file src="\release\support\ios\WebSocket4Net.dll" target="lib\Xamarin.iOS10\WebSocket4Net.dll" />
-		<file src="\release\support\ios\SuperSocket.ClientEngine.Common.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Common.dll" />
-		<file src="\release\support\ios\SuperSocket.ClientEngine.Core.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Core.dll" />
-		<file src="\release\support\ios\SuperSocket.ClientEngine.Protocol.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Protocol.dll" />
-		<file src="\release\support\ios\SuperSocket.ClientEngine.Proxy.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Proxy.dll" />
+		<file src="\release\support\WebSocket4Net.dll" target="lib\Xamarin.iOS10\WebSocket4Net.dll" />
+		<file src="\release\support\SuperSocket.ClientEngine.Common.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Common.dll" />
+		<file src="\release\support\SuperSocket.ClientEngine.Core.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Core.dll" />
+		<file src="\release\support\SuperSocket.ClientEngine.Protocol.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Protocol.dll" />
+		<file src="\release\support\SuperSocket.ClientEngine.Proxy.dll" target="lib\Xamarin.iOS10\SuperSocket.ClientEngine.Proxy.dll" />
 	</files>
 </package>
