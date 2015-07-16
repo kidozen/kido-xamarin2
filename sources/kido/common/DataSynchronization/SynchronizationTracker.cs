@@ -19,64 +19,102 @@ namespace Kidozen.DataSync
 #endif
 {
     internal class SynchronizationTracker
-	{
-		string _localDatabasePath;
+    {
+        string _localDatabasePath;
         string _kidoDatabaseInfoPath;
 
-		Database _localDatabase;
-		sqlite3 _readConnection;
+        Database _localDatabase;
+        sqlite3 _readConnection;
 
-		internal SynchronizationTracker (Database database)
-		{
-			_localDatabase = database;
-			_localDatabasePath = Path.Combine(database.Manager.Directory,  String.Format("{0}.cblite", database.Name));
+        internal SynchronizationTracker(Database database)
+        {
+            _localDatabase = database;
+            _localDatabasePath = Path.Combine(database.Manager.Directory, String.Format("{0}.cblite", database.Name));
             _kidoDatabaseInfoPath = Path.Combine(database.Manager.Directory, String.Format("{0}-info.cblite", database.Name));
-		}
+        }
 
-		internal IEnumerable<Revision> MapDocuments ()
-		{
-			var results = new List<Revision>();
+        internal IEnumerable<Revision> MapDocuments()
+        {
+            var results = new List<Revision>();
             const int reader_flags = SynchronizationLog.SQLITE_OPEN_FILEPROTECTION_COMPLETEUNLESSOPEN | SynchronizationLog.SQLITE_OPEN_READONLY | SynchronizationLog.SQLITE_OPEN_FULLMUTEX;
 
-			try {
-				var opened=raw.sqlite3_open_v2 (_localDatabasePath, out _readConnection, raw.SQLITE_OPEN_READONLY, null);
-				if (opened==0) {
-					raw.sqlite3_create_collation (_readConnection, "JSON", null, CouchbaseSqliteJsonUnicodeCollationFunction.Compare);
-					raw.sqlite3_create_collation (_readConnection, "JSON_ASCII", null, CouchbaseSqliteJsonAsciiCollationFunction.Compare);
-					raw.sqlite3_create_collation (_readConnection, "JSON_RAW", null, CouchbaseSqliteJsonRawCollationFunction.Compare);
-					raw.sqlite3_create_collation (_readConnection, "CURRENT", null, CouchbaseSqliteRevIdCollationFunction.Compare);
-					raw.sqlite3_create_collation (_readConnection, "REVID", null, CouchbaseSqliteRevIdCollationFunction.Compare);
-					results = _readConnection.query<Revision> ("SELECT D.docid, R.sequence, R.doc_id, R.revid, R.parent, R.current, R.deleted, R.no_attachments, R.json FROM revs AS R JOIN docs AS D ON R.doc_id = D.doc_ID;").ToList();
-				}
+            try
+            {
+                var opened = raw.sqlite3_open_v2(_localDatabasePath, out _readConnection, raw.SQLITE_OPEN_READONLY, null);
+                if (opened == 0)
+                {
+                    raw.sqlite3_create_collation(_readConnection, "JSON", null, CouchbaseSqliteJsonUnicodeCollationFunction.Compare);
+                    raw.sqlite3_create_collation(_readConnection, "JSON_ASCII", null, CouchbaseSqliteJsonAsciiCollationFunction.Compare);
+                    raw.sqlite3_create_collation(_readConnection, "JSON_RAW", null, CouchbaseSqliteJsonRawCollationFunction.Compare);
+                    raw.sqlite3_create_collation(_readConnection, "CURRENT", null, CouchbaseSqliteRevIdCollationFunction.Compare);
+                    raw.sqlite3_create_collation(_readConnection, "REVID", null, CouchbaseSqliteRevIdCollationFunction.Compare);
+                    results = _readConnection.query<Revision>("SELECT D.docid, R.sequence, R.doc_id, R.revid, R.parent, R.current, R.deleted, R.no_attachments, R.json, \"0\" as docHash FROM revs AS R JOIN docs AS D ON R.doc_id = D.doc_ID;").ToList();
+                }
 
-			} catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw ex;
-			}
-			return results;
-		}
+            }
 
-	}
+            var resultWithHash = results.Select(rev => new Revision
+            {
+                docid = rev.docid,
+                sequence = rev.sequence,
+                doc_id = rev.doc_id,
+                revid = rev.revid,
+                parent = rev.parent,
+                current = rev.current,
+                deleted = rev.deleted,
+                no_attachments = rev.no_attachments,
+                json = rev.json,
+                docHash = CalculateMD5Hash(rev.json)
+            });
 
-	internal class Revision
-	{
-		public string docid	{ get; set; }
+            return resultWithHash;
+        }
 
-		public int sequence { get; set; }
+        private string CalculateMD5Hash(byte[] inputBytes)
+        {
+            if (inputBytes == null)
+                return "00";
 
-		public int doc_id { get; set; }
+            System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+            byte[] hash = md5.ComputeHash(inputBytes);
+            var sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("X2"));
+            }
+            return sb.ToString();
+        }
+    }
 
-		public string revid	{ get; set; }
 
-		public string parent { get; set; }
 
-		public bool current	{ get; set; }
+    internal class Revision
+    {
+        public string docid { get; set; }
 
-		public bool deleted	{ get; set; }
+        public int sequence { get; set; }
 
-		public bool no_attachments { get; set; }
+        public int doc_id { get; set; }
+
+        public string revid { get; set; }
+
+        public string parent { get; set; }
+
+        public bool current { get; set; }
+
+        public bool deleted { get; set; }
+
+        public bool no_attachments { get; set; }
 
         public byte[] json { get; set; }
-	}
+
+        public string docHash { get; set; }
+
+    }
 
     internal enum JsonCollationMode
     {
@@ -832,72 +870,72 @@ namespace Kidozen.DataSync
         }
     }
 
-	//[Function(Name = "JSON", FuncType = FunctionType.Collation, Arguments = 2)]
-	internal static class CouchbaseSqliteJsonUnicodeCollationFunction
-	{
-		/// <Docs>Implements the custom collection for JSON strings.</Docs>
-		/// <summary>
-		/// Couchbase custom JSON collation algorithm.
-		/// </summary>
-		/// <param name = "userData"></param>
-		/// <param name = "param1"></param>
-		/// <param name = "param2"></param>
-		public static Int32 Compare (object userData, String param1, String param2)
-		{
-			return JsonCollator.Compare (JsonCollationMode.Unicode, param1, param2, Int32.MaxValue);
-		}
-	}
+    //[Function(Name = "JSON", FuncType = FunctionType.Collation, Arguments = 2)]
+    internal static class CouchbaseSqliteJsonUnicodeCollationFunction
+    {
+        /// <Docs>Implements the custom collection for JSON strings.</Docs>
+        /// <summary>
+        /// Couchbase custom JSON collation algorithm.
+        /// </summary>
+        /// <param name = "userData"></param>
+        /// <param name = "param1"></param>
+        /// <param name = "param2"></param>
+        public static Int32 Compare(object userData, String param1, String param2)
+        {
+            return JsonCollator.Compare(JsonCollationMode.Unicode, param1, param2, Int32.MaxValue);
+        }
+    }
 
-	//[SqliteFunction(Name = "JSON_ASCII", FuncType = FunctionType.Collation, Arguments = 2)]
-	internal static class CouchbaseSqliteJsonAsciiCollationFunction
-	{
-		/// <Docs>Implements the custom collection for JSON strings.</Docs>
-		/// <summary>
-		/// Couchbase custom JSON collation algorithm.
-		/// </summary>
-		/// <remarks>
-		/// This is woefully incomplete.
-		/// For full details, see https://github.com/couchbase/couchbase-lite-ios/blob/580c5f65ebda159ce5d0ce1f75adc16955a2a6ff/Source/CBLCollateJSON.m.
-		/// </remarks>
-		/// <param name = "args"></param>
-		public static Int32 Compare (object userData, String param1, String param2)
-		{
-			return JsonCollator.Compare (JsonCollationMode.Ascii, param1, param2, Int32.MaxValue);
-		}
-	}
+    //[SqliteFunction(Name = "JSON_ASCII", FuncType = FunctionType.Collation, Arguments = 2)]
+    internal static class CouchbaseSqliteJsonAsciiCollationFunction
+    {
+        /// <Docs>Implements the custom collection for JSON strings.</Docs>
+        /// <summary>
+        /// Couchbase custom JSON collation algorithm.
+        /// </summary>
+        /// <remarks>
+        /// This is woefully incomplete.
+        /// For full details, see https://github.com/couchbase/couchbase-lite-ios/blob/580c5f65ebda159ce5d0ce1f75adc16955a2a6ff/Source/CBLCollateJSON.m.
+        /// </remarks>
+        /// <param name = "args"></param>
+        public static Int32 Compare(object userData, String param1, String param2)
+        {
+            return JsonCollator.Compare(JsonCollationMode.Ascii, param1, param2, Int32.MaxValue);
+        }
+    }
 
-	//[SqliteFunction(Name = "JSON_RAW", FuncType = FunctionType.Collation, Arguments = 2)]
-	internal static class CouchbaseSqliteJsonRawCollationFunction
-	{
-		/// <Docs>Implements the custom collection for JSON strings.</Docs>
-		/// <summary>
-		/// Couchbase custom JSON collation algorithm.
-		/// </summary>
-		/// <remarks>
-		/// This is woefully incomplete.
-		/// For full details, see https://github.com/couchbase/couchbase-lite-ios/blob/580c5f65ebda159ce5d0ce1f75adc16955a2a6ff/Source/CBLCollateJSON.m.
-		/// </remarks>
-		/// <param name = "args"></param>
-		public static Int32 Compare (object userData, String param1, String param2)
-		{
-			return JsonCollator.Compare (JsonCollationMode.Raw, param1, param2, Int32.MaxValue);
-		}
-	}
+    //[SqliteFunction(Name = "JSON_RAW", FuncType = FunctionType.Collation, Arguments = 2)]
+    internal static class CouchbaseSqliteJsonRawCollationFunction
+    {
+        /// <Docs>Implements the custom collection for JSON strings.</Docs>
+        /// <summary>
+        /// Couchbase custom JSON collation algorithm.
+        /// </summary>
+        /// <remarks>
+        /// This is woefully incomplete.
+        /// For full details, see https://github.com/couchbase/couchbase-lite-ios/blob/580c5f65ebda159ce5d0ce1f75adc16955a2a6ff/Source/CBLCollateJSON.m.
+        /// </remarks>
+        /// <param name = "args"></param>
+        public static Int32 Compare(object userData, String param1, String param2)
+        {
+            return JsonCollator.Compare(JsonCollationMode.Raw, param1, param2, Int32.MaxValue);
+        }
+    }
 
-	//[SqliteFunction(Name = "REVID", FuncType = FunctionType.Collation, Arguments = 2)]
-	internal static class CouchbaseSqliteRevIdCollationFunction
-	{
-		/// <Docs>Implements a custom collation for Revision ID strings.</Docs>
-		/// <summary>
-		/// Couchbase custom Revision ID collation algorithm.
-		/// </summary>
-		/// <remarks>
-		/// For full details, see https://github.com/couchbase/couchbase-lite-ios/blob/master/Source/CBL_Revision.m
-		/// </remarks>
-		/// <param name = "args"></param>
-		public static Int32 Compare (object userData, String param1, String param2)
-		{
-			return RevIdCollator.Compare (param1, param2);
-		}
-	}
+    //[SqliteFunction(Name = "REVID", FuncType = FunctionType.Collation, Arguments = 2)]
+    internal static class CouchbaseSqliteRevIdCollationFunction
+    {
+        /// <Docs>Implements a custom collation for Revision ID strings.</Docs>
+        /// <summary>
+        /// Couchbase custom Revision ID collation algorithm.
+        /// </summary>
+        /// <remarks>
+        /// For full details, see https://github.com/couchbase/couchbase-lite-ios/blob/master/Source/CBL_Revision.m
+        /// </remarks>
+        /// <param name = "args"></param>
+        public static Int32 Compare(object userData, String param1, String param2)
+        {
+            return RevIdCollator.Compare(param1, param2);
+        }
+    }
 }

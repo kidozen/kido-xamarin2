@@ -1,17 +1,9 @@
 # KidoZen .NET SDK 2.0
 This is a new version of the SDK for .NET platform Kidozen. If you are using the previous SDK version please refer to [our migration guide](http://docs.kidozen.com/xamarin-sdk-vnext-migration-guide/)
 
-## Version 2.0.3.0
+## Version 3.0.0 - Alpha
 ### What's new?
-- Pub sub support for Android and iOS
-- Custom endpoints support for Android and iOS (Beta)
-
-## Version 2.0.2.0
-### What's new?
-- Analytics support for Android and iOS
- 
-[Analytics Documentation](http://docs.kidozen.com/analytics/)  
-[Analytics in Xamarin SDK](http://docs.kidozen.com/analytics-in-xamarin-sdk/)
+- Data Synchronization support
 
 ## How to install
  - [Install from NuGet gallery] (https://www.nuget.org) 
@@ -20,14 +12,17 @@ This is a new version of the SDK for .NET platform Kidozen. If you are using the
 The SDK uses a number of open source projects to work properly:
 
 * JSON.net http://james.newtonking.com/json
+* Couch Base Lite - http://github.com/couchbase/couchbase-lite-net/
 * SQLite - http://www.sqlite.org/
 * WebSocket4Net
-
 
 ## Getting started 
 Please, check our [online documentation](http://docs.kidozen.com/)  
 
 ## Known issues
+
+Data Synchronization supports only pull replication.
+
 
 License
 ----
